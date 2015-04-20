@@ -1,0 +1,14 @@
+Package: cellranger
+Title: Translate Spreadsheet Cell Ranges to Rows and Columns
+Version: 0.0.0.9000
+Authors@R: as.person(c(
+    "Jennifer Bryan <jenny@stat.ubc.ca> [cre, aut]",
+    "Hadley Wickham <hadley@rstudio.com> [aut]"
+  ))
+Description: Helper functions to work with spreadsheets and the "A1:D10" style
+    of cell range specification.
+Depends: R (>= 3.1.2)
+License: MIT + file LICENSE
+LazyData: true
+URL: https://github.com/jennybc/cellranger
+BugReports: https://github.com/jennybc/cellranger/issues
