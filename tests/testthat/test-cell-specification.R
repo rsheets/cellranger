@@ -41,8 +41,8 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   rgCL <- structure(list(rows = c(1, 4), cols = c(1, 3)), class = "cell_limits")
   expect_equal(as.cell_limits(rgA1), rgCL)
   expect_equal(as.cell_limits(rgRC), rgCL)
-  expect_equal(convert_cell_limits_to_range(rgCL), rgA1)
-  expect_equal(convert_cell_limits_to_range(rgCL, RC = TRUE), rgRC)
+  expect_equal(as.range(rgCL), rgA1)
+  expect_equal(as.range(rgCL, RC = TRUE), rgRC)
 
   rgA1 <- "E7"
   rgA1A1 <- "E7:E7"
@@ -54,8 +54,8 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.cell_limits(rgRC), rgCL)
   expect_equal(as.cell_limits(rgA1A1), rgCL)
   expect_equal(as.cell_limits(rgRCRC), rgCL)
-  expect_equal(convert_cell_limits_to_range(rgCL), rgA1A1)
-  expect_equal(convert_cell_limits_to_range(rgCL, RC = TRUE), rgRCRC)
+  expect_equal(as.range(rgCL), rgA1A1)
+  expect_equal(as.range(rgCL, RC = TRUE), rgRCRC)
 
 })
 
