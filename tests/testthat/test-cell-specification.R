@@ -1,5 +1,12 @@
 context("cell specification")
 
+test_that("Dollar signs are removed", {
+
+  expect_equal(rm_dollar_signs(c("A$1:$B$32", "$D11")), c("A1:B32", "D11"))
+  expect_equal(as.cell_limits("A$1:$B$32"), cell_limits(c(1, 32), c(1, 2)))
+
+})
+
 test_that("Column letter converts to correct column number", {
 
   expect_equal(letter_to_num("A"), 1)
@@ -38,7 +45,7 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
 
   rgA1 <- "A1:C4"
   rgRC <- "R1C1:R4C3"
-  rgCL <- structure(list(rows = c(1, 4), cols = c(1, 3)), class = "cell_limits")
+  rgCL <- cell_limits(rows = c(1, 4), cols = c(1, 3))
   expect_equal(as.cell_limits(rgA1), rgCL)
   expect_equal(as.cell_limits(rgRC), rgCL)
   expect_equal(as.range(rgCL), rgA1)
@@ -48,8 +55,7 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   rgA1A1 <- "E7:E7"
   rgRC <- "R7C5"
   rgRCRC <- "R7C5:R7C5"
-  rgCL <-
-    structure(list(rows = c(7, 7), cols = c(5, 5)), class = "cell_limits")
+  rgCL <- cell_limits(rows = c(7, 7), cols = c(5, 5))
   expect_equal(as.cell_limits(rgA1), rgCL)
   expect_equal(as.cell_limits(rgRC), rgCL)
   expect_equal(as.cell_limits(rgA1A1), rgCL)
@@ -71,5 +77,13 @@ test_that("Bad cell ranges throw errors", {
   expect_error(cell_limits(rows = c(-1, 3), cols = c(1, 4)))
   expect_error(cell_limits(rows = c(0, 3), cols = c(1, 4)))
   expect_error(cell_limits(rows = c(1, 3), cols = c(4, 1)))
+
+})
+
+test_that("Degenerate, all-NA input is tolerated", {
+
+  cl <- cell_limits(c(NA, NA), c(NA, NA))
+  expect_is(cl, "cell_limits")
+  expect_is(cl$rows, "numeric")
 
 })

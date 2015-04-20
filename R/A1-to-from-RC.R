@@ -57,6 +57,9 @@ num_to_letter <- function(y) {
 
 #' Convert A1 positioning notation to R1C1 notation
 #'
+#' Convert "A1" style cell references to "R1C1" style. Dollar signs will be
+#' ignored.
+#'
 #' @param x vector of cell positions in A1 notation
 #'
 #' @return vector of cell positions in R1C1 notation
@@ -64,10 +67,13 @@ num_to_letter <- function(y) {
 #' @examples
 #' A1_to_RC("A1")
 #' A1_to_RC("AZ10")
+#' A1_to_RC("AZ$10")
 #' A1_to_RC(c("A1", "AZ10"))
 #'
 #' @export
 A1_to_RC <- function(x) {
+
+  x <- rm_dollar_signs(x)
 
   m <- regexec("[[:digit:]]*$", x)
   row_part <- as.integer(unlist(regmatches(x, m)))

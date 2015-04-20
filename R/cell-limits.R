@@ -7,17 +7,19 @@
 #'
 #' A \code{cell_limits} object is a list with two components:
 #'
-#'   \code{rows} and \code{cols}, each
-#'
 #' \itemize{
 #' \item \code{rows} vector, of the form \code{c(min, max)}
-#' \item \code{cols} vector, of the form \code{c(min, max)} }
+#' \item \code{cols} vector, of the form \code{c(min, max)}
+#' }
 #'
 #' Typically the \code{min} and \code{max} are positive integers, where the
 #' first (the minimum) is less than or equal to the second (the maximum). A
 #' value of \code{NA} means the corresponding limit is left unspecified.
 #' Therefore a verbose way to specify no limits at all would be
 #' \code{cell_limits(c(NA, NA), c(NA, NA))}.
+#'
+#' Spreadsheet ranges can be specified using "A1" notation or "R1C1" notation
+#' and dollar signs will be ignored, i.e. "A$1:$B$32" is equivalent to "A1:B32".
 #'
 #' @param rows vector holding minimum and maximum row
 #' @param cols vector holding minimum and maximum col
@@ -36,7 +38,7 @@ cell_limits <- function(rows, cols) {
   stopifnot(length(rows) == 2L, length(cols) == 2L)
 
   if(all(is.na(rows))) rows <- as.numeric(rows)
-  if(all(is.na(cols))) rows <- as.numeric(cols)
+  if(all(is.na(cols))) cols <- as.numeric(cols)
 
   NA_or_pos <- function(x) is.na(x) | x > 0
   stopifnot(is.numeric(rows), all(NA_or_pos(rows)))
@@ -70,6 +72,8 @@ as.cell_limits.character <- function(x) {
 
   stopifnot(length(x) == 1L)
   x_orig <- x
+
+  x <- rm_dollar_signs(x)
 
   y <- unlist(strsplit(x, ":"))
   stopifnot(length(y) %in% 1:2)

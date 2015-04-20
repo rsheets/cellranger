@@ -13,11 +13,13 @@ A1_to_RC(x)
 vector of cell positions in R1C1 notation
 }
 \description{
-Convert A1 positioning notation to R1C1 notation
+Convert "A1" style cell references to "R1C1" style. Dollar signs will be
+ignored.
 }
 \examples{
 A1_to_RC("A1")
 A1_to_RC("AZ10")
+A1_to_RC("AZ$10")
 A1_to_RC(c("A1", "AZ10"))
 }
 

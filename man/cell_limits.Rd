@@ -34,17 +34,19 @@ in a valid \code{cell_limits} object.
 \details{
 A \code{cell_limits} object is a list with two components:
 
-\code{rows} and \code{cols}, each
-
 \itemize{
 \item \code{rows} vector, of the form \code{c(min, max)}
-\item \code{cols} vector, of the form \code{c(min, max)} }
+\item \code{cols} vector, of the form \code{c(min, max)}
+}
 
 Typically the \code{min} and \code{max} are positive integers, where the
 first (the minimum) is less than or equal to the second (the maximum). A
 value of \code{NA} means the corresponding limit is left unspecified.
 Therefore a verbose way to specify no limits at all would be
 \code{cell_limits(c(NA, NA), c(NA, NA))}.
+
+Spreadsheet ranges can be specified using "A1" notation or "R1C1" notation
+and dollar signs will be ignored, i.e. "A$1:$B$32" is equivalent to "A1:B32".
 }
 \examples{
 cell_limits(c(1, 3), c(1, 5))
