@@ -12,3 +12,4 @@ License: MIT + file LICENSE
 LazyData: true
 URL: https://github.com/jennybc/cellranger
 BugReports: https://github.com/jennybc/cellranger/issues
+Suggests: testthat
