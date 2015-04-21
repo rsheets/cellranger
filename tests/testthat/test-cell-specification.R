@@ -9,11 +9,11 @@ test_that("Dollar signs are removed", {
 
 test_that("Column letter converts to correct column number", {
 
-  expect_equal(letter_to_num("A"), 1)
-  expect_equal(letter_to_num("AB"), 28)
+  expect_equal(letter_to_num("A"), 1L)
+  expect_equal(letter_to_num("AB"), 28L)
   expect_equal(letter_to_num(
-    c("A", "AH", NA, "", "ABD", "XFD")),
-    c(  1,   34, NA, NA,   732, 16384))
+    c("A", "AH", NA, "", "ABD",  "XFD")),
+    c( 1L,  34L, NA, NA,  732L, 16384L))
 
   expect_error(letter_to_num(1:5))
   expect_error(letter_to_num(factor(LETTERS)))
@@ -104,7 +104,7 @@ test_that("Degenerate, all-NA input is tolerated", {
 
   cl <- cell_limits()
   expect_is(cl, "cell_limits")
-  expect_is(cl$rows, "numeric")
+  expect_is(cl$rows, "integer")
 
   cl2 <- cell_limits(c(NA, NA))
   expect_identical(cl, cl2)

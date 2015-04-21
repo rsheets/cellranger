@@ -39,12 +39,12 @@ cell_limits <- function(rows = c(NA_integer_, NA_integer_),
 
   stopifnot(length(rows) == 2L, length(cols) == 2L)
 
-  if(all(is.na(rows))) rows <- as.numeric(rows)
-  if(all(is.na(cols))) cols <- as.numeric(cols)
+  rows <- as.integer(rows)
+  cols <- as.integer(cols)
 
   NA_or_pos <- function(x) is.na(x) | x > 0
-  stopifnot(is.numeric(rows), all(NA_or_pos(rows)))
-  stopifnot(is.numeric(cols), all(NA_or_pos(rows)))
+  stopifnot(all(NA_or_pos(rows)))
+  stopifnot(all(NA_or_pos(rows)))
 
   if(!anyNA(rows)) stopifnot(rows[1] <= rows[2])
   if(!anyNA(cols)) stopifnot(cols[1] <= cols[2])
