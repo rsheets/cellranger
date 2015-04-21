@@ -51,6 +51,15 @@ cell_limits <- function(rows = c(NA_integer_, NA_integer_),
 
 }
 
+#' @export
+print.cell_limits <- function(x, ...) {
+  rows <- ifelse(is.na(x$rows), "-", as.character(x$rows))
+  cols <- ifelse(is.na(x$cols), "-", as.character(x$cols))
+
+  cat("<cell_limits (", cols[1], ", ", rows[1], ")-(", cols[2], ", ", rows[2], ")>\n",
+    sep = "")
+}
+
 #' @rdname cell_limits
 #' @export
 as.cell_limits <- function(x) UseMethod("as.cell_limits")
