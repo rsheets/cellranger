@@ -58,8 +58,9 @@ print.cell_limits <- function(x, ...) {
   rows <- ifelse(is.na(x$rows), "-", as.character(x$rows))
   cols <- ifelse(is.na(x$cols), "-", as.character(x$cols))
 
-  cat("<cell_limits (", cols[1], ", ", rows[1], ")-(", cols[2], ", ", rows[2], ")>\n",
-    sep = "")
+  cat("<cell_limits (", rows[1], ", ", cols[1], ") % (",
+      rows[2], ", ", cols[2], ")>\n",
+      sep = "")
 }
 
 #' @rdname cell_limits

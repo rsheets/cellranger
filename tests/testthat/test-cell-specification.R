@@ -124,3 +124,9 @@ test_that("Column-only specifications work", {
   expect_error(cell_cols(c("Z", "M")))
 
 })
+
+test_that("Print method works", {
+
+  expect_output(cell_limits(c(NA, 7), c(3, NA)),
+                "<cell_limits (-, 3) % (7, -)>", fixed = TRUE)
+
