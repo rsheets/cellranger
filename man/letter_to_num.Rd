@@ -18,5 +18,6 @@ Convert column IDs from letter representation to integer
 \examples{
 letter_to_num('Z')
 letter_to_num(c('AA', 'ZZ', 'ABD', 'ZZZ'))
+letter_to_num(c(NA, ''))
 }
 

@@ -7,14 +7,18 @@
 #' @examples
 #' letter_to_num('Z')
 #' letter_to_num(c('AA', 'ZZ', 'ABD', 'ZZZ'))
+#' letter_to_num(c(NA, ''))
 #'
 #' @export
 letter_to_num <- function(x) {
 
+  stopifnot(is.character(x))
+
   x <- strsplit(toupper(x), '')
+  x <- lapply(x, char0_to_NA)
   x <- lapply(x, match, table = LETTERS)
   x <- lapply(x, function(z) sum((26 ^ rev(seq_along(z) - 1)) * z))
-  unlist(as.integer(x))
+  as.integer(x)
 
 }
 
@@ -29,10 +33,13 @@ letter_to_num <- function(x) {
 #' num_to_letter(900)
 #' num_to_letter(18278)
 #' num_to_letter(c(25, 52, 900, 18278))
-#' num_to_letter(NA)
+#' num_to_letter(c(NA, 0, 4.8, -4))
 #'
 #' @export
 num_to_letter <- function(y) {
+
+  stopifnot(is.numeric(y))
+
   # FYI Google spreadsheets have 300 columns max
   # Excel 2010 spreadsheets have up to 16,384 columns
   #  ZZ <-->    702
@@ -53,7 +60,10 @@ num_to_letter <- function(y) {
     paste(LETTERS[ret], collapse = "")
   }
 
-  vapply(y, jfun, character(1))
+  ret <- vapply(y, jfun, character(1))
+
+  ## 0 becomes "", so we set that to NA here
+  ifelse(ret == "", NA, ret)
 }
 
 #' Convert A1 positioning notation to R1C1 notation
@@ -70,19 +80,26 @@ num_to_letter <- function(y) {
 #' A1_to_RC("AZ10")
 #' A1_to_RC("AZ$10")
 #' A1_to_RC(c("A1", "AZ10"))
+#' A1_to_RC(c("", NA, "Q0"))
 #'
 #' @export
 A1_to_RC <- function(x) {
 
+  stopifnot(is.character(x))
+
   x <- rm_dollar_signs(x)
 
   m <- regexec("[[:digit:]]*$", x)
-  row_part <- as.integer(unlist(regmatches(x, m)))
+  m <- regmatches(x, m)
+  row_part <- as.integer(vapply(m, char0_to_NA, character(1)))
+  row_part <- ifelse(row_part > 0, row_part, NA)
 
   m <- regexec("^[[:alpha:]]*", x)
-  col_part <- letter_to_num(unlist(regmatches(x, m)))
+  m <- regmatches(x, m)
+  col_part <- letter_to_num(vapply(m, char0_to_NA, character(1)))
 
-  paste0("R", row_part, "C", col_part)
+  ifelse(is.na(row_part) | is.na(col_part), NA,
+         paste0("R", row_part, "C", col_part))
 }
 
 #' Convert R1C1 positioning notation to A1 notation
@@ -95,14 +112,20 @@ A1_to_RC <- function(x) {
 #' RC_to_A1("R1C1")
 #' RC_to_A1("R10C52")
 #' RC_to_A1(c("R1C1", "R10C52"))
+#' RC_to_A1(c("", NA, "R0C0"))
 #'
 #' @export
 RC_to_A1 <- function(x) {
+
+  stopifnot(is.character(x))
 
   col_part <- sub("^R[0-9]+C([0-9]+)$", "\\1", x)
   col_part <- num_to_letter(as.integer(col_part))
 
   row_part <- sub("^R([0-9]+)C[0-9]+$", "\\1", x)
+  row_part <- as.integer(row_part)
+  row_part <- ifelse(row_part > 0, row_part, NA)
 
-  paste0(col_part, row_part)
+  ifelse(is.na(row_part) | is.na(col_part), NA,
+         paste0(col_part, row_part))
 }

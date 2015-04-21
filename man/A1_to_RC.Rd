@@ -21,5 +21,6 @@ A1_to_RC("A1")
 A1_to_RC("AZ10")
 A1_to_RC("AZ$10")
 A1_to_RC(c("A1", "AZ10"))
+A1_to_RC(c("", NA, "Q0"))
 }
 

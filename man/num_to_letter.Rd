@@ -20,6 +20,6 @@ num_to_letter(28)
 num_to_letter(900)
 num_to_letter(18278)
 num_to_letter(c(25, 52, 900, 18278))
-num_to_letter(NA)
+num_to_letter(c(NA, 0, 4.8, -4))
 }
 

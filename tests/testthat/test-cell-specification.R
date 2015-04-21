@@ -11,7 +11,12 @@ test_that("Column letter converts to correct column number", {
 
   expect_equal(letter_to_num("A"), 1)
   expect_equal(letter_to_num("AB"), 28)
-  expect_equal(letter_to_num(c("A", "AH", "ABD", "XFD")), c(1, 34, 732, 16384))
+  expect_equal(letter_to_num(
+    c("A", "AH", NA, "", "ABD", "XFD")),
+    c(  1,   34, NA, NA,   732, 16384))
+
+  expect_error(letter_to_num(1:5))
+  expect_error(letter_to_num(factor(LETTERS)))
 
 })
 
@@ -19,7 +24,12 @@ test_that("Column number converts to correct column letter", {
 
   expect_equal(num_to_letter(1), "A")
   expect_equal(num_to_letter(28), "AB")
-  expect_equal(num_to_letter(c(1, 34, 732, 16384)), c("A", "AH", "ABD", "XFD"))
+  expect_equal(num_to_letter(
+    c(  34, NA,  0, -4,  732,  16384, 4.8)),
+    c("AH", NA, NA, NA, "ABD", "XFD", "D"))
+
+  expect_error(num_to_letter("hi there"))
+  expect_error(num_to_letter("100"))
 
 })
 
@@ -27,8 +37,12 @@ test_that("A1 notation converts to R1C1 notation", {
 
   expect_equal(A1_to_RC("A1"), "R1C1")
   expect_equal(A1_to_RC("AB10"), "R10C28")
-  expect_equal(A1_to_RC(c("A1", "ZZ100", "ZZZ15")),
-               c("R1C1", "R100C702", "R15C18278"))
+  expect_equal(A1_to_RC(
+    c(  "A1",    "ZZ100", NA, "Q", "4", "",     "ZZZ15", "Q0")),
+    c("R1C1", "R100C702", NA,  NA,  NA, NA, "R15C18278",   NA))
+
+  expect_error(A1_to_RC(1:5))
+  expect_error(A1_to_RC(factor(LETTERS)))
 
 })
 
@@ -36,8 +50,12 @@ test_that("R1C1 notation converts to A1 notation", {
 
   expect_equal(RC_to_A1("R1C1"), "A1")
   expect_equal(RC_to_A1("R10C28"), "AB10")
-  expect_equal(RC_to_A1(c("R1C1", "R100C702", "R15C18278")),
-               c("A1", "ZZ100", "ZZZ15"))
+  expect_equal(RC_to_A1(
+    c("R1C1", "R100C702", "R15C18278", "", NA, "R5C0")),
+    c(  "A1",    "ZZ100",     "ZZZ15", NA, NA,     NA))
+
+  expect_error(RC_to_A1(1:5))
+  expect_error(RC_to_A1(factor(LETTERS)))
 
 })
 
@@ -69,6 +87,7 @@ test_that("Bad cell ranges throw errors", {
 
   expect_error(as.cell_limits("eggplant"))
   expect_error(as.cell_limits("A:B10"))
+  expect_error(as.cell_limits(":B10"))
   expect_error(as.cell_limits("A1:R3C3"))
   expect_error(as.cell_limits("A1:B2:C3"))
   expect_error(as.cell_limits("14:17"))
@@ -130,3 +149,4 @@ test_that("Print method works", {
   expect_output(cell_limits(c(NA, 7), c(3, NA)),
                 "<cell_limits (-, 3) % (7, -)>", fixed = TRUE)
 
+})
