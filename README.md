@@ -1,5 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/0.1.0/active.svg)](http://www.repostatus.org/#active) [![Build Status](https://travis-ci.org/jennybc/cellranger.svg?branch=master)](https://travis-ci.org/jennybc/cellranger) [![Coverage Status](https://coveralls.io/repos/jennybc/cellranger/badge.svg)](https://coveralls.io/r/jennybc/cellranger)
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/0.1.0/active.svg)](http://www.repostatus.org/#active) [![Build Status](https://travis-ci.org/jennybc/cellranger.svg?branch=master)](https://travis-ci.org/jennybc/cellranger) [![Coverage Status](https://coveralls.io/repos/jennybc/cellranger/badge.svg?branch=master)](https://coveralls.io/r/jennybc/cellranger?branch=master)
 
 Helper package to support R scripts or packages that interact with spreadsheets. At this point, development is motivated by [the wish to have a common interface](https://github.com/hadley/readxl/issues/8) for specifying cell ranges in [readxl](https://github.com/hadley/readxl) and [googlesheets](https://github.com/jennybc/googlesheets).
 
