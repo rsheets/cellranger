@@ -19,91 +19,37 @@ read_excel(..., range = cell_cols("B:MZ"))
 
 ### Range specification
 
-The main goal is to translate Excel-like ranges, such as `A3:D7` or `R3C1:R7C4`, into something more programmatically useful. `cellranger` provides an S3 class, `cell_limits`, as the standard way to store a cell range. Functions are provided to convert various input formats into `cell_limits` objects.
+The main goal is to translate Excel-like ranges, such as `A3:D7` or `R3C1:R7C4`, into something more programmatically useful. `cellranger` provides an S3 class, `cell_limits`, as the standard way to store a cell range. Functions are provided to convert various input formats into `cell_limits` objects. Note the `print` method shows the cell rectangle via `(UPPER LEFT CELL) x (LOWER RIGHT CELL)` where cell locations are specifed as `(ROW, COL)`.
 
 ``` r
 library("cellranger")
+
 cell_limits(c(1, 3), c(1, 5))
-#> $rows
-#> [1] 1 3
-#> 
-#> $cols
-#> [1] 1 5
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (1, 1) x (3, 5)>
+
 cell_limits(c(NA, 7), c(3, NA))
-#> $rows
-#> [1] NA  7
-#> 
-#> $cols
-#> [1]  3 NA
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (-, 3) x (7, -)>
+
 as.cell_limits("C7")
-#> $rows
-#> [1] 7 7
-#> 
-#> $cols
-#> [1] 3 3
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (7, 3) x (7, 3)>
+
 as.cell_limits("A1:D8")
-#> $rows
-#> [1] 1 8
-#> 
-#> $cols
-#> [1] 1 4
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (1, 1) x (8, 4)>
+
 as.cell_limits("R2C3:R6C9")
-#> $rows
-#> [1] 2 6
-#> 
-#> $cols
-#> [1] 3 9
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (2, 3) x (6, 9)>
+
 cell_rows(1:100)
-#> $rows
-#> [1]   1 100
-#> 
-#> $cols
-#> [1] NA NA
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (1, -) x (100, -)>
+
 cell_cols(3:8)
-#> $rows
-#> [1] NA NA
-#> 
-#> $cols
-#> [1] 3 8
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (-, 3) x (-, 8)>
+
 cell_cols("B:MZ")
-#> $rows
-#> [1] NA NA
-#> 
-#> $cols
-#> [1]   2 364
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (-, 2) x (-, 364)>
+
 cell_cols(c(NA, "AR"))
-#> $rows
-#> [1] NA NA
-#> 
-#> $cols
-#> [1] NA 44
-#> 
-#> attr(,"class")
-#> [1] "cell_limits"
+#> <cell_limits (-, -) x (-, 44)>
 ```
 
 You can also convert a `cell_limits` object back into an Excel range.

@@ -147,6 +147,6 @@ test_that("Column-only specifications work", {
 test_that("Print method works", {
 
   expect_output(cell_limits(c(NA, 7), c(3, NA)),
-                "<cell_limits (-, 3) % (7, -)>", fixed = TRUE)
+                "<cell_limits (-, 3) x (7, -)>", fixed = TRUE)
 
 })
