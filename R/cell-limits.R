@@ -33,7 +33,8 @@
 #'
 #' @name cell_limits
 #' @export
-cell_limits <- function(rows, cols) {
+cell_limits <- function(rows = c(NA_integer_, NA_integer_),
+                        cols = c(NA_integer_, NA_integer_)) {
 
   stopifnot(length(rows) == 2L, length(cols) == 2L)
 

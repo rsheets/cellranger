@@ -10,6 +10,9 @@ read_excel(..., range = "D12:F15")
 read_excel(..., range = "R1C12:R6C15")
 read_excel(..., range = cell_limits(c(1, 6), c(1, 15))
 read_excel(..., range = cell_limits(c(2, NA), c(1, NA))
+read_excel(..., range = cell_rows(1:100))
+read_excel(..., range = cell_cols(3:8))
+read_excel(..., range = cell_cols("B:MZ"))
 ```
 
 ### Range specification
@@ -60,6 +63,33 @@ as.cell_limits("R2C3:R6C9")
 #> 
 #> $cols
 #> [1] 3 9
+#> 
+#> attr(,"class")
+#> [1] "cell_limits"
+cell_rows(1:100)
+#> $rows
+#> [1]   1 100
+#> 
+#> $cols
+#> [1] NA NA
+#> 
+#> attr(,"class")
+#> [1] "cell_limits"
+cell_cols(3:8)
+#> $rows
+#> [1] NA NA
+#> 
+#> $cols
+#> [1] 3 8
+#> 
+#> attr(,"class")
+#> [1] "cell_limits"
+cell_cols("B:MZ")
+#> $rows
+#> [1] NA NA
+#> 
+#> $cols
+#> [1]   2 364
 #> 
 #> attr(,"class")
 #> [1] "cell_limits"

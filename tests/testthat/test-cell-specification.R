@@ -82,8 +82,45 @@ test_that("Bad cell ranges throw errors", {
 
 test_that("Degenerate, all-NA input is tolerated", {
 
-  cl <- cell_limits(c(NA, NA), c(NA, NA))
+
+  cl <- cell_limits()
   expect_is(cl, "cell_limits")
   expect_is(cl$rows, "numeric")
+
+  cl2 <- cell_limits(c(NA, NA))
+  expect_identical(cl, cl2)
+
+  cl3 <- cell_limits(cols = c(NA, NA))
+  expect_identical(cl, cl3)
+
+})
+
+test_that("Row-only specifications work", {
+
+  expect_identical(cell_rows(c(NA, NA)), cell_limits())
+  expect_identical(cell_rows(c(NA, 3)), cell_limits(rows = c(NA, 3)))
+  expect_identical(cell_rows(c(7, NA)), cell_limits(rows = c(7, NA)))
+  expect_identical(cell_rows(c(3, NA, 10)), cell_limits(rows = c(3, 10)))
+  expect_identical(cell_rows(c(10, NA, 3)), cell_limits(rows = c(3, 10)))
+  expect_identical(cell_rows(4:16), cell_limits(rows = c(4L, 16L)))
+  expect_error(cell_rows(c(7, 2)))
+
+})
+
+test_that("Column-only specifications work", {
+
+  expect_identical(cell_cols(c(NA, NA)), cell_limits())
+  expect_identical(cell_cols(c(NA, 3)), cell_limits(cols = c(NA, 3)))
+  expect_identical(cell_cols(c(7, NA)), cell_limits(cols = c(7, NA)))
+  expect_identical(cell_cols(c(3, NA, 10)), cell_limits(cols = c(3, 10)))
+  expect_identical(cell_cols(c(10, NA, 3)), cell_limits(cols = c(3, 10)))
+  expect_identical(cell_cols(4:16), cell_limits(cols = c(4L, 16L)))
+  expect_error(cell_cols(c(7, 2)))
+
+  expect_identical(cell_cols("B:D"), cell_limits(cols = c(2L, 4L)))
+  expect_identical(cell_cols(c("C", "ZZ")), cell_limits(cols = c(3L, 702L)))
+  expect_identical(cell_cols(c("C", NA)), cell_limits(cols = c(3L, NA)))
+  expect_error(cell_cols("Z:M"))
+  expect_error(cell_cols(c("Z", "M")))
 
 })

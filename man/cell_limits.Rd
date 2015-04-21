@@ -7,7 +7,8 @@
 \alias{cell_limits}
 \title{Create a cell_limits object}
 \usage{
-cell_limits(rows, cols)
+cell_limits(rows = c(NA_integer_, NA_integer_), cols = c(NA_integer_,
+  NA_integer_))
 
 as.cell_limits(x)
 
