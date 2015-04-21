@@ -56,8 +56,10 @@ You can also convert a `cell_limits` object back into an Excel range.
 
 ``` r
 rgCL <- cell_limits(rows = c(1, 4), cols = c(1, 3))
+
 as.range(rgCL)
 #> [1] "A1:C4"
+
 as.range(rgCL, RC = TRUE)
 #> [1] "R1C1:R4C3"
 ```
@@ -70,11 +72,14 @@ We've exposed other helper functions which could be useful in other contexts, i.
 ## convert character column IDs to numbers ... and vice versa
 letter_to_num(c('AA', 'ZZ', 'ABD', 'ZZZ'))
 #> [1]    27   702   732 18278
+
 num_to_letter(c(27, 702, 732, 18278))
 #> [1] "AA"  "ZZ"  "ABD" "ZZZ"
+
 ## convert between A1 and R1C1 cell references
 A1_to_RC(c("A1", "AZ10"))
 #> [1] "R1C1"   "R10C52"
+
 RC_to_A1(c("R1C1", "R10C52"))
 #> [1] "A1"   "AZ10"
 ```
