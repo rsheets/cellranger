@@ -31,7 +31,6 @@
 #' cell_limits(c(1, 3), c(1, 5))
 #' cell_limits(c(NA, 7), c(3, NA))
 #'
-#' @name cell_limits
 #' @export
 cell_limits <- function(rows = c(NA_integer_, NA_integer_),
                         cols = c(NA_integer_, NA_integer_)) {
@@ -50,6 +49,15 @@ cell_limits <- function(rows = c(NA_integer_, NA_integer_),
 
   structure(list(rows = rows, cols = cols), class = "cell_limits")
 
+}
+
+#' @export
+print.cell_limits <- function(x, ...) {
+  rows <- ifelse(is.na(x$rows), "-", as.character(x$rows))
+  cols <- ifelse(is.na(x$cols), "-", as.character(x$cols))
+
+  cat("<cell_limits (", cols[1], ", ", rows[1], ")-(", cols[2], ", ", rows[2], ")>\n",
+    sep = "")
 }
 
 #' @rdname cell_limits
@@ -87,9 +95,8 @@ as.cell_limits.character <- function(x) {
   if(all(grepl(A1_regex, y))) {
     y <- A1_to_RC(y)
   } else if(!all(grepl(RC_regex, y))) {
-    mess <- sprintf(paste("Trying to set cell limits, but requested range is",
-                          "invalid:\n %s\n"), x_orig)
-    stop(mess)
+    stop("Trying to set cell limits, but requested range is invalid:\n",
+      x_orig)
   }
 
   m <- regexec("^R([0-9]+)C([0-9]+$)", y)
@@ -99,7 +106,6 @@ as.cell_limits.character <- function(x) {
     as.integer(vapply(m2, `[`, FUN.VALUE = character(1), 2)),
     as.integer(vapply(m2, `[`, FUN.VALUE = character(1), 3))
   )
-
 }
 
 

@@ -27,12 +27,10 @@ cell_rows <- function(x) {
 
   stopifnot(is.numeric(x))
 
-  if(length(x) == 2L) {
-    return(cell_limits(rows = x))
-  }
+  if (length(x) != 2L)
+    x <- range(x, na.rm = TRUE)
 
-  cell_limits(rows = c(min(x, na.rm = TRUE), max(x, na.rm = TRUE)))
-
+  cell_limits(rows = x)
 }
 
 #' Specify cell limits only for columns
@@ -72,18 +70,15 @@ cell_cols <- function(x) {
   if(is.character(x)) {
 
     if(length(x) == 1L) {
-      x <- unlist(strsplit(x, ":"))
+      x <- strsplit(x, ":")[[1]]
     }
 
     x <- letter_to_num(x)
-
   }
 
-  if(length(x) == 2L) {
-    return(cell_limits(cols = x))
-  }
+  if (length(x) != 2L)
+    x <- range(x, na.rm = TRUE)
 
-  cell_limits(cols = c(min(x, na.rm = TRUE), max(x, na.rm = TRUE)))
-
+  cell_limits(cols = x)
 }
 

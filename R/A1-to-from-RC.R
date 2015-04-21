@@ -29,6 +29,7 @@ letter_to_num <- function(x) {
 #' num_to_letter(900)
 #' num_to_letter(18278)
 #' num_to_letter(c(25, 52, 900, 18278))
+#' num_to_letter(NA)
 #'
 #' @export
 num_to_letter <- function(y) {
@@ -39,20 +40,19 @@ num_to_letter <- function(y) {
 
   # fcn to express column number in this weird form of base 26
   jfun <- function(div) {
+    if (is.na(div))
+      return("-")
+
     ret <- integer()
     while(div > 0) {
       remainder <- ((div - 1) %% 26) + 1
       ret <- c(remainder, ret)
       div <- (div - remainder) %/% 26
     }
-    ret
+    paste(LETTERS[ret], collapse = "")
   }
 
-  y <- lapply(y, jfun)
-  y <- lapply(y, function(x) LETTERS[x])
-  y <- lapply(y, paste, collapse = '')
-  unlist(y)
-
+  vapply(y, jfun, character(1))
 }
 
 #' Convert A1 positioning notation to R1C1 notation
