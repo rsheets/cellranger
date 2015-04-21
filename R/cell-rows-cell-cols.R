@@ -27,8 +27,9 @@ cell_rows <- function(x) {
 
   stopifnot(is.numeric(x))
 
-  if (length(x) != 2L)
+  if (length(x) != 2L) {
     x <- range(x, na.rm = TRUE)
+  }
 
   cell_limits(rows = x)
 }
@@ -76,8 +77,9 @@ cell_cols <- function(x) {
     x <- letter_to_num(x)
   }
 
-  if (length(x) != 2L)
+  if (length(x) != 2L) {
     x <- range(x, na.rm = TRUE)
+  }
 
   cell_limits(cols = x)
 }
