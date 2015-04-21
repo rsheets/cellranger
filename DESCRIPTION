@@ -1,10 +1,10 @@
 Package: cellranger
 Title: Translate Spreadsheet Cell Ranges to Rows and Columns
 Version: 0.0.0.9000
-Authors@R: as.person(c(
-    "Jennifer Bryan <jenny@stat.ubc.ca> [cre, aut]",
-    "Hadley Wickham <hadley@rstudio.com> [aut]"
-  ))
+Authors@R: c(
+    person("Jennifer", "Bryan", , "jenny@stat.ubc.ca", c("cre", "aut")),
+    person("Hadley", "Wickham", , "hadley@rstudio.com", "ctb")
+  )
 Description: Helper functions to work with spreadsheets and the "A1:D10" style
     of cell range specification.
 Depends: R (>= 3.1.2)
