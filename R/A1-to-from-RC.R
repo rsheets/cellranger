@@ -40,8 +40,9 @@ num_to_letter <- function(y) {
 
   # fcn to express column number in this weird form of base 26
   jfun <- function(div) {
-    if (is.na(div))
-      return("-")
+    if (is.na(div)) {
+      return(NA_character_)
+    }
 
     ret <- integer()
     while(div > 0) {

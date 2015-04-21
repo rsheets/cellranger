@@ -52,6 +52,8 @@ and dollar signs will be ignored, i.e. "A$1:$B$32" is equivalent to "A1:B32".
 \examples{
 cell_limits(c(1, 3), c(1, 5))
 cell_limits(c(NA, 7), c(3, NA))
+cell_limits(c(NA, 7))
+cell_limits(cols = c(NA, 7))
 as.cell_limits("A1")
 as.cell_limits("Q24")
 as.cell_limits("A1:D8")

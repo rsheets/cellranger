@@ -30,6 +30,8 @@
 #' @examples
 #' cell_limits(c(1, 3), c(1, 5))
 #' cell_limits(c(NA, 7), c(3, NA))
+#' cell_limits(c(NA, 7))
+#' cell_limits(cols = c(NA, 7))
 #'
 #' @export
 cell_limits <- function(rows = c(NA_integer_, NA_integer_),
