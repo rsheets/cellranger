@@ -46,6 +46,7 @@ as.cell_limits("R2C3:R6C9")
 cell_rows(1:100)
 cell_cols(3:8)
 cell_cols("B:MZ")
+cell_cols(c(NA, "AR"))
 ```
 
 You can also convert a `cell_limits` object back into an Excel range.

@@ -93,6 +93,15 @@ cell_cols("B:MZ")
 #> 
 #> attr(,"class")
 #> [1] "cell_limits"
+cell_cols(c(NA, "AR"))
+#> $rows
+#> [1] NA NA
+#> 
+#> $cols
+#> [1] NA 44
+#> 
+#> attr(,"class")
+#> [1] "cell_limits"
 ```
 
 You can also convert a `cell_limits` object back into an Excel range.
