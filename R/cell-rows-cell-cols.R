@@ -18,6 +18,8 @@
 #' cell_rows(4:16)
 #' cell_rows(c(3, NA, 10))
 #'
+#' dim(cell_rows(1:5))
+#'
 #' @export
 cell_rows <- function(x) {
 

@@ -150,3 +150,15 @@ test_that("Print method works", {
                 "<cell_limits (-, 3) x (7, -)>", fixed = TRUE)
 
 })
+
+test_that("dim method works", {
+
+  expect_equivalent(dim(as.cell_limits("A1")), c(1, 1))
+  expect_equivalent(dim(as.cell_limits("A1:F10")), c(10, 6))
+  expect_equivalent(dim(cell_limits(c(1, 1), c(2, 5))), c(1, 4))
+  expect_equivalent(dim(cell_limits(c(NA, 1), c(2, 5))), c(NA_integer_, 4))
+  expect_equivalent(dim(cell_limits(c(NA, NA), c(2, 5))), c(NA_integer_, 4))
+  expect_equivalent(dim(cell_limits(c(NA, 1), c(NA, 5))),
+                    c(NA_integer_, NA_integer_))
+
+})

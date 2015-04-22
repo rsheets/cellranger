@@ -33,6 +33,9 @@
 #' cell_limits(c(NA, 7))
 #' cell_limits(cols = c(NA, 7))
 #'
+#' dim(as.cell_limits("A1:F10"))
+#' dim(cell_limits(cols = c(2, 5)))
+#'
 #' @export
 cell_limits <- function(rows = c(NA_integer_, NA_integer_),
                         cols = c(NA_integer_, NA_integer_)) {
@@ -62,6 +65,10 @@ print.cell_limits <- function(x, ...) {
       rows[2], ", ", cols[2], ")>\n",
       sep = "")
 }
+
+#' @rdname cell_limits
+#' @export
+dim.cell_limits <- function(x) vapply(x, diff, integer(1)) + 1L
 
 #' @rdname cell_limits
 #' @export

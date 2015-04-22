@@ -2,6 +2,7 @@
 
 S3method(as.cell_limits,cell_limits)
 S3method(as.cell_limits,character)
+S3method(dim,cell_limits)
 S3method(print,cell_limits)
 export(A1_to_RC)
 export(RC_to_A1)

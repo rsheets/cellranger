@@ -5,10 +5,13 @@
 \alias{as.cell_limits.cell_limits}
 \alias{as.cell_limits.character}
 \alias{cell_limits}
+\alias{dim.cell_limits}
 \title{Create a cell_limits object}
 \usage{
 cell_limits(rows = c(NA_integer_, NA_integer_), cols = c(NA_integer_,
   NA_integer_))
+
+\method{dim}{cell_limits}(x)
 
 as.cell_limits(x)
 
@@ -54,6 +57,9 @@ cell_limits(c(1, 3), c(1, 5))
 cell_limits(c(NA, 7), c(3, NA))
 cell_limits(c(NA, 7))
 cell_limits(cols = c(NA, 7))
+
+dim(as.cell_limits("A1:F10"))
+dim(cell_limits(cols = c(2, 5)))
 as.cell_limits("A1")
 as.cell_limits("Q24")
 as.cell_limits("A1:D8")
