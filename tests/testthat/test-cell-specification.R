@@ -81,6 +81,9 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.range(rgCL), rgA1A1)
   expect_equal(as.range(rgCL, RC = TRUE), rgRCRC)
 
+  rgCL <- cell_limits(rows = c(NA, 4), cols = c(1, NA))
+  expect_true(is.na(as.range(rgCL)))
+
 })
 
 test_that("Bad cell ranges throw errors", {
@@ -160,5 +163,29 @@ test_that("dim method works", {
   expect_equivalent(dim(cell_limits(c(NA, NA), c(2, 5))), c(NA_integer_, 4))
   expect_equivalent(dim(cell_limits(c(NA, 1), c(NA, 5))),
                     c(NA_integer_, NA_integer_))
+
+})
+
+test_that("Cell limits can be specified via anchor", {
+
+  expect_identical(anchored(), as.cell_limits("A1"))
+  expect_identical(anchored(anchor = "R4C2", dim = c(8, 2)),
+                   cell_limits(c(4, 11), c(2, 3)))
+
+  input <- head(iris)
+  expect_identical(anchored(anchor = "R3C7", input = input),
+                   cell_limits(c(3, 9), c(7, 11)))
+  expect_identical(anchored(anchor = "R3C7", input = input, header = FALSE),
+                   cell_limits(c(3, 8), c(7, 11)))
+
+  input <- LETTERS[1:8]
+  expect_identical(anchored(anchor = "B5", input = input),
+                   cell_limits(c(5, 12), c(2, 2)))
+  expect_identical(anchored(anchor = "B5", input = input, byrow = TRUE),
+                   cell_limits(c(5, 5), c(2, 9)))
+
+  expect_error(anchored(1))
+  expect_error(anchored("A"))
+  expect_error(anchored("A1:B10"))
 
 })

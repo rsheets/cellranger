@@ -137,6 +137,8 @@ as.range <- function(x, RC = FALSE) {
 
   stopifnot(inherits(x, "cell_limits"))
 
+  if(any(is.na(unlist(x)))) return(NA_character_)
+
   range <- c(paste0("R", x$rows[1], "C", x$cols[1]),
              paste0("R", x$rows[2], "C", x$cols[2]))
 
