@@ -9,7 +9,7 @@ output:
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/0.1.0/active.svg)](http://www.repostatus.org/#active)
  [![Build Status](https://travis-ci.org/jennybc/cellranger.svg?branch=master)](https://travis-ci.org/jennybc/cellranger) [![Coverage Status](https://coveralls.io/repos/jennybc/cellranger/badge.svg?branch=master)](https://coveralls.io/r/jennybc/cellranger?branch=master)
 
-<img src="http://i.imgur.com/RJJy15I.jpg" width="300" align="right" />
+<img src="http://i.imgur.com/RJJy15I.jpg" width="275" align="right" />
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
