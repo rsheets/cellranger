@@ -104,7 +104,6 @@ test_that("Bad cell ranges throw errors", {
 
 test_that("Degenerate, all-NA input is tolerated", {
 
-
   cl <- cell_limits()
   expect_is(cl, "cell_limits")
   expect_is(cl$rows, "integer")
@@ -114,6 +113,18 @@ test_that("Degenerate, all-NA input is tolerated", {
 
   cl3 <- cell_limits(cols = c(NA, NA))
   expect_identical(cl, cl3)
+
+})
+
+test_that("as.cell_limits can operate on NULL input", {
+
+  expect_identical(as.cell_limits(NULL), cell_limits())
+
+})
+
+test_that("cell_limits objects inherit from list", {
+
+  expect_is(cell_limits(), "list")
 
 })
 

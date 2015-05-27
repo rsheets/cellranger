@@ -2,6 +2,7 @@
 % Please edit documentation in R/cell-limits.R
 \name{cell_limits}
 \alias{as.cell_limits}
+\alias{as.cell_limits.NULL}
 \alias{as.cell_limits.cell_limits}
 \alias{as.cell_limits.character}
 \alias{cell_limits}
@@ -17,6 +18,8 @@ as.cell_limits(x)
 
 \method{as.cell_limits}{cell_limits}(x)
 
+\method{as.cell_limits}{NULL}(x)
+
 \method{as.cell_limits}{character}(x)
 }
 \arguments{
@@ -30,17 +33,17 @@ as.cell_limits(x)
 a \code{cell_limits} object
 }
 \description{
-The expectation is that \code{as.cell_limits} will be called to process
-user-provided input on the target cell range for read/write operations on a
-spreadsheet. Downstream code can be written assuming cell limits are stored
-in a valid \code{cell_limits} object.
+The expectation is that \code{\link{as.cell_limits}} will be called to
+process user-provided input specifying the target cell range for read/write
+operations on a spreadsheet. Downstream code can be written assuming cell
+limits are stored in a valid \code{cell_limits} object.
 }
 \details{
 A \code{cell_limits} object is a list with two components:
 
 \itemize{
-\item \code{rows} vector, of the form \code{c(min, max)}
-\item \code{cols} vector, of the form \code{c(min, max)}
+  \item \code{rows} vector, of the form \code{c(min, max)}
+  \item \code{cols} vector, of the form \code{c(min, max)}
 }
 
 Typically the \code{min} and \code{max} are positive integers, where the

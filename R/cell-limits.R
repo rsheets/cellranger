@@ -1,15 +1,15 @@
 #' Create a cell_limits object
 #'
-#' The expectation is that \code{as.cell_limits} will be called to process
-#' user-provided input on the target cell range for read/write operations on a
-#' spreadsheet. Downstream code can be written assuming cell limits are stored
-#' in a valid \code{cell_limits} object.
+#' The expectation is that \code{\link{as.cell_limits}} will be called to
+#' process user-provided input specifying the target cell range for read/write
+#' operations on a spreadsheet. Downstream code can be written assuming cell
+#' limits are stored in a valid \code{cell_limits} object.
 #'
 #' A \code{cell_limits} object is a list with two components:
 #'
 #' \itemize{
-#' \item \code{rows} vector, of the form \code{c(min, max)}
-#' \item \code{cols} vector, of the form \code{c(min, max)}
+#'   \item \code{rows} vector, of the form \code{c(min, max)}
+#'   \item \code{cols} vector, of the form \code{c(min, max)}
 #' }
 #'
 #' Typically the \code{min} and \code{max} are positive integers, where the
@@ -52,7 +52,8 @@ cell_limits <- function(rows = c(NA_integer_, NA_integer_),
   if(!anyNA(rows)) stopifnot(rows[1] <= rows[2])
   if(!anyNA(cols)) stopifnot(cols[1] <= cols[2])
 
-  structure(list(rows = rows, cols = cols), class = "cell_limits")
+  structure(list(rows = rows, cols = cols),
+            class = c("cell_limits", "list"))
 
 }
 
@@ -77,6 +78,10 @@ as.cell_limits <- function(x) UseMethod("as.cell_limits")
 #' @rdname cell_limits
 #' @export
 as.cell_limits.cell_limits <- function(x) x
+
+#' @rdname cell_limits
+#' @export
+as.cell_limits.NULL <- function(x) cell_limits()
 
 #' @rdname cell_limits
 #' @examples
