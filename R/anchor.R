@@ -7,16 +7,19 @@
 #' \code{input} is one-dimensional, the \code{byrow} argument controls whether
 #' the rectangle will extend down from the anchor or to the right. If
 #' \code{input} is two-dimensional, the \code{col_names} argument controls
-#' whether cells will be reserved for column or variable names.
+#' whether cells will be reserved for column or variable names. If
+#' \code{col_names} is unspecified, default behavior is to set it to \code{TRUE}
+#' if \code{input} has columns names and \code{FALSE} otherwise.
 #'
 #' @param anchor character, specifying the upper left cell in "A1" or "R1C1"
 #'   notation
 #' @param dim integer vector, of length two, holding the number of rows and
-#'   columns of the targetted rectangle
+#'   columns of the targetted rectangle; ignored if \code{input} is provided
 #' @param input a one- or two-dimensioanl input object, used to determine the
 #'   extent of the targetted rectangle
 #' @param col_names logical, indicating whether a row should be reserved for the
-#'   column or variable names of a two-dimensional input
+#'   column or variable names of a two-dimensional input; if omitted, will be
+#'   determined by checking whether \code{input} has column names
 #' @param byrow logical, indicating whether a one-dimensional input should run
 #'   down or to the right
 #'
@@ -56,14 +59,16 @@
 #' @export
 anchored <- function(anchor = "A1",
                      dim = c(1L, 1L), input = NULL,
-                     col_names = TRUE, byrow = FALSE) {
+                     col_names = NULL, byrow = FALSE) {
 
   anchorCL <- as.cell_limits(anchor)
   stopifnot(dim(anchorCL) == c(1L, 1L))
 
   if(is.null(input)) {
 
+    stopifnot(length(dim) == 2L)
     input_extent <- as.integer(dim)
+    col_names <- FALSE
 
   } else {
 
@@ -77,6 +82,11 @@ anchored <- function(anchor = "A1",
     } else {                  # input is 2-dimensional
 
       stopifnot(length(dim(input)) == 2L)
+      if(is.null(col_names)) {
+        col_names <- !is.null(colnames(input))
+      } else {
+        stopifnot(identical(col_names, TRUE) || identical(col_names, FALSE))
+      }
       input_extent <- dim(input)
       if(col_names) {
         input_extent[1] <- input_extent[1] + 1

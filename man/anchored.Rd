@@ -4,7 +4,7 @@
 \alias{anchored}
 \title{Specify cell limits via an anchor cell}
 \usage{
-anchored(anchor = "A1", dim = c(1L, 1L), input = NULL, col_names = TRUE,
+anchored(anchor = "A1", dim = c(1L, 1L), input = NULL, col_names = NULL,
   byrow = FALSE)
 }
 \arguments{
@@ -12,13 +12,14 @@ anchored(anchor = "A1", dim = c(1L, 1L), input = NULL, col_names = TRUE,
 notation}
 
 \item{dim}{integer vector, of length two, holding the number of rows and
-columns of the targetted rectangle}
+columns of the targetted rectangle; ignored if \code{input} is provided}
 
 \item{input}{a one- or two-dimensioanl input object, used to determine the
 extent of the targetted rectangle}
 
 \item{col_names}{logical, indicating whether a row should be reserved for the
-column or variable names of a two-dimensional input}
+column or variable names of a two-dimensional input; if omitted, will be
+determined by checking whether \code{input} has column names}
 
 \item{byrow}{logical, indicating whether a one-dimensional input should run
   down or to the right}
@@ -34,7 +35,9 @@ rectangle's row and column extent. The extent can be specified directly via
 \code{input} is one-dimensional, the \code{byrow} argument controls whether
 the rectangle will extend down from the anchor or to the right. If
 \code{input} is two-dimensional, the \code{col_names} argument controls
-whether cells will be reserved for column or variable names.
+whether cells will be reserved for column or variable names. If
+\code{col_names} is unspecified, default behavior is to set it to \code{TRUE}
+if \code{input} has columns names and \code{FALSE} otherwise.
 }
 \examples{
 anchored()

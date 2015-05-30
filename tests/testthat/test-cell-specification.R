@@ -179,24 +179,46 @@ test_that("dim method works", {
 
 test_that("Cell limits can be specified via anchor", {
 
+  ## no input
   expect_identical(anchored(), as.cell_limits("A1"))
   expect_identical(anchored(anchor = "R4C2", dim = c(8, 2)),
                    cell_limits(c(4, 11), c(2, 3)))
+  ## col_names should have no effect here
+  expect_identical(anchored(anchor = "R4C2", dim = c(8, 2), col_names = FALSE),
+                   cell_limits(c(4, 11), c(2, 3)))
+  expect_identical(anchored(anchor = "R4C2", dim = c(8, 2), col_names = TRUE),
+                   cell_limits(c(4, 11), c(2, 3)))
 
+  ## 2-dimensional input
   input <- head(iris)
   expect_identical(anchored(anchor = "R3C7", input = input),
                    cell_limits(c(3, 9), c(7, 11)))
+  expect_identical(anchored(anchor = "R3C7", input = input, col_names = TRUE),
+                   cell_limits(c(3, 9), c(7, 11)))
   expect_identical(anchored(anchor = "R3C7", input = input, col_names = FALSE),
                    cell_limits(c(3, 8), c(7, 11)))
+  ## dim should have no effect here
+  expect_identical(anchored(anchor = "R3C7", input = input, dim = c(2,2)),
+                   cell_limits(c(3, 9), c(7, 11)))
 
+  ## 1-dimensional input
   input <- LETTERS[1:8]
   expect_identical(anchored(anchor = "B5", input = input),
                    cell_limits(c(5, 12), c(2, 2)))
   expect_identical(anchored(anchor = "B5", input = input, byrow = TRUE),
                    cell_limits(c(5, 5), c(2, 9)))
+  ## dim and col_names should have no effect here
+  expect_identical(anchored(anchor = "B5", input = input, dim = c(5,5)),
+                   cell_limits(c(5, 12), c(2, 2)))
+  expect_identical(anchored(anchor = "B5", input = input, col_names = TRUE),
+                   cell_limits(c(5, 12), c(2, 2)))
 
   expect_error(anchored(1))
   expect_error(anchored("A"))
   expect_error(anchored("A1:B10"))
+  expect_error(anchored(dim = "eggplant"))
+  expect_error(anchored(dim = 1:3))
+  expect_error(anchored(input = head(iris, 2),
+                        col_names = as.character(length(iris))))
 
 })
