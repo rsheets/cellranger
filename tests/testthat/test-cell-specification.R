@@ -186,7 +186,7 @@ test_that("Cell limits can be specified via anchor", {
   input <- head(iris)
   expect_identical(anchored(anchor = "R3C7", input = input),
                    cell_limits(c(3, 9), c(7, 11)))
-  expect_identical(anchored(anchor = "R3C7", input = input, header = FALSE),
+  expect_identical(anchored(anchor = "R3C7", input = input, col_names = FALSE),
                    cell_limits(c(3, 8), c(7, 11)))
 
   input <- LETTERS[1:8]

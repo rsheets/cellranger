@@ -112,7 +112,7 @@ dim(anchored(input = input))
 #>    7    5
 ```
 
-The `anchored()` function has additional arguments `header =` and `byrow =` for more control with 2-dimensional and 1-dimensional objects, respectively.
+The `anchored()` function has additional arguments `col_names =` and `byrow =` for more control with 2-dimensional and 1-dimensional objects, respectively.
 
 ### Other helpers
 

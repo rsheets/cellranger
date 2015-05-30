@@ -6,8 +6,8 @@
 #' \code{input} anticipates a write operation into the spreadsheet. If
 #' \code{input} is one-dimensional, the \code{byrow} argument controls whether
 #' the rectangle will extend down from the anchor or to the right. If
-#' \code{input} is two-dimensional, the \code{header} argument controls whether
-#' cells will be reserved for column or variable names.
+#' \code{input} is two-dimensional, the \code{col_names} argument controls
+#' whether cells will be reserved for column or variable names.
 #'
 #' @param anchor character, specifying the upper left cell in "A1" or "R1C1"
 #'   notation
@@ -15,7 +15,7 @@
 #'   columns of the targetted rectangle
 #' @param input a one- or two-dimensioanl input object, used to determine the
 #'   extent of the targetted rectangle
-#' @param header logical, indicating whether a row should be reserved for the
+#' @param col_names logical, indicating whether a row should be reserved for the
 #'   column or variable names of a two-dimensional input
 #' @param byrow logical, indicating whether a one-dimensional input should run
 #'   down or to the right
@@ -40,9 +40,9 @@
 #' as.range(anchored(input = input))
 #' dim(anchored(input = input))
 #'
-#' anchored(input = input, header = FALSE)
-#' as.range(anchored(input = input, header = FALSE))
-#' dim(anchored(input = input, header = FALSE))
+#' anchored(input = input, col_names = FALSE)
+#' as.range(anchored(input = input, col_names = FALSE))
+#' dim(anchored(input = input, col_names = FALSE))
 #'
 #' (input <- LETTERS[1:8])
 #' anchored(input = input)
@@ -56,7 +56,7 @@
 #' @export
 anchored <- function(anchor = "A1",
                      dim = c(1L, 1L), input = NULL,
-                     header = TRUE, byrow = FALSE) {
+                     col_names = TRUE, byrow = FALSE) {
 
   anchorCL <- as.cell_limits(anchor)
   stopifnot(dim(anchorCL) == c(1L, 1L))
@@ -78,7 +78,7 @@ anchored <- function(anchor = "A1",
 
       stopifnot(length(dim(input)) == 2L)
       input_extent <- dim(input)
-      if(header) {
+      if(col_names) {
         input_extent[1] <- input_extent[1] + 1
       }
 

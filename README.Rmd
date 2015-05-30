@@ -107,7 +107,7 @@ as.range(anchored(input = input))
 dim(anchored(input = input))
 ```
 
-The `anchored()` function has additional arguments `header =` and `byrow =` for more control with 2-dimensional and 1-dimensional objects, respectively.
+The `anchored()` function has additional arguments `col_names =` and `byrow =` for more control with 2-dimensional and 1-dimensional objects, respectively.
 
 ### Other helpers
 

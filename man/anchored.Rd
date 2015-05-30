@@ -4,7 +4,7 @@
 \alias{anchored}
 \title{Specify cell limits via an anchor cell}
 \usage{
-anchored(anchor = "A1", dim = c(1L, 1L), input = NULL, header = TRUE,
+anchored(anchor = "A1", dim = c(1L, 1L), input = NULL, col_names = TRUE,
   byrow = FALSE)
 }
 \arguments{
@@ -17,7 +17,7 @@ columns of the targetted rectangle}
 \item{input}{a one- or two-dimensioanl input object, used to determine the
 extent of the targetted rectangle}
 
-\item{header}{logical, indicating whether a row should be reserved for the
+\item{col_names}{logical, indicating whether a row should be reserved for the
 column or variable names of a two-dimensional input}
 
 \item{byrow}{logical, indicating whether a one-dimensional input should run
@@ -33,8 +33,8 @@ rectangle's row and column extent. The extent can be specified directly via
 \code{input} anticipates a write operation into the spreadsheet. If
 \code{input} is one-dimensional, the \code{byrow} argument controls whether
 the rectangle will extend down from the anchor or to the right. If
-\code{input} is two-dimensional, the \code{header} argument controls whether
-cells will be reserved for column or variable names.
+\code{input} is two-dimensional, the \code{col_names} argument controls
+whether cells will be reserved for column or variable names.
 }
 \examples{
 anchored()
@@ -54,9 +54,9 @@ anchored(input = input)
 as.range(anchored(input = input))
 dim(anchored(input = input))
 
-anchored(input = input, header = FALSE)
-as.range(anchored(input = input, header = FALSE))
-dim(anchored(input = input, header = FALSE))
+anchored(input = input, col_names = FALSE)
+as.range(anchored(input = input, col_names = FALSE))
+dim(anchored(input = input, col_names = FALSE))
 
 (input <- LETTERS[1:8])
 anchored(input = input)
