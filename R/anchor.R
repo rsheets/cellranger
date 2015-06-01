@@ -62,18 +62,21 @@ anchored <- function(anchor = "A1",
                      col_names = NULL, byrow = FALSE) {
 
   anchorCL <- as.cell_limits(anchor)
-  stopifnot(dim(anchorCL) == c(1L, 1L))
+  stopifnot(dim(anchorCL) == c(1L, 1L), isTOGGLE(col_names), isTOGGLE(byrow))
 
   if(is.null(input)) {
 
     stopifnot(length(dim) == 2L)
     input_extent <- as.integer(dim)
-    col_names <- FALSE
+    if(is.null(col_names)) {
+      col_names <- FALSE
+    }
 
   } else {
 
     if(is.null(dim(input))) { # input is 1-dimensional
 
+      col_names <- FALSE
       input_extent <- c(length(input), 1L)
       if(byrow) {
         input_extent <- rev(input_extent)
@@ -84,16 +87,15 @@ anchored <- function(anchor = "A1",
       stopifnot(length(dim(input)) == 2L)
       if(is.null(col_names)) {
         col_names <- !is.null(colnames(input))
-      } else {
-        stopifnot(identical(col_names, TRUE) || identical(col_names, FALSE))
       }
       input_extent <- dim(input)
-      if(col_names) {
-        input_extent[1] <- input_extent[1] + 1
-      }
 
     }
 
+  }
+
+  if(col_names) {
+    input_extent[1] <- input_extent[1] + 1
   }
 
   cell_limits(rows = anchorCL$rows + c(0L, input_extent[1] - 1),

@@ -183,11 +183,10 @@ test_that("Cell limits can be specified via anchor", {
   expect_identical(anchored(), as.cell_limits("A1"))
   expect_identical(anchored(anchor = "R4C2", dim = c(8, 2)),
                    cell_limits(c(4, 11), c(2, 3)))
-  ## col_names should have no effect here
-  expect_identical(anchored(anchor = "R4C2", dim = c(8, 2), col_names = FALSE),
-                   cell_limits(c(4, 11), c(2, 3)))
-  expect_identical(anchored(anchor = "R4C2", dim = c(8, 2), col_names = TRUE),
-                   cell_limits(c(4, 11), c(2, 3)))
+  expect_identical(anchored(anchor = "A1", dim = c(3, 3), col_names = FALSE),
+                   cell_limits(c(1, 3), c(1, 3)))
+  expect_identical(anchored(anchor = "A1", dim = c(3, 3), col_names = TRUE),
+                   cell_limits(c(1, 4), c(1, 3)))
 
   ## 2-dimensional input
   input <- head(iris)
