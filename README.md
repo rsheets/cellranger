@@ -5,17 +5,23 @@
 
 Helper package to support R scripts or packages that interact with spreadsheets. Original development was motivated by [the wish to have a common interface](https://github.com/hadley/readxl/issues/8) for specifying cell ranges in [readxl](https://github.com/hadley/readxl) and [googlesheets](https://github.com/jennybc/googlesheets).
 
-Anticipated [readxl](https://github.com/hadley/readxl) usage:
+Actual usage in [googlesheets](https://github.com/jennybc/googlesheets):
 
 ``` r
-read_excel(..., range = "D12:F15")
-read_excel(..., range = "R1C12:R6C15")
-read_excel(..., range = cell_limits(c(1, 6), c(1, 15))
-read_excel(..., range = cell_limits(c(2, NA), c(1, NA))
-read_excel(..., range = cell_rows(1:100))
-read_excel(..., range = cell_cols(3:8))
-read_excel(..., range = cell_cols("B:MZ"))
-read_excel(..., range = anchored("B4", dim = c(2, 10)))
+gs_read(..., range = "D12:F15")
+gs_read(..., range = "R1C12:R6C15")
+gs_read(..., range = cell_limits(c(1, 6), c(1, 15)))
+gs_read(..., range = cell_limits(c(2, NA), c(1, NA)))
+gs_read(..., range = cell_rows(1:100))
+gs_read(..., range = cell_cols(3:8))
+gs_read(..., range = cell_cols("B:MZ"))
+gs_read(..., range = anchored("B4", dim = c(2, 10)))
+gs_read(..., range = anchored("A1", dim = c(5, 6), col_names = TRUE))
+## internal usage in functions that put data into a googlesheet
+anchored(input = head(iris))
+anchored(input = head(iris), col_names = FALSE)
+anchored(input = head(LETTERS))
+anchored(input = head(LETTERS), byrow = TRUE)
 ```
 
 ### Range specification
