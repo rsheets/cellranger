@@ -10,8 +10,8 @@ Actual usage in [googlesheets](https://github.com/jennybc/googlesheets):
 ``` r
 gs_read(..., range = "D12:F15")
 gs_read(..., range = "R1C12:R6C15")
-gs_read(..., range = cell_limits(c(1, 6), c(1, 15)))
-gs_read(..., range = cell_limits(c(2, NA), c(1, NA)))
+gs_read(..., range = cell_limits(c(1, 1), c(6, 15)))
+gs_read(..., range = cell_limits(c(2, 1), c(NA, NA)))
 gs_read(..., range = cell_rows(1:100))
 gs_read(..., range = cell_cols(3:8))
 gs_read(..., range = cell_cols("B:MZ"))
@@ -26,12 +26,12 @@ anchored(input = head(LETTERS), byrow = TRUE)
 
 ### Range specification
 
-The main goal is to translate Excel-like ranges, such as `A3:D7` or `R3C1:R7C4`, into something more programmatically useful. `cellranger` provides an S3 class, `cell_limits`, as the standard way to store a cell range. Construct `cell_limits` like so: `cell_limits(rows = c(ROW_MIN, ROW_MAX), cols = c(COL_MIN, COL_MAX))`.
+The main goal is to translate Excel-like ranges, such as `A3:D7` or `R3C1:R7C4`, into something more programmatically useful. `cellranger` provides an S3 class, `cell_limits`, as the standard way to store a cell range. Construct `cell_limits` explicitly by specifying the upper left and lower right cells: `cell_limits(ul = c(ROW_MIN, COL_MIN), lr = c(ROW_MAX, COL_MAX))`. Think of it like `R3C1:R7C4` notation, but with the `R` and `C` removed.
 
 ``` r
 library("cellranger")
 
-(foo <- cell_limits(c(1, 3), c(1, 5)))
+(foo <- cell_limits(c(1, 1), c(3, 5)))
 #> <cell_limits (1, 1) x (3, 5)>
 ```
 
@@ -41,21 +41,27 @@ The `dim` method reports dimensions of the targetted cell rectangle. `as.range()
 
 ``` r
 dim(foo)
-#> rows cols 
-#>    3    5
+#> [1] 3 5
 
 as.range(foo)
 #> [1] "A1:E3"
 
-as.range(foo, RC =TRUE)
+as.range(foo, RC = TRUE)
 #> [1] "R1C1:R3C5"
 ```
 
-Use `NA` to leave a limit unspecified
+Use `NA` to leave a limit unspecified.
 
 ``` r
-cell_limits(c(NA, 7), c(3, NA))
-#> <cell_limits (-, 3) x (7, -)>
+cell_limits(c(3, 2), c(7, NA))
+#> <cell_limits (3, 2) x (7, -)>
+```
+
+If the maximum row or column is specified but the associated minimum is not, then it is set to 1.
+
+``` r
+cell_limits(c(NA, NA), c(3, 5))
+#> <cell_limits (1, 1) x (3, 5)>
 ```
 
 #### Get a `cell_limits` object from an Excel range
@@ -86,7 +92,7 @@ cell_cols("B:MZ")
 #> <cell_limits (-, 2) x (-, 364)>
 
 cell_cols(c(NA, "AR"))
-#> <cell_limits (-, -) x (-, 44)>
+#> <cell_limits (-, 1) x (-, 44)>
 ```
 
 #### Specify the rectangle via an anchor cell
@@ -102,8 +108,7 @@ as.range(anchored(anchor = "R4C2", dim = c(8, 2)), RC = TRUE)
 #> [1] "R4C2:R11C3"
 
 dim(anchored(anchor = "R4C2", dim = c(8, 2)))
-#> rows cols 
-#>    8    2
+#> [1] 8 2
 
 ## indirect specification of dimensions, via the dimensions of an object
 input <- head(iris)
@@ -114,8 +119,7 @@ as.range(anchored(input = input))
 #> [1] "A1:E7"
 
 dim(anchored(input = input))
-#> rows cols 
-#>    7    5
+#> [1] 7 5
 ```
 
 The `anchored()` function has additional arguments `col_names =` and `byrow =` for more control with 2-dimensional and 1-dimensional objects, respectively.

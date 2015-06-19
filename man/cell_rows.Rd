@@ -11,15 +11,15 @@ cell_rows(x)
   max will be taken with \code{NA.rm = TRUE}}
 }
 \value{
-a \code{cell_limits} object
+a \code{\link{cell_limits}} object
 }
 \description{
-How does this differ from \code{cell_limits}? Here the input can have length
-greater than 2, i.e. the rows can be specified as \code{1:n}. If the length
-is greater than 2, both the min and max are taken with \code{NA.rm = TRUE}.
-Note it is not possible to request non-contiguous rows, i.e. rows 1, 2, and
-5. In this case, the requested rows will run from the minimum of 1 to the
-maximum of 5.
+How does this differ from \code{\link{cell_limits}}? Here the input can have
+length greater than 2, i.e. the rows can be specified as \code{1:n}. If the
+length is greater than 2, both the min and max are taken with \code{NA.rm =
+TRUE}. Note it is not possible to request non-contiguous rows, i.e. rows 1,
+2, and 5. In this case, the requested rows will run from the minimum of 1 to
+the maximum of 5.
 }
 \examples{
 cell_rows(c(NA, 3))

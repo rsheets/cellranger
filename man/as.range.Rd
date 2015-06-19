@@ -19,7 +19,7 @@ length one character vector holding a cell range, in either A1 or
 Convert a cell_limits object to a cell range
 }
 \examples{
-rgCL <- cell_limits(rows = c(1, 4), cols = c(1, 3))
+rgCL <- cell_limits(ul = c(1, 2), lr = c(7, 6))
 as.range(rgCL)
 as.range(rgCL, RC = TRUE)
 }

@@ -8,21 +8,27 @@
 #' A \code{cell_limits} object is a list with two components:
 #'
 #' \itemize{
-#'   \item \code{rows} vector, of the form \code{c(min, max)}
-#'   \item \code{cols} vector, of the form \code{c(min, max)}
+#'   \item \code{ul} vector specifying upper left cell of target rectangle, of
+#'   the form \code{c(ROW_MIN, COL_MIN)}
+#'   \item \code{lr} vector specifying lower right cell of target rectangle, of
+#'   the form \code{c(ROW_MAX, COL_MAX)}
 #' }
 #'
-#' Typically the \code{min} and \code{max} are positive integers, where the
-#' first (the minimum) is less than or equal to the second (the maximum). A
-#' value of \code{NA} means the corresponding limit is left unspecified.
-#' Therefore a verbose way to specify no limits at all would be
-#' \code{cell_limits(c(NA, NA), c(NA, NA))}.
+#' This follows the spreadsheet convention where a cell range is described as
+#' \code{UPPER_LEFT_CELL:LOWER_RIGHT_CELL}. For rows and columns, the associated
+#' \code{MIN} and \code{MAX} are positive integers, where the minimum should be
+#' less than or equal to the maximum. A value of \code{NA} means the
+#' corresponding limit is left unspecified. Therefore a verbose way to specify
+#' no limits at all would be \code{cell_limits(c(NA, NA), c(NA, NA))}. If the
+#' maximum row or column is specified but the associated minimum is not, then
+#' the minimum it is set to 1.
 #'
-#' Spreadsheet ranges can be specified using "A1" notation or "R1C1" notation
-#' and dollar signs will be ignored, i.e. "A$1:$B$32" is equivalent to "A1:B32".
+#' When specified via character, spreadsheet ranges can be given in "A1"
+#' notation or "R1C1" notation and dollar signs will be ignored, i.e.
+#' "A$1:$B$32" is equivalent to "A1:B32".
 #'
-#' @param rows vector holding minimum and maximum row
-#' @param cols vector holding minimum and maximum col
+#' @param ul vector identifying upper left cell of target rectangle
+#' @param lr vector identifying lower right cell of target rectangle
 #' @param x input to convert into a \code{cell_limits} object
 #'
 #' @return a \code{cell_limits} object
@@ -31,45 +37,50 @@
 #' cell_limits(c(1, 3), c(1, 5))
 #' cell_limits(c(NA, 7), c(3, NA))
 #' cell_limits(c(NA, 7))
-#' cell_limits(cols = c(NA, 7))
+#' cell_limits(lr = c(3, 7))
 #'
 #' dim(as.cell_limits("A1:F10"))
-#' dim(cell_limits(cols = c(2, 5)))
 #'
 #' @export
-cell_limits <- function(rows = c(NA_integer_, NA_integer_),
-                        cols = c(NA_integer_, NA_integer_)) {
+cell_limits <- function(ul = c(NA_integer_, NA_integer_),
+                        lr = c(NA_integer_, NA_integer_)) {
 
-  stopifnot(length(rows) == 2L, length(cols) == 2L)
+  stopifnot(length(ul) == 2L, length(lr) == 2L)
 
-  rows <- as.integer(rows)
-  cols <- as.integer(cols)
+  ul <- as.integer(ul)
+  lr <- as.integer(lr)
 
   NA_or_pos <- function(x) is.na(x) | x > 0
-  stopifnot(all(NA_or_pos(rows)))
-  stopifnot(all(NA_or_pos(rows)))
+  stopifnot(all(NA_or_pos(ul)))
+  stopifnot(all(NA_or_pos(lr)))
+
+  if(is.na(ul[1]) && !is.na(lr[1])) ul[1] <- 1L
+  if(is.na(ul[2]) && !is.na(lr[2])) ul[2] <- 1L
+
+  rows <- c(ul[1], lr[1])
+  cols <- c(ul[2], lr[2])
 
   if(!anyNA(rows)) stopifnot(rows[1] <= rows[2])
   if(!anyNA(cols)) stopifnot(cols[1] <= cols[2])
 
-  structure(list(rows = rows, cols = cols),
+  structure(list(ul = ul, lr = lr),
             class = c("cell_limits", "list"))
 
 }
 
 #' @export
 print.cell_limits <- function(x, ...) {
-  rows <- ifelse(is.na(x$rows), "-", as.character(x$rows))
-  cols <- ifelse(is.na(x$cols), "-", as.character(x$cols))
+  ul <- ifelse(is.na(x$ul), "-", as.character(x$ul))
+  lr <- ifelse(is.na(x$lr), "-", as.character(x$lr))
 
-  cat("<cell_limits (", rows[1], ", ", cols[1], ") x (",
-      rows[2], ", ", cols[2], ")>\n",
+  cat("<cell_limits (", ul[1], ", ", ul[2], ") x (",
+      lr[1], ", ", lr[2], ")>\n",
       sep = "")
 }
 
 #' @rdname cell_limits
 #' @export
-dim.cell_limits <- function(x) vapply(x, diff, integer(1)) + 1L
+dim.cell_limits <- function(x) c(x$lr[1] - x$ul[1], x$lr[2] - x$ul[2]) + 1
 
 #' @rdname cell_limits
 #' @export
@@ -117,9 +128,10 @@ as.cell_limits.character <- function(x) {
   m <- regexec("^R([0-9]+)C([0-9]+$)", y)
   m2 <- regmatches(y, m)
 
+  jfun <- function(x) as.integer(x[2:3])
   cell_limits(
-    as.integer(vapply(m2, `[`, FUN.VALUE = character(1), 2)),
-    as.integer(vapply(m2, `[`, FUN.VALUE = character(1), 3))
+    jfun(m2[[1]]),
+    jfun(m2[[2]])
   )
 }
 
@@ -133,7 +145,7 @@ as.cell_limits.character <- function(x) {
 #'   R1C1 positioning notation
 #'
 #' @examples
-#' rgCL <- cell_limits(rows = c(1, 4), cols = c(1, 3))
+#' rgCL <- cell_limits(ul = c(1, 2), lr = c(7, 6))
 #' as.range(rgCL)
 #' as.range(rgCL, RC = TRUE)
 #'
@@ -144,8 +156,8 @@ as.range <- function(x, RC = FALSE) {
 
   if(any(is.na(unlist(x)))) return(NA_character_)
 
-  range <- c(paste0("R", x$rows[1], "C", x$cols[1]),
-             paste0("R", x$rows[2], "C", x$cols[2]))
+  range <- c(paste0("R", x$ul[1], "C", x$ul[2]),
+             paste0("R", x$lr[1], "C", x$lr[2]))
 
   if(!RC) {
     range <- RC_to_A1(range)

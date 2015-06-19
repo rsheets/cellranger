@@ -25,10 +25,10 @@ determined by checking whether \code{input} has column names}
   down or to the right}
 }
 \value{
-a \code{cell_limits} object
+a \code{\link{cell_limits}} object
 }
 \description{
-Specify the targetted cell rectangle via an "upper left" anchor cell and the
+Specify the targetted cell rectangle via an upper left anchor cell and the
 rectangle's row and column extent. The extent can be specified directly via
 \code{dims} or indirectly via the \code{input} object. Specification via
 \code{input} anticipates a write operation into the spreadsheet. If
@@ -50,6 +50,7 @@ dim(anchored("Q24"))
 
 anchored(anchor = "R4C2", dim = c(8, 2))
 as.range(anchored(anchor = "R4C2", dim = c(8, 2)))
+as.range(anchored(anchor = "R4C2", dim = c(8, 2)), RC = TRUE)
 dim(anchored(anchor = "R4C2", dim = c(8, 2)))
 
 (input <- head(iris))
