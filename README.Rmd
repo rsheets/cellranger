@@ -7,7 +7,7 @@ output:
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/0.1.0/active.svg)](http://www.repostatus.org/#active)
- [![Build Status](https://travis-ci.org/jennybc/cellranger.svg?branch=master)](https://travis-ci.org/jennybc/cellranger) [![Coverage Status](https://coveralls.io/repos/jennybc/cellranger/badge.svg?branch=master)](https://coveralls.io/r/jennybc/cellranger?branch=master)
+ [![Build Status](https://travis-ci.org/jennybc/cellranger.svg?branch=master)](https://travis-ci.org/jennybc/cellranger) [![Coverage Status](https://coveralls.io/repos/jennybc/cellranger/badge.svg?branch=master)](https://coveralls.io/r/jennybc/cellranger?branch=master)  [![DOI](https://zenodo.org/badge/16122/jennybc/cellranger.svg)](http://dx.doi.org/10.5281/zenodo.21970) [![CRAN version](http://www.r-pkg.org/badges/version/cellranger)](https://cran.r-project.org/web/packages/cellranger/index.html)
 
 <img src="http://i.imgur.com/RJJy15I.jpg" width="270" align="right" />
 
