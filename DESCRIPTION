@@ -7,7 +7,8 @@ Authors@R: c(
   )
 Description: Helper functions to work with spreadsheets and the "A1:D10" style
     of cell range specification.
-Depends: R (>= 3.0.0)
+Depends:
+    R (>= 3.0.0)
 License: MIT + file LICENSE
 LazyData: true
 URL: https://github.com/jennybc/cellranger
@@ -15,3 +16,4 @@ BugReports: https://github.com/jennybc/cellranger/issues
 Suggests:
     covr,
     testthat
+RoxygenNote: 5.0.1.9000

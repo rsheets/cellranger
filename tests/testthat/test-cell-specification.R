@@ -69,6 +69,15 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.range(rgCL), rgA1)
   expect_equal(as.range(rgCL, RC = TRUE), rgRC)
 
+  rgA1sheet <- "sheet!A1:C4"
+  rgRCsheet <- "sheet!R1C1:R4C3"
+  rgCLwsn <- cell_limits(ul = c(1, 1), lr = c(4, 3), wsn = "sheet")
+  expect_equal(as.cell_limits(rgA1sheet), rgCLwsn)
+  expect_equal(as.cell_limits(rgRCsheet), rgCLwsn)
+  expect_equal(as.range(rgCLwsn), rgA1)
+  expect_equal(as.range(rgCLwsn, RC = TRUE), rgRC)
+  expect_equal(as.range(rgCLwsn, RC = TRUE, wsn = TRUE), rgRCsheet)
+
   rgA1 <- "E7"
   rgA1A1 <- "E7:E7"
   rgRC <- "R7C5"
@@ -81,9 +90,27 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.range(rgCL), rgA1A1)
   expect_equal(as.range(rgCL, RC = TRUE), rgRCRC)
 
+  rgA1sheet <- "sheet!E7"
+  rgA1A1sheet <- "sheet!E7:E7"
+  rgRCsheet <- "sheet!R7C5"
+  rgRCRCsheet <- "sheet!R7C5:R7C5"
+  rgCLsheet <- cell_limits(ul = c(7, 5), lr = c(7, 5), wsn = "sheet")
+  expect_equal(as.cell_limits(rgA1sheet), rgCLsheet)
+  expect_equal(as.cell_limits(rgRCsheet), rgCLsheet)
+  expect_equal(as.cell_limits(rgA1A1sheet), rgCLsheet)
+  expect_equal(as.cell_limits(rgRCRCsheet), rgCLsheet)
+  expect_equal(as.range(rgCLsheet, wsn = TRUE), rgA1A1sheet)
+  expect_equal(as.range(rgCLsheet, RC = TRUE, wsn = TRUE), rgRCRCsheet)
+
   rgCL <- cell_limits(ul = c(NA, 1), lr = c(4, NA))
   expect_true(is.na(as.range(rgCL)))
 
+})
+
+test_that("Whitespace-contained sheet names gain/lose single quotes", {
+  x <- cell_limits(ul = c(1, 1), lr = c(4, 3), wsn = "aaa bbb")
+  expect_identical(as.range(x, wsn = TRUE), "'aaa bbb'!A1:C4")
+  expect_identical(as.cell_limits("'aaa bbb'!A1:C4"), x)
 })
 
 test_that("Bad cell ranges throw errors", {
@@ -162,6 +189,8 @@ test_that("Print method works", {
 
   expect_output(print(cell_limits(c(NA, 7), c(3, NA))),
                 "<cell_limits (1, 7) x (3, -)>", fixed = TRUE)
+  expect_output(print(cell_limits(c(NA, 7), c(3, NA), "a sheet")),
+                "<cell_limits (1, 7) x (3, -) in 'a sheet'>", fixed = TRUE)
 
 })
 
