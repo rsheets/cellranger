@@ -107,7 +107,7 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
 
 })
 
-test_that("Whitespace-contained sheet names gain/lose single quotes", {
+test_that("Whitespace-containing sheet names gain/lose single quotes", {
   x <- cell_limits(ul = c(1, 1), lr = c(4, 3), wsn = "aaa bbb")
   expect_identical(as.range(x, wsn = TRUE), "'aaa bbb'!A1:C4")
   expect_identical(as.cell_limits("'aaa bbb'!A1:C4"), x)
