@@ -12,3 +12,11 @@ add_single_quotes <- function(x) {
 }
 
 remove_single_quotes <- function(x) gsub("^'|'$", "", x)
+
+rel_abs_format_RC <- function(indAbs, rcRef) {
+  if (indAbs) rcRef else paste0("[", rcRef, "]")
+}
+
+rel_abs_format_A1 <- function(indAbs) {
+  if (indAbs) "$" else ""
+}
