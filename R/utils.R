@@ -13,12 +13,12 @@ add_single_quotes <- function(x) {
 
 remove_single_quotes <- function(x) gsub("^'|'$", "", x)
 
-rel_abs_format_RC <- function(indAbs, rcRef) {
+rel_abs_format <- function(indAbs, rcRef, fo = c("A1", "R1C1")) {
+  fo <- match.arg(fo)
+  if (fo == "A1") {
+    return(if (indAbs) "$" else "")
+  }
   if (indAbs) rcRef else paste0("[", rcRef, "]")
-}
-
-rel_abs_format_A1 <- function(indAbs) {
-  if (indAbs) "$" else ""
 }
 
 extract_named_captures <- function(string, pattern) {

@@ -26,11 +26,11 @@ to_string <- function(x, fo = c("A1", "R1C1")) UseMethod("to_string")
 to_string.ra_ref <- function(x, fo = c("A1", "R1C1")) {
   fo <- match.arg(fo)
   if (fo == "A1") {
-    return(paste0(rel_abs_format_A1(x$colAbs), num_to_letter(x$colRef),
-                  rel_abs_format_A1(x$rowAbs), x$rowRef))
+    return(paste0(rel_abs_format(x$colAbs), num_to_letter(x$colRef),
+                  rel_abs_format(x$rowAbs), x$rowRef))
   }
-  paste0("R", rel_abs_format_RC(x$rowAbs, x$rowRef),
-         "C", rel_abs_format_RC(x$colAbs, x$colRef))
+  paste0("R", rel_abs_format(x$rowAbs, x$rowRef, "R1C1"),
+         "C", rel_abs_format(x$colAbs, x$colRef, "R1C1"))
 }
 
 as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
