@@ -38,7 +38,8 @@ as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 as.ra_ref.character <- function(x, warn = TRUE, ...) {
   parsed <- parse_as_ref_string(x)
   if (!is.null(parsed$invalid)) {
-    stop(sprintf("Invalid string for a cell reference: %s", parsed$invalid))
+    stop("Invalid string for a cell reference:\n", parsed$invalid,
+         call. = FALSE)
   }
   if (warn && !all(is.null(parsed[c("fn", "wsn")]))) {
     warning("Can't store file and/or worksheet name in a ra_ref object:\n",
@@ -70,10 +71,8 @@ as.ra_ref.character <- function(x, warn = TRUE, ...) {
     z$rowAbs <- !z$rowAbs
     z$colAbs <- !z$colAbs
   }
-  structure(
-    list(rowRef = as.integer(z$row),
+  ra_ref(rowRef = as.integer(z$row),
          rowAbs = as.logical(z$rowAbs),
          colRef = if (fo == "A1") letter_to_num(z$column) else z$column,
-         colAbs = as.logical(z$colAbs)),
-    class = c("ra_ref", "list"))
+         colAbs = as.logical(z$colAbs))
 }
