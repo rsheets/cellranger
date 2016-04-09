@@ -20,3 +20,13 @@ rel_abs_format_RC <- function(indAbs, rcRef) {
 rel_abs_format_A1 <- function(indAbs) {
   if (indAbs) "$" else ""
 }
+
+extract_matches <- function(input, regexpr_output) {
+  stopifnot(length(input) == 1L, length(regexpr_output) == 1L)
+  if (input == -1) return("")
+  start <- attr(regexpr_output, "capture.start")[1, , drop = TRUE]
+  cl <- attr(regexpr_output, "capture.length")[1, , drop = TRUE]
+  stop <- start + cl - 1
+  out <- as.list(substring(input, start, stop))
+  setNames(out, attr(regexpr_output, "capture.names"))
+}
