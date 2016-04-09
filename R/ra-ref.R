@@ -61,18 +61,18 @@ as.ra_ref.character <- function(x, warn = TRUE, ...) {
          ref, call. = FALSE)
   }
   fo <- names(m)
-  y <- switch(fo,
-              A1 = regexpr(.cr$A1_ncg_rx, ref, perl = TRUE),
-              R1C1 = regexpr(.cr$R1C1_ncg_rx, ref, perl = TRUE))
-  z <- extract_matches(ref, y)
-  z$rowAbs <- nzchar(z$rowAbs)
-  z$colAbs <- nzchar(z$colAbs)
+  y <- extract_named_captures(
+    ref,
+    pattern = if (fo == "A1") .cr$A1_ncg_rx else .cr$R1C1_ncg_rx
+  )
+  y$rowAbs <- nzchar(y$rowAbs)
+  y$colAbs <- nzchar(y$colAbs)
   if (fo == "R1C1") {
-    z$rowAbs <- !z$rowAbs
-    z$colAbs <- !z$colAbs
+    y$rowAbs <- !y$rowAbs
+    y$colAbs <- !y$colAbs
   }
-  ra_ref(rowRef = as.integer(z$row),
-         rowAbs = as.logical(z$rowAbs),
-         colRef = if (fo == "A1") letter_to_num(z$column) else z$column,
-         colAbs = as.logical(z$colAbs))
+  ra_ref(rowRef = as.integer(y$rowRef),
+         rowAbs = as.logical(y$rowAbs),
+         colRef = if (fo == "A1") letter_to_num(y$colRef) else y$colRef,
+         colAbs = as.logical(y$colAbs))
 }

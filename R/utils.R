@@ -21,12 +21,13 @@ rel_abs_format_A1 <- function(indAbs) {
   if (indAbs) "$" else ""
 }
 
-extract_matches <- function(input, regexpr_output) {
-  stopifnot(length(input) == 1L, length(regexpr_output) == 1L)
-  if (input == -1) return("")
+extract_named_captures <- function(string, pattern) {
+  stopifnot(length(string) == 1L, length(pattern) == 1L)
+  regexpr_output <- regexpr(pattern, string, perl = TRUE)
+  if (regexpr_output == -1) return("")
   start <- attr(regexpr_output, "capture.start")[1, , drop = TRUE]
   cl <- attr(regexpr_output, "capture.length")[1, , drop = TRUE]
   stop <- start + cl - 1
-  out <- as.list(substring(input, start, stop))
+  out <- as.list(substring(string, start, stop))
   setNames(out, attr(regexpr_output, "capture.names"))
 }

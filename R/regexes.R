@@ -14,7 +14,7 @@
 
 ## for parsing single cell references
 .cr$A1_ncg_rx <-
-  "(?P<colAbs>\\$?)(?P<column>[A-Z]+)(?P<rowAbs>\\$?)(?P<row>[0-9]+)"
+  "(?P<colAbs>\\$?)(?P<colRef>[A-Z]+)(?P<rowAbs>\\$?)(?P<rowRef>[0-9]+)"
 .cr$R1C1_ncg_rx <-
-  paste0("^R(?P<rowAbs>\\[?)(?P<row>[0-9\\-]+)(?:\\]?)",
-          "C(?P<colAbs>\\[?)(?P<column>[0-9\\-]+)(?:\\]?)$")
+  paste0("^R(?P<rowAbs>\\[?)(?P<rowRef>[0-9\\-]+)(?:\\]?)",
+          "C(?P<colAbs>\\[?)(?P<colRef>[0-9\\-]+)(?:\\]?)$")
