@@ -4,25 +4,25 @@
 \alias{to_string}
 \title{Get string representation of cell and cell area references}
 \usage{
-to_string(x, fo = c("A1", "R1C1"))
+to_string(x, fo = c("R1C1", "A1"))
 }
 \arguments{
 \item{x}{an object of class \code{\link{ra_ref}} or blah blah}
 
-\item{fo}{either \code{"A1"} (the default) or \code{"R1C1"} specifying the
+\item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format}
 }
 \value{
 a character vector of length one
 }
 \description{
-Get string representation of cell and cell area references
+If either the row or column reference is relative, note that it's impossible
+to convert to an "A1" formatted string. We have to know "relative to what?"
 }
 \examples{
 to_string(ra_ref())
-to_string(ra_ref(), fo = "R1C1")
+to_string(ra_ref(), fo = "A1")
 to_string(ra_ref(rowRef = 3, colRef = 2))
-to_string(ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3, colAbs = TRUE),
-          fo = "R1C1")
+to_string(ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3), fo = "A1")
 }
 

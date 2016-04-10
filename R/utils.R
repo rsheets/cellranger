@@ -13,7 +13,7 @@ add_single_quotes <- function(x) {
 
 remove_single_quotes <- function(x) gsub("^'|'$", "", x)
 
-rel_abs_format <- function(indAbs, rcRef, fo = c("A1", "R1C1")) {
+rel_abs_format <- function(indAbs, rcRef, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
   if (fo == "A1") {
     return(if (indAbs) "$" else "")

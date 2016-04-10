@@ -6,6 +6,11 @@ test_that("ra_ref constructor rejects input of wrong length or type", {
   expect_error(ra_ref("A1"))
 })
 
+test_that("ra_ref constructor rejects absolute references < 1", {
+  expect_error(ra_ref(-1))
+  expect_error(ra_ref(colRef = -2))
+})
+
 test_that("ra_ref constructor is not changing", {
   ra_list <- list(
     ra_ref(),
@@ -19,14 +24,22 @@ test_that("ra_ref constructor is not changing", {
 })
 
 test_that("ra_ref is converted to string", {
-  expect_identical(to_string(ra_ref()), "$A$1")
-  expect_identical(to_string(ra_ref(), fo = "R1C1"), "R1C1")
-  expect_identical(to_string(ra_ref(2, TRUE,  3, FALSE)), "C$2")
-  expect_identical(to_string(ra_ref(4, FALSE, 5,  TRUE), fo = "R1C1"), "R[4]C5")
-  expect_identical(to_string(ra_ref(6, FALSE, 6, FALSE)), "F6")
+  expect_identical(to_string(ra_ref()), "R1C1")
+  expect_identical(to_string(ra_ref(), fo = "A1"), "$A$1")
+  expect_identical(to_string(ra_ref(2, TRUE,  3, FALSE)), "R2C[3]")
+  expect_identical(to_string(ra_ref(4, FALSE, 5,  TRUE)), "R[4]C5")
+  expect_identical(to_string(ra_ref(6, FALSE, -6, FALSE)), "R[6]C[-6]")
 })
 
-test_that("invalid cell ref strings raise error", {
+test_that("relative references are not converted to A1 formatted strings", {
+  expect_warning(ret <- to_string(ra_ref(2, TRUE,  3, FALSE), fo = "A1"))
+  expect_identical(ret, NA_character_)
+  expect_warning(ret <- to_string(ra_ref(-2, FALSE,  3, FALSE), fo = "A1"))
+  expect_identical(ret, NA_character_)
+
+})
+
+test_that("invalid single cell ref strings raise error", {
   expect_error(as.ra_ref("wtf huh?"))
   expect_error(as.ra_ref("A1:D4"))
 })

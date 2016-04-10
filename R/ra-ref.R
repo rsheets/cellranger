@@ -34,6 +34,13 @@ ra_ref <- function(rowRef = 1L,
             is.logical(rowAbs), is.logical(colAbs))
   rowRef <- as.integer(rowRef)
   colRef <- as.integer(colRef)
+  if ( (rowAbs && rowRef < 1) ||
+       (colAbs && colRef < 1) ) {
+    stop("Absolute row or column references must be >= 1:\n",
+         " rowAbs = ", rowAbs, ", rowRef = ", rowRef, "\n",
+         " colAbs = ", colAbs, ", colRef = ", colRef, "\n",
+         call. = FALSE)
+  }
   structure(list(rowRef = rowRef, rowAbs = rowAbs,
                  colRef = colRef, colAbs = colAbs),
             class = c("ra_ref", "list"))
@@ -45,14 +52,16 @@ print.ra_ref <- function(x, ...) {
   cat(paste0(" row: ", x$rowRef, " (", if (x$rowAbs) "abs" else "rel", ")\n",
              " col: ", x$colRef, " (", if (x$colAbs) "abs" else "rel", ")\n"))
   cat(" ", to_string(x), "\n", sep = "")
-  cat(" ", to_string(x, fo = "R1C1"), "\n", sep = "")
 }
 
 
 #' Get string representation of cell and cell area references
 #'
+#' If either the row or column reference is relative, note that it's impossible
+#' to convert to an "A1" formatted string. We have to know "relative to what?"
+#'
 #' @param x an object of class \code{\link{ra_ref}} or blah blah
-#' @param fo either \code{"A1"} (the default) or \code{"R1C1"} specifying the
+#' @param fo either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 #'   cell reference format
 #'
 #' @return a character vector of length one
@@ -60,21 +69,25 @@ print.ra_ref <- function(x, ...) {
 #'
 #' @examples
 #' to_string(ra_ref())
-#' to_string(ra_ref(), fo = "R1C1")
+#' to_string(ra_ref(), fo = "A1")
 #' to_string(ra_ref(rowRef = 3, colRef = 2))
-#' to_string(ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3, colAbs = TRUE),
-#'           fo = "R1C1")
-to_string <- function(x, fo = c("A1", "R1C1")) UseMethod("to_string")
+#' to_string(ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3), fo = "A1")
+to_string <- function(x, fo = c("R1C1", "A1")) UseMethod("to_string")
 
 #' @export
-to_string.ra_ref <- function(x, fo = c("A1", "R1C1")) {
+to_string.ra_ref <- function(x, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
   if (fo == "A1") {
-    return(paste0(rel_abs_format(x$colAbs), num_to_letter(x$colRef),
-                  rel_abs_format(x$rowAbs), x$rowRef))
+    if (!x$rowAbs || !x$colAbs) {
+      warning("To print relative references in 'A1' format, we need to know: ",
+              "relative to *what cell*?\nNA generated.", call. = FALSE)
+      return(NA_character_)
+    }
+    return(paste0(rel_abs_format(x$colAbs, fo = "A1"), num_to_letter(x$colRef),
+                  rel_abs_format(x$rowAbs, fo = "A1"), x$rowRef))
   }
-  paste0("R", rel_abs_format(x$rowAbs, x$rowRef, "R1C1"),
-         "C", rel_abs_format(x$colAbs, x$colRef, "R1C1"))
+  paste0("R", rel_abs_format(x$rowAbs, x$rowRef),
+         "C", rel_abs_format(x$colAbs, x$colRef))
 }
 
 #' Convert to a ra_ref object
