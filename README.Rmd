@@ -4,7 +4,6 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/0.1.0/active.svg)](http://www.repostatus.org/#active)
  [![TravisCI Build Status](https://travis-ci.org/jennybc/cellranger.svg?branch=master)](https://travis-ci.org/jennybc/cellranger)
  [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jennybc/cellranger?branch=master&svg=true)](https://ci.appveyor.com/project/jennybc/cellranger)
  [![codecov.io](https://codecov.io/github/jennybc/cellranger/coverage.svg?branch=master)](https://codecov.io/github/jennybc/cellranger?branch=master) [![DOI](https://zenodo.org/badge/16122/jennybc/cellranger.svg)](http://dx.doi.org/10.5281/zenodo.21970) [![CRAN version](http://www.r-pkg.org/badges/version/cellranger)](https://cran.r-project.org/web/packages/cellranger/index.html)
