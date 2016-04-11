@@ -29,6 +29,10 @@ test_that("ra_ref is converted to string", {
   expect_identical(to_string(ra_ref(2, TRUE,  3, FALSE)), "R2C[3]")
   expect_identical(to_string(ra_ref(4, FALSE, 5,  TRUE)), "R[4]C5")
   expect_identical(to_string(ra_ref(6, FALSE, -6, FALSE)), "R[6]C[-6]")
+  ## special case when rel ref offset is 0 --> no square brackets
+  expect_identical(to_string(ra_ref(0, FALSE)), "RC1")
+  expect_identical(to_string(ra_ref(4, TRUE, 0, FALSE)), "R4C")
+  expect_identical(to_string(ra_ref(0, FALSE, 0, FALSE)), "RC")
 })
 
 test_that("relative references are not converted to A1 formatted strings", {
@@ -52,4 +56,20 @@ test_that("qualified cell ref strings raise warning", {
 test_that("ra_ref objects are made from cell ref strings", {
   expect_identical(as.ra_ref("A$4"), ra_ref(4, TRUE, 1, FALSE))
   expect_identical(as.ra_ref("R[1]C[-4]"), ra_ref(1, FALSE, -4, FALSE))
+  ## special case when rel ref offset is 0 --> no square brackets
+  expect_error(as.ra_ref("RC1")) ## omfg RC1 is actually ambiguous
+  expect_identical(as.ra_ref("RC1", fo = "R1C1"), ra_ref(0, FALSE))
+  expect_identical(as.ra_ref("RC1", fo = "A1"), ra_ref(1, FALSE, 471, FALSE))
+  expect_identical(as.ra_ref("R4C"), ra_ref(4, TRUE, 0, FALSE))
+})
+
+test_that("ra_ref --> string --> ra_ref round trips work", {
+  roundtrip <- function(x, fo = NULL)
+    expect_identical(x, to_string(as.ra_ref(x, fo), fo))
+  roundtrip("R[1]C[-4]")
+  roundtrip("RC1", "R1C1")
+  roundtrip("R4C")
+  roundtrip("R[-2]C8")
+  ## strings in A1 format must contain absolute references
+  roundtrip("$A$1", "A1")
 })

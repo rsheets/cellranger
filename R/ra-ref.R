@@ -48,10 +48,10 @@ ra_ref <- function(rowRef = 1L,
 
 #' @export
 print.ra_ref <- function(x, ...) {
-  cat("<ra_ref>\n", sep = "")
+  cat("<ra_ref>\n")
   cat(paste0(" row: ", x$rowRef, " (", if (x$rowAbs) "abs" else "rel", ")\n",
              " col: ", x$colRef, " (", if (x$colAbs) "abs" else "rel", ")\n"))
-  cat(" ", to_string(x), "\n", sep = "")
+  cat(" ", to_string(x), "\n")
 }
 
 
@@ -59,6 +59,7 @@ print.ra_ref <- function(x, ...) {
 #'
 #' If either the row or column reference is relative, note that it's impossible
 #' to convert to an "A1" formatted string. We have to know "relative to what?"
+#' So this will generate a warning and an \code{NA}.
 #'
 #' @param x an object of class \code{\link{ra_ref}} or blah blah
 #' @param fo either \code{"R1C1"} (the default) or \code{"A1"} specifying the
@@ -108,7 +109,7 @@ to_string.ra_ref <- function(x, fo = c("R1C1", "A1")) {
 as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 
 #' @export
-as.ra_ref.character <- function(x, warn = TRUE, ...) {
+as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
   parsed <- parse_as_ref_string(x)
   if (!is.null(parsed$invalid)) {
     stop("Invalid string for a cell reference:\n", parsed$invalid,
@@ -123,26 +124,45 @@ as.ra_ref.character <- function(x, warn = TRUE, ...) {
     stop("Can't make a ra_ref object from a cell area reference:\n",
          parsed$cell_ref, call. = FALSE)
   }
-  m <- c(A1 = grep(.cr$is_A1_rx, ref), R1C1 = grep(.cr$is_R1C1_rx, ref))
-  if (length(m) < 1) {
-    stop("Cell reference follows neither the A1 nor R1C1 format:\n",
-         ref, call. = FALSE)
+
+  if (is.null(fo)) {
+    m <- c(A1 = grep(.cr$is_A1_rx, ref), R1C1 = grep(.cr$is_R1C1_rx, ref))
+    if (length(m) < 1) {
+      stop("Cell reference follows neither the A1 nor R1C1 format:\n",
+           ref, call. = FALSE)
+    }
+    if (length(m) > 1) {
+      ## example: RC1
+      stop("Not clear if cell reference is in A1 or R1C1 format:\n",
+           ref, call. = FALSE)
+    }
+    fo <- names(m)
+  } else {
+    fo <- match.arg(fo, c("R1C1", "A1"))
   }
-  if (length(m) > 1) {
-    ## this seems impossible to me but who knows???
-    stop("Not clear if cell reference is in A1 or R1C1 format:\n",
-         ref, call. = FALSE)
-  }
-  fo <- names(m)
   y <- extract_named_captures(
     ref,
     pattern = if (fo == "A1") .cr$A1_ncg_rx else .cr$R1C1_ncg_rx
   )
+  ## A1 case: presence of dollar sign indicates absolute reference
   y$rowAbs <- nzchar(y$rowAbs)
   y$colAbs <- nzchar(y$colAbs)
   if (fo == "R1C1") {
-    y$rowAbs <- !y$rowAbs
-    y$colAbs <- !y$colAbs
+    ## R1C1 case: in general, opposite of A1 case
+    ## because presence of square bracket indicates relative reference
+    ## EXCEPT when the row or column reference is empty
+    if (y$rowRef == "") {
+      y$rowAbs <- FALSE
+      y$rowRef <- 0
+    } else {
+      y$rowAbs <- !y$rowAbs
+    }
+    if (y$colRef == "") {
+      y$colAbs <- FALSE
+      y$colRef <- 0
+    } else {
+      y$colAbs <- !y$colAbs
+    }
   }
   ra_ref(rowRef = as.integer(y$rowRef),
          rowAbs = y$rowAbs,

@@ -10,14 +10,14 @@
 
 ## for validating single cell references
 .cr$is_A1_rx <- "^\\$?[A-Z]{1,3}\\$?[0-9]+$"
-.cr$is_R1C1_rx <- "^R\\[?[0-9\\-]+\\]?C\\[?[0-9\\-]+\\]?$"
+.cr$is_R1C1_rx <- "^R\\[?[0-9\\-]*\\]?C\\[?[0-9\\-]*\\]?$"
 
 ## for parsing single cell references
 .cr$A1_ncg_rx <-
   "(?P<colAbs>\\$?)(?P<colRef>[A-Z]+)(?P<rowAbs>\\$?)(?P<rowRef>[0-9]+)"
 .cr$R1C1_ncg_rx <-
-  paste0("^R(?P<rowAbs>\\[?)(?P<rowRef>[0-9\\-]+)(?:\\]?)",
-          "C(?P<colAbs>\\[?)(?P<colRef>[0-9\\-]+)(?:\\]?)$")
+  paste0("^R(?P<rowAbs>\\[?)(?P<rowRef>[0-9\\-]*)(?:\\]?)",
+          "C(?P<colAbs>\\[?)(?P<colRef>[0-9\\-]*)(?:\\]?)$")
 
 parse_as_ref_string <- function(x) {
   param_names <- c("fn", "wsn", "cell_ref", "invalid")

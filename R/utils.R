@@ -15,10 +15,9 @@ remove_single_quotes <- function(x) gsub("^'|'$", "", x)
 
 rel_abs_format <- function(indAbs, rcRef, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
-  if (fo == "A1") {
-    return(if (indAbs) "$" else "")
-  }
-  if (indAbs) rcRef else paste0("[", rcRef, "]")
+  if (fo == "A1") return(if (indAbs) "$" else "")
+  if (indAbs) return(rcRef)
+  if (rcRef == 0) "" else paste0("[", rcRef, "]")
 }
 
 extract_named_captures <- function(string, pattern) {

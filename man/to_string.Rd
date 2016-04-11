@@ -18,6 +18,7 @@ a character vector of length one
 \description{
 If either the row or column reference is relative, note that it's impossible
 to convert to an "A1" formatted string. We have to know "relative to what?"
+So this will generate a warning and an \code{NA}.
 }
 \examples{
 to_string(ra_ref())
