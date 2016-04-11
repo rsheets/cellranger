@@ -13,6 +13,10 @@ install:
 # Adapt as necessary starting from here
 
 environment:
+  global:
+    WARNINGS_ARE_ERRORS: 1
+    USE_RTOOLS: true
+
   matrix:
   - R_VERSION: patched
 
