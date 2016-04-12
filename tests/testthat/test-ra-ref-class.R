@@ -35,12 +35,10 @@ test_that("ra_ref is converted to string", {
   expect_identical(to_string(ra_ref(0, FALSE, 0, FALSE)), "RC")
 })
 
-test_that("relative references are not converted to A1 formatted strings", {
-  expect_warning(ret <- to_string(ra_ref(2, TRUE,  3, FALSE), fo = "A1"))
-  expect_identical(ret, NA_character_)
-  expect_warning(ret <- to_string(ra_ref(-2, FALSE,  3, FALSE), fo = "A1"))
-  expect_identical(ret, NA_character_)
-
+test_that("relative reference prevents conversion to A1 formatted string", {
+  expect_error(to_string(ra_ref(2, TRUE,  3, FALSE), fo = "A1"))
+  expect_error(to_string(ra_ref(2, FALSE,  3, TRUE), fo = "A1"))
+  expect_error(to_string(ra_ref(-2, FALSE,  3, FALSE), fo = "A1"))
 })
 
 test_that("invalid single cell ref strings raise error", {
@@ -48,20 +46,24 @@ test_that("invalid single cell ref strings raise error", {
   expect_error(as.ra_ref("A1:D4"))
 })
 
-test_that("qualified cell ref strings raise warning", {
-  expect_warning(as.ra_ref("Sheet1!$D4"))
-  expect_warning(as.ra_ref("[filename.xlsx]'a sheet'!R[1]C[1]"))
+test_that("file and sheet qualified cell ref strings raise warning", {
+  expect_warning(as.ra_ref("Sheet1!$D$4"))
+  expect_warning(as.ra_ref("[filename.xlsx]'a sheet'!R1C1"))
 })
 
-test_that("ra_ref objects are made from cell ref strings", {
+test_that("A1 formatted string w/ a rel reference raise error", {
+  expect_error(as.ra_ref("A$4"))
+  expect_error(as.ra_ref("$A4"))
+  expect_error(as.ra_ref("A4"))
+})
+
+test_that("ra_ref objects are made from valid cell ref strings", {
   expect_identical(as.ra_ref("R[1]C[-4]"), ra_ref(1, FALSE, -4, FALSE))
+  expect_identical(as.ra_ref("$C$6"), ra_ref(6, TRUE, 3, TRUE))
   ## special case when rel ref offset is 0 --> no square brackets
   expect_error(as.ra_ref("RC1")) ## omfg RC1 is actually ambiguous
   expect_identical(as.ra_ref("RC1", fo = "R1C1"), ra_ref(0, FALSE))
   expect_identical(as.ra_ref("R4C"), ra_ref(4, TRUE, 0, FALSE))
-  ## refuse to make A1 formatted strings if row or column is relative
-  expect_warning(w <- as.ra_ref("A$4"))
-  expect_identical(w, NA)
 })
 
 test_that("ra_ref --> string --> ra_ref round trips work", {

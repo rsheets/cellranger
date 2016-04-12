@@ -55,35 +55,37 @@ print.ra_ref <- function(x, ...) {
 }
 
 
-#' Get string representation of cell and cell area references
+#' Get string representation of cell references
 #'
-#' If either the row or column reference is relative, note that it's impossible
-#' to convert to an "A1" formatted string. We have to know "relative to what?"
-#' So this will generate a warning and an \code{NA}.
+#' If either the row or column reference is relative, note that, in general,
+#' it's impossible to convert to an "A1" formatted string. We would have to know
+#' "relative to what?".
 #'
-#' @param x an object of class \code{\link{ra_ref}} or blah blah
+#' @param x a suitable representation of a cell or cell area reference
 #' @param fo either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 #'   cell reference format
 #'
 #' @return a character vector of length one
 #' @export
-#'
+to_string <- function(x, fo = c("R1C1", "A1")) UseMethod("to_string")
+
+#' @describeIn to_string Convert a \code{\link{ra_ref}} object to a cell
+#'   reference string
 #' @examples
 #' to_string(ra_ref())
 #' to_string(ra_ref(), fo = "A1")
 #' to_string(ra_ref(rowRef = 3, colRef = 2))
-#' to_string(ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3), fo = "A1")
-to_string <- function(x, fo = c("R1C1", "A1")) UseMethod("to_string")
-
+#' (rel_ref <- ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3))
+#' to_string(rel_ref)
+#' \dontrun{
+#' ## this won't work because row reference is relative and format is A1
+#' to_string(rel_ref, fo = "A1")
+#' }
 #' @export
 to_string.ra_ref <- function(x, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
   if (fo == "A1") {
-    if (!x$rowAbs || !x$colAbs) {
-      warning("To print relative references in 'A1' format, we need to know: ",
-              "relative to *what cell*?\nNA generated.", call. = FALSE)
-      return(NA_character_)
-    }
+    stopifnot_abs(x)
     return(paste0(rel_abs_format(x$colAbs, fo = "A1"), num_to_letter(x$colRef),
                   rel_abs_format(x$rowAbs, fo = "A1"), x$rowRef))
   }
@@ -93,21 +95,40 @@ to_string.ra_ref <- function(x, fo = c("R1C1", "A1")) {
 
 #' Convert to a ra_ref object
 #'
-#' Convert something, usually a string, into an object of class
+#' Convert various representations of a cell reference into an object of class
 #' \code{\link{ra_ref}}.
 #'
-#' @param x something
-#' @param ... potentially other stuff
+#' @param x a cell reference
+#' @param ... other arguments passed along to methods
 #'
 #' @return a \code{\link{ra_ref}} object
 #'
 #' @export
-#'
-#' @examples
-#' as.ra_ref("D$4")
-#' as.ra_ref("R[-4]C3")
 as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 
+#' @describeIn as.ra_ref Convert the string representation of a single cell
+#'   reference into a \code{\link{ra_ref}}
+#'
+#' @param fo Optional specification of the cell reference format of the string
+#'   \code{x}. If given, it must be either "A1" or "R1C1"; it can usually be
+#'   inferred.
+#' @param warn Logical, requesting a warning if a file or worksheet name is
+#'   found in the string, since this cannot be represented in a
+#'   \code{\link{ra_ref}} object and will be dropped.
+#'
+#' @examples
+#' as.ra_ref("$F$2")
+#' as.ra_ref("R[-4]C3")
+#'
+#' \dontrun{
+#' ## this is actually ambiguous! is format A1 or R1C1 format?
+#' as.ra_ref("RC2")
+#' ## format must be specified in this case
+#' as.ra_ref("RC2", fo = "R1C1")
+#'
+#' ## this won't work because column ref is relative
+#' as.ra_ref("D$4")
+#' }
 #' @export
 as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
   parsed <- parse_as_ref_string(x)
@@ -130,25 +151,23 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
     if (length(m) > 1) {
       ## example: RCx
       stop("Not clear if cell reference is in A1 or R1C1 format:\n",
-           ref, call. = FALSE)
+           ref, "\nSpecify format via `fo` argument.\n", call. = FALSE)
     }
     fo <- names(m)
   } else {
     fo <- match.arg(fo, c("R1C1", "A1"))
   }
+
+  if (fo == "A1") stopifnot_abs(ref)
+
   y <- extract_named_captures(
     ref,
     pattern = if (fo == "A1") .cr$A1_ncg_rx else .cr$R1C1_ncg_rx
   )
+
   ## A1 case: presence of dollar sign indicates absolute reference
   y$rowAbs <- nzchar(y$rowAbs)
   y$colAbs <- nzchar(y$colAbs)
-
-  if (fo == "A1" && (!y$rowAbs || !y$colAbs)) {
-    warning("To parse relative references in 'A1' format, we need to know: ",
-            "relative to *what cell*?\nNA generated.", call. = FALSE)
-    return(NA)
-  }
 
   if (fo == "R1C1") {
     ## R1C1 case: in general, opposite of A1 case
@@ -167,8 +186,10 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
       y$colAbs <- !y$colAbs
     }
   }
+
   ra_ref(rowRef = as.integer(y$rowRef),
          rowAbs = y$rowAbs,
          colRef = if (fo == "A1") letter_to_num(y$colRef) else as.integer(y$colRef),
          colAbs = y$colAbs)
+
 }

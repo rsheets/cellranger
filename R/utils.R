@@ -22,6 +22,26 @@ rel_abs_format <- function(indAbs, rcRef, fo = c("R1C1", "A1")) {
   if (rcRef == 0) "" else paste0("[", rcRef, "]")
 }
 
+stopifnot_abs <- function(x, ...) UseMethod("stopifnot_abs")
+
+stopifnot_abs.ra_ref <- function(x, ...) {
+  if (!x$rowAbs || !x$colAbs) {
+    printed_x <- capture.output(print(x))
+    stop("Operation doesn't make sense for a relative cell reference:\n",
+         paste(printed_x, collapse = "\n"), call. = FALSE)
+  }
+  x
+}
+
+stopifnot_abs.character <- function(x, ...) {
+  n_dollar_signs <- length(gregexpr("\\$", x)[[1]])
+  if (n_dollar_signs < 2) {
+    stop("Operation doesn't make sense for a relative cell reference:\n", x,
+         call. = FALSE)
+  }
+  x
+}
+
 extract_named_captures <- function(string, pattern) {
   stopifnot(length(string) == 1L, length(pattern) == 1L)
   regexpr_output <- regexpr(pattern, string, perl = TRUE)
