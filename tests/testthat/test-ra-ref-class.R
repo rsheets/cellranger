@@ -54,13 +54,14 @@ test_that("qualified cell ref strings raise warning", {
 })
 
 test_that("ra_ref objects are made from cell ref strings", {
-  expect_identical(as.ra_ref("A$4"), ra_ref(4, TRUE, 1, FALSE))
   expect_identical(as.ra_ref("R[1]C[-4]"), ra_ref(1, FALSE, -4, FALSE))
   ## special case when rel ref offset is 0 --> no square brackets
   expect_error(as.ra_ref("RC1")) ## omfg RC1 is actually ambiguous
   expect_identical(as.ra_ref("RC1", fo = "R1C1"), ra_ref(0, FALSE))
-  expect_identical(as.ra_ref("RC1", fo = "A1"), ra_ref(1, FALSE, 471, FALSE))
   expect_identical(as.ra_ref("R4C"), ra_ref(4, TRUE, 0, FALSE))
+  ## refuse to make A1 formatted strings if row or column is relative
+  expect_warning(w <- as.ra_ref("A$4"))
+  expect_identical(w, NA)
 })
 
 test_that("ra_ref --> string --> ra_ref round trips work", {

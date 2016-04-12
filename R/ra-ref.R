@@ -128,7 +128,7 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
            ref, call. = FALSE)
     }
     if (length(m) > 1) {
-      ## example: RC1
+      ## example: RCx
       stop("Not clear if cell reference is in A1 or R1C1 format:\n",
            ref, call. = FALSE)
     }
@@ -143,6 +143,13 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
   ## A1 case: presence of dollar sign indicates absolute reference
   y$rowAbs <- nzchar(y$rowAbs)
   y$colAbs <- nzchar(y$colAbs)
+
+  if (fo == "A1" && (!y$rowAbs || !y$colAbs)) {
+    warning("To parse relative references in 'A1' format, we need to know: ",
+            "relative to *what cell*?\nNA generated.", call. = FALSE)
+    return(NA)
+  }
+
   if (fo == "R1C1") {
     ## R1C1 case: in general, opposite of A1 case
     ## because presence of square bracket indicates relative reference
