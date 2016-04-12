@@ -19,12 +19,16 @@
   paste0("^R(?P<rowAbs>\\[?)(?P<rowRef>[0-9\\-]*)(?:\\]?)",
           "C(?P<colAbs>\\[?)(?P<colRef>[0-9\\-]*)(?:\\]?)$")
 
-parse_as_ref_string <- function(x) {
+parse_as_ref_string <- function(x, must_work = TRUE) {
   param_names <- c("fn", "wsn", "cell_ref", "invalid")
   replace <-
     stats::setNames(sprintf("\\%d", seq_along(param_names)), param_names)
   params <-
     lapply(replace, function(r) gsub(.cr$string_rx, r, x, perl = TRUE))
+  if (must_work && nzchar(params$invalid)) {
+    stop("Invalid string for a cell reference:\n", params$invalid,
+         call. = FALSE)
+  }
   params$input <- x
   params[nzchar(params, keepNA = TRUE)]
 }

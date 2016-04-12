@@ -16,7 +16,9 @@ remove_single_quotes <- function(x) gsub("^'|'$", "", x)
 rel_abs_format <- function(indAbs, rcRef, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
   if (fo == "A1") return(if (indAbs) "$" else "")
+  ## R1C1 case:
   if (indAbs) return(rcRef)
+  ## unfortunate convention where R and C are used instead of R[0] and C[0]
   if (rcRef == 0) "" else paste0("[", rcRef, "]")
 }
 
