@@ -41,8 +41,6 @@ as.cell_addr(rar)
 as.cell_addr("$D$12")
 as.cell_addr("$C$4")
 as.cell_addr("R4C3")
-as.cell_addr(ra_ref())
-as.cell_addr(ra_ref(4, TRUE, 3, TRUE))
 
 \dontrun{
 # none of these will work

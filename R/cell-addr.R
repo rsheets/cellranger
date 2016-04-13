@@ -29,7 +29,7 @@ cell_addr <- function(row, col) {
 
 #' @export
 print.cell_addr <- function(x, ...) {
-  cat("<cel_addr>\n")
+  cat("<cell_addr>\n")
   print(unclass(x), ...)
 }
 
@@ -44,6 +44,13 @@ as.ra_ref.cell_addr <- function(x, ...) {
 
 #' @describeIn to_string Convert a \code{\link{cell_addr}} object to a cell
 #'   reference string
+#'
+#' @examples
+#' ## cell_addr --> string
+#' (ca <- cell_addr(3, 8))
+#' to_string(ca)
+#' to_string(ca, fo = "A1")
+#'
 #' @export
 to_string.cell_addr <- function(x, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
@@ -64,8 +71,6 @@ to_string.cell_addr <- function(x, fo = c("R1C1", "A1")) {
 #'
 #' @export
 as.cell_addr <- function(x, ...) UseMethod("as.cell_addr")
-
-as.cell_addr.logical <- function(x, ...) NA
 
 #' @describeIn as.cell_addr Convert a \code{\link{ra_ref}} object into a
 #'   \code{cell_addr} object
@@ -91,8 +96,6 @@ as.cell_addr.ra_ref <- function(x, ...) {
 #' as.cell_addr("$D$12")
 #' as.cell_addr("$C$4")
 #' as.cell_addr("R4C3")
-#' as.cell_addr(ra_ref())
-#' as.cell_addr(ra_ref(4, TRUE, 3, TRUE))
 #'
 #' \dontrun{
 #' # none of these will work
@@ -100,10 +103,5 @@ as.cell_addr.ra_ref <- function(x, ...) {
 #' as.cell_addr("R[-4]C3")
 #' }
 as.cell_addr.character <- function(x, ...) {
-  raref <- as.ra_ref(x)
-  if (any(is.na(raref))) {
-    stop("cell_addr objects give absolute row and column, not relative:\n",
-         x, call. = FALSE)
-  }
-  as.cell_addr(raref)
+  as.cell_addr(as.ra_ref(x))
 }

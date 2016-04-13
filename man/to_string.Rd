@@ -35,6 +35,11 @@ reference string
 reference string
 }}
 \examples{
+## cell_addr --> string
+(ca <- cell_addr(3, 8))
+to_string(ca)
+to_string(ca, fo = "A1")
+
 to_string(ra_ref())
 to_string(ra_ref(), fo = "A1")
 to_string(ra_ref(rowRef = 3, colRef = 2))
