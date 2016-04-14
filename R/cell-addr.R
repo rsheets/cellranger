@@ -66,11 +66,12 @@ to_string.cell_addr <- function(x, fo = c("R1C1", "A1")) {
 #'
 #' @param x a cell reference
 #' @param ... other arguments passed along to methods
+#' @template param-fo
 #'
 #' @return a \code{\link{cell_addr}} object
 #'
 #' @export
-as.cell_addr <- function(x, ...) UseMethod("as.cell_addr")
+as.cell_addr <- function(x, fo = NULL, ...) UseMethod("as.cell_addr")
 
 #' @describeIn as.cell_addr Convert a \code{\link{ra_ref}} object into a
 #'   \code{cell_addr} object
@@ -102,6 +103,6 @@ as.cell_addr.ra_ref <- function(x, ...) {
 #' as.cell_addr("$F2")
 #' as.cell_addr("R[-4]C3")
 #' }
-as.cell_addr.character <- function(x, ...) {
-  as.cell_addr(as.ra_ref(x))
+as.cell_addr.character <- function(x, fo = NULL, ...) {
+  as.cell_addr(as.ra_ref(x, fo = fo))
 }

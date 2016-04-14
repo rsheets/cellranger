@@ -6,14 +6,17 @@
 \alias{as.cell_addr.ra_ref}
 \title{Convert to a cell_addr object}
 \usage{
-as.cell_addr(x, ...)
+as.cell_addr(x, fo = NULL, ...)
 
 \method{as.cell_addr}{ra_ref}(x, ...)
 
-\method{as.cell_addr}{character}(x, ...)
+\method{as.cell_addr}{character}(x, fo = NULL, ...)
 }
 \arguments{
 \item{x}{a cell reference}
+
+\item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
+cell reference format; in some contexts, it can be inferred}
 
 \item{...}{other arguments passed along to methods}
 }

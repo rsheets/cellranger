@@ -16,7 +16,7 @@ to_string(x, fo = c("R1C1", "A1"))
 \item{x}{a suitable representation of a cell or cell area reference}
 
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
-cell reference format}
+cell reference format; in some contexts, it can be inferred}
 }
 \value{
 a character vector of length one

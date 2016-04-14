@@ -62,8 +62,7 @@ print.ra_ref <- function(x, ...) {
 #' "relative to what?".
 #'
 #' @param x a suitable representation of a cell or cell area reference
-#' @param fo either \code{"R1C1"} (the default) or \code{"A1"} specifying the
-#'   cell reference format
+#' @template param-fo
 #'
 #' @return a character vector of length one
 #' @export
