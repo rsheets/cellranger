@@ -2,8 +2,7 @@ context("cell_addr class")
 
 test_that("cell_addr constructor rejects input of wrong amount, length, type", {
   expect_error(cell_addr(1))
-  expect_error(cell_addr(1:2, 1))
-  expect_error(cell_addr(1, 1:2))
+  expect_error(cell_addr(1:2, 1:3))
   expect_error(cell_addr("row!", "column!"))
 })
 
@@ -12,11 +11,25 @@ test_that("cell_addr constructor rejects row, column < 1", {
   expect_error(cell_addr(-1, 1))
 })
 
-test_that("cell_addr constructor works", {
+test_that("cell_addr constructor works for single cell", {
   ca <- cell_addr(3, 7)
   expect_is(ca, "cell_addr")
-  expect_identical(ca["row"], c(row = 3L))
-  expect_identical(ca["col"], c(col = 7L))
+  expect_identical(ca$row, 3L)
+  expect_identical(ca$col, 7L)
+})
+
+test_that("cell_addr constructor works for multiple cells", {
+  ca <- cell_addr(c(3, 10), c(7, 2))
+  expect_is(ca, "cell_addr")
+  expect_identical(ca$row, c(3L, 10L))
+  expect_identical(ca$col, c(7L, 2L))
+})
+
+test_that("cell_addr constructor recycles length 1 row or col", {
+  ca <- cell_addr(1:3, 6)
+  expect_is(ca, "cell_addr")
+  expect_identical(ca$row, 1:3)
+  expect_identical(ca$col, rep_len(6L, 3))
 })
 
 test_that("cell_addr objects can be converted to ra_ref", {

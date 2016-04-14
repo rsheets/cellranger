@@ -1,9 +1,9 @@
 #' cell_addr class
 #'
 #' The \code{cell_addr} class is used to hold the absolute row and column
-#' location for a single cell. This is in contrast to the \code{\link{ra_ref}}
-#' class, which holds a representation of a single absolute, relative, or mixed
-#' cell reference from, e.g., a formula.
+#' location for one or more cells. This is in contrast to the
+#' \code{\link{ra_ref}} class, which holds a representation of a single
+#' absolute, relative, or mixed cell reference from, e.g., a formula.
 #'
 #' @param row integer, row, must be greater than or equal to 1
 #' @param col integer, column, must be greater than or equal to 1
@@ -16,21 +16,33 @@
 #' @examples
 #' cell_addr(4, 3)
 cell_addr <- function(row, col) {
-  stopifnot(length(row) == 1L, length(col) == 1L,
+  stopifnot(length(row) > 0L, length(col) > 0L,
             is.numeric(row), is.numeric(col))
+  if (length(row) > 1 && length(col) > 1) {
+    stopifnot(length(row) == length(col))
+  } else {
+    n <- max(length(row), length(col))
+    row <- rep_len(row, n)
+    col <- rep_len(col, n)
+  }
   row <- as.integer(row)
   col <- as.integer(col)
-  if (row < 1 || col < 1) {
-    stop("cell_addr objects give absolute row and column, must be >= 1:\n",
-         " row = ", row, ", col = ", col, "\n", call. = FALSE)
+  neg <- row < 1 | col < 1
+  if (any(neg)) {
+    ## data.frame's insistence on row names is actually nice here
+    out <- data.frame(row, col)[neg, ,drop = FALSE]
+    printed_x <- capture.output(print(out))
+    stop("cell_addr objects require absolute row and column, must be >= 1:\n",
+         paste(printed_x, collapse = "\n"), call. = FALSE)
   }
-  structure(c(row = row, col = col), class = "cell_addr")
+  structure(list(row = row, col = col), class = "cell_addr")
 }
 
 #' @export
 print.cell_addr <- function(x, ...) {
   cat("<cell_addr>\n")
-  print(unclass(x), ...)
+  ## data.frame is decidedly less charming here but will do for now
+  print(as.data.frame(unclass(x)), ...)
 }
 
 #' @describeIn as.ra_ref Convert a \code{cell_addr} into a \code{\link{ra_ref}}
@@ -39,7 +51,7 @@ print.cell_addr <- function(x, ...) {
 #' ca <- cell_addr(2, 5)
 #' as.ra_ref(ca)
 as.ra_ref.cell_addr <- function(x, ...) {
-  ra_ref(rowRef = x["row"], rowAbs = TRUE, colRef = x["col"], colAbs = TRUE)
+  ra_ref(rowRef = x$row, rowAbs = TRUE, colRef = x$col, colAbs = TRUE)
 }
 
 #' @describeIn to_string Convert a \code{\link{cell_addr}} object to a cell

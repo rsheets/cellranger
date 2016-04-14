@@ -16,9 +16,9 @@ a \code{cell_addr} object
 }
 \description{
 The \code{cell_addr} class is used to hold the absolute row and column
-location for a single cell. This is in contrast to the \code{\link{ra_ref}}
-class, which holds a representation of a single absolute, relative, or mixed
-cell reference from, e.g., a formula.
+location for one or more cells. This is in contrast to the
+\code{\link{ra_ref}} class, which holds a representation of a single
+absolute, relative, or mixed cell reference from, e.g., a formula.
 }
 \section{Reference}{
 
