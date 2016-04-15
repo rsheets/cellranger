@@ -1,6 +1,6 @@
 Package: cellranger
 Title: Translate Spreadsheet Cell Ranges to Rows and Columns
-Version: 1.0.0.9000
+Version: 1.1.0.9000
 Authors@R: c(
     person("Jennifer", "Bryan", , "jenny@stat.ubc.ca", c("cre", "aut")),
     person("Hadley", "Wickham", , "hadley@rstudio.com", "ctb")
