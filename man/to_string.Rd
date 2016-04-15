@@ -40,6 +40,9 @@ reference string
 to_string(ca)
 to_string(ca, fo = "A1")
 
+(ca <- cell_addr(1:4, 3))
+to_string(ca)
+to_string(ca, fo = "A1")
 to_string(ra_ref())
 to_string(ra_ref(), fo = "A1")
 to_string(ra_ref(rowRef = 3, colRef = 2))

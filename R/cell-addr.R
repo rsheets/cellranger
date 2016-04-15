@@ -152,8 +152,19 @@ as.cell_addr.character <- function(x, fo = NULL, ...) {
 #' @examples
 #' ca <- cell_addr(2, 5)
 #' as.ra_ref(ca)
+#'
+#' ca <- cell_addr(1:3, 1)
+#' \dontrun{
+#' ## won't work because as.ra_ref methods not natively vectorized
+#' as.ra_ref(ca)
+#' }
+#' ## but it's easy enough to do with Vectorize
+#' f <- Vectorize(as.ra_ref, USE.NAMES = FALSE, SIMPLIFY = FALSE)
+#' f(ca)
 as.ra_ref.cell_addr <- function(x, ...) {
-  ra_ref(rowRef = x$row, rowAbs = TRUE, colRef = x$col, colAbs = TRUE)
+  stopifnot(length(x) == 1L)
+  ra_ref(rowRef = cell_row(x), rowAbs = TRUE,
+         colRef = cell_col(x), colAbs = TRUE)
 }
 
 #' @describeIn to_string Convert a \code{\link{cell_addr}} object to a cell

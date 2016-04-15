@@ -34,7 +34,7 @@ objects or cell reference strings can be successfully converted.
 \item \code{ra_ref}: Convert a \code{\link{ra_ref}} object into a
 \code{cell_addr} object
 
-\item \code{character}: Convert string representations of absolute cell
+\item \code{character}: Convert a string representation of absolute cell
 references into a \code{cell_addr} object
 }}
 \examples{
@@ -44,9 +44,10 @@ as.cell_addr(rar)
 as.cell_addr("$D$12")
 as.cell_addr("$C$4")
 as.cell_addr("R4C3")
+as.cell_addr(c("R4C3", "$C$4", "$D$12"))
 
 \dontrun{
-# none of these will work
+# none of these will work because they are relative references
 as.cell_addr("$F2")
 as.cell_addr("R[-4]C3")
 }

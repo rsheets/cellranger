@@ -42,17 +42,35 @@ reference into a \code{\link{ra_ref}}
 \examples{
 ca <- cell_addr(2, 5)
 as.ra_ref(ca)
+
+ca <- cell_addr(1:3, 1)
+\dontrun{
+## won't work because as.ra_ref methods not natively vectorized
+as.ra_ref(ca)
+}
+## but it's easy enough to do with Vectorize
+f <- Vectorize(as.ra_ref, USE.NAMES = FALSE, SIMPLIFY = FALSE)
+f(ca)
 as.ra_ref("$F$2")
 as.ra_ref("R[-4]C3")
 
 \dontrun{
+## this won't work because column ref is relative
+as.ra_ref("D$4")
+
 ## this is actually ambiguous! is format A1 or R1C1 format?
 as.ra_ref("RC2")
 ## format must be specified in this case
 as.ra_ref("RC2", fo = "R1C1")
-
-## this won't work because column ref is relative
-as.ra_ref("D$4")
 }
+
+cs <- c("$A$1", "$F$14")
+\dontrun{
+## won't work because as.ra_ref methods not natively vectorized
+as.ra_ref(cs)
+}
+## but it's easy enough to do with Vectorize
+f <- Vectorize(as.ra_ref, USE.NAMES = FALSE, SIMPLIFY = FALSE)
+f(cs)
 }
 
