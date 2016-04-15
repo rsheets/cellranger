@@ -66,3 +66,10 @@ test_that("we refuse to convert invalid cell ref strings to cell_addr", {
   expect_error(as.cell_addr("RC"))
   expect_error(as.cell_addr("RC3"))
 })
+
+test_that("a vector of cell ref strings is converted to cell_addr", {
+  x <- as.cell_addr(c("$D$12", "$C$4"))
+  expect_identical(x, cell_addr(row = c(12L, 4L), col = c(4L, 3L)))
+  y <- lapply(c("$D$12", "$C$4"), as.cell_addr)
+  expect_equivalent(x, transpose(y))
+})

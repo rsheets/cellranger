@@ -45,30 +45,6 @@ print.cell_addr <- function(x, ...) {
   print(as.data.frame(unclass(x)), ...)
 }
 
-#' @describeIn as.ra_ref Convert a \code{cell_addr} into a \code{\link{ra_ref}}
-#' @export
-#' @examples
-#' ca <- cell_addr(2, 5)
-#' as.ra_ref(ca)
-as.ra_ref.cell_addr <- function(x, ...) {
-  ra_ref(rowRef = x$row, rowAbs = TRUE, colRef = x$col, colAbs = TRUE)
-}
-
-#' @describeIn to_string Convert a \code{\link{cell_addr}} object to a cell
-#'   reference string
-#'
-#' @examples
-#' ## cell_addr --> string
-#' (ca <- cell_addr(3, 8))
-#' to_string(ca)
-#' to_string(ca, fo = "A1")
-#'
-#' @export
-to_string.cell_addr <- function(x, fo = c("R1C1", "A1")) {
-  fo <- match.arg(fo)
-  to_string(as.ra_ref(x), fo = fo)
-}
-
 #' Convert to a cell_addr object
 #'
 #' Convert various representations of a cell reference into an object of class
@@ -102,8 +78,8 @@ as.cell_addr.ra_ref <- function(x, ...) {
   cell_addr(row = x$rowRef, col = x$colRef)
 }
 
-#' @describeIn as.cell_addr Convert a string representation of an absolute cell
-#'   reference into a \code{cell_addr} object
+#' @describeIn as.cell_addr Convert string representations of absolute cell
+#'   references into a \code{cell_addr} object
 #' @export
 #' @examples
 #' as.cell_addr("$D$12")
@@ -116,5 +92,32 @@ as.cell_addr.ra_ref <- function(x, ...) {
 #' as.cell_addr("R[-4]C3")
 #' }
 as.cell_addr.character <- function(x, fo = NULL, ...) {
-  as.cell_addr(as.ra_ref(x, fo = fo))
+  ra_ref_list <- lapply(x, as.ra_ref, fo = fo)
+  ca_list <- lapply(ra_ref_list, as.cell_addr)
+  cell_addr(row = vapply(ca_list, `[[`, integer(1), "row"),
+            col = vapply(ca_list, `[[`, integer(1), "col"))
+}
+
+#' @describeIn as.ra_ref Convert a \code{cell_addr} into a \code{\link{ra_ref}}
+#' @export
+#' @examples
+#' ca <- cell_addr(2, 5)
+#' as.ra_ref(ca)
+as.ra_ref.cell_addr <- function(x, ...) {
+  ra_ref(rowRef = x$row, rowAbs = TRUE, colRef = x$col, colAbs = TRUE)
+}
+
+#' @describeIn to_string Convert a \code{\link{cell_addr}} object to a cell
+#'   reference string
+#'
+#' @examples
+#' ## cell_addr --> string
+#' (ca <- cell_addr(3, 8))
+#' to_string(ca)
+#' to_string(ca, fo = "A1")
+#'
+#' @export
+to_string.cell_addr <- function(x, fo = c("R1C1", "A1")) {
+  fo <- match.arg(fo)
+  to_string(as.ra_ref(x), fo = fo)
 }

@@ -130,6 +130,7 @@ as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 #' }
 #' @export
 as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
+  stopifnot(length(x) == 1L)
   parsed <- parse_as_ref_string(x)
   if (warn && !all(is.null(unlist(parsed[c("fn", "wsn")])))) {
     warning("Can't store file and/or worksheet name in a ra_ref object:\n",
