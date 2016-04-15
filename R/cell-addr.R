@@ -126,16 +126,17 @@ as.cell_addr.ra_ref <- function(x, ...) {
   cell_addr(row = x$rowRef, col = x$colRef)
 }
 
-#' @describeIn as.cell_addr Convert string representations of absolute cell
+#' @describeIn as.cell_addr Convert a string representation of absolute cell
 #'   references into a \code{cell_addr} object
 #' @export
 #' @examples
 #' as.cell_addr("$D$12")
 #' as.cell_addr("$C$4")
 #' as.cell_addr("R4C3")
+#' as.cell_addr(c("R4C3", "$C$4", "$D$12"))
 #'
 #' \dontrun{
-#' # none of these will work
+#' # none of these will work because they are relative references
 #' as.cell_addr("$F2")
 #' as.cell_addr("R[-4]C3")
 #' }
@@ -164,8 +165,13 @@ as.ra_ref.cell_addr <- function(x, ...) {
 #' to_string(ca)
 #' to_string(ca, fo = "A1")
 #'
+#' (ca <- cell_addr(1:4, 3))
+#' to_string(ca)
+#' to_string(ca, fo = "A1")
 #' @export
 to_string.cell_addr <- function(x, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
-  to_string(as.ra_ref(x), fo = fo)
+  ra_ref_list <- mapply(ra_ref, rowRef = cell_row(x), colRef = cell_col(x),
+                        SIMPLIFY = FALSE)
+  vapply(ra_ref_list, to_string, character(1), fo = fo)
 }
