@@ -34,8 +34,8 @@ objects or cell reference strings can be successfully converted.
 \item \code{ra_ref}: Convert a \code{\link{ra_ref}} object into a
 \code{cell_addr} object
 
-\item \code{character}: Convert a string representation of an absolute cell
-reference into a \code{cell_addr} object
+\item \code{character}: Convert string representations of absolute cell
+references into a \code{cell_addr} object
 }}
 \examples{
 as.cell_addr(ra_ref())

@@ -7,9 +7,10 @@
 cell_addr(row, col)
 }
 \arguments{
-\item{row}{integer, row, must be greater than or equal to 1}
+\item{row}{integer. Must be the same length as \code{col} or of length one,
+which will be recycled to the length of \code{col}.}
 
-\item{col}{integer, column, must be greater than or equal to 1}
+\item{col}{integer. Same deal as for \code{row}.}
 }
 \value{
 a \code{cell_addr} object
@@ -20,6 +21,11 @@ location for one or more cells. This is in contrast to the
 \code{\link{ra_ref}} class, which holds a representation of a single
 absolute, relative, or mixed cell reference from, e.g., a formula.
 }
+\details{
+An object of class \code{cell_addr} is a list with two components of equal
+length, named \code{row} and \code{col}, consisting of integers greater than
+or equal to one.
+}
 \section{Reference}{
 
 
@@ -29,5 +35,9 @@ MIT Press 2014
 }
 \examples{
 cell_addr(4, 3)
+(ca <- cell_addr(1:4, 3))
+ca[2:3]
+ca[[4]]
+length(ca)
 }
 

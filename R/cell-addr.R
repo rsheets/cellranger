@@ -5,8 +5,13 @@
 #' \code{\link{ra_ref}} class, which holds a representation of a single
 #' absolute, relative, or mixed cell reference from, e.g., a formula.
 #'
-#' @param row integer, row, must be greater than or equal to 1
-#' @param col integer, column, must be greater than or equal to 1
+#' An object of class \code{cell_addr} is a list with two components of equal
+#' length, named \code{row} and \code{col}, consisting of integers greater than
+#' or equal to one.
+#'
+#' @param row integer. Must be the same length as \code{col} or of length one,
+#'   which will be recycled to the length of \code{col}.
+#' @param col integer. Same deal as for \code{row}.
 #'
 #' @return a \code{cell_addr} object
 #' @export
@@ -15,6 +20,10 @@
 #'
 #' @examples
 #' cell_addr(4, 3)
+#' (ca <- cell_addr(1:4, 3))
+#' ca[2:3]
+#' ca[[4]]
+#' length(ca)
 cell_addr <- function(row, col) {
   stopifnot(length(row) > 0L, length(col) > 0L,
             is.numeric(row), is.numeric(col))
@@ -44,6 +53,45 @@ print.cell_addr <- function(x, ...) {
   ## data.frame is decidedly less charming here but will do for now
   print(as.data.frame(unclass(x)), ...)
 }
+
+#' @export
+`[.cell_addr` <- function(x, i) cell_addr(row = x$row[i], col = x$col[i])
+
+#' @export
+`[[.cell_addr` <- function(x, i) cell_addr(row = x$row[[i]], col = x$col[[i]])
+
+#' @export
+length.cell_addr <- function(x) length(x$row)
+
+#' Get row from cell location or reference
+#'
+#' @param x a suitable representation of cell(s) or a cell area reference
+#' @param ... other arguments passed along to methods
+#'
+#' @return integer vector
+#' @export
+cell_row <- function(x, ...) UseMethod("cell_row")
+
+#' Get column from cell location or reference
+#'
+#' @param x a suitable representation of cell(s) or a cell area reference
+#' @param ... other arguments passed along to methods
+#'
+#' @return integer vector
+#' @export
+cell_col <- function(x, ...) UseMethod("cell_col")
+
+#' @describeIn cell_row Method for \code{\link{cell_addr}} objects
+#' (ca <- cell_addr(1:4, 3))
+#' cell_row(ca)
+#' @export
+cell_row.cell_addr <- function(x, ...) x$row
+
+#' @describeIn cell_col Method for \code{\link{cell_addr}} objects
+#' (ca <- cell_addr(1:4, 3))
+#' cell_col(ca)
+#' @export
+cell_col.cell_addr <- function(x, ...) x$col
 
 #' Convert to a cell_addr object
 #'
@@ -94,8 +142,8 @@ as.cell_addr.ra_ref <- function(x, ...) {
 as.cell_addr.character <- function(x, fo = NULL, ...) {
   ra_ref_list <- lapply(x, as.ra_ref, fo = fo)
   ca_list <- lapply(ra_ref_list, as.cell_addr)
-  cell_addr(row = vapply(ca_list, `[[`, integer(1), "row"),
-            col = vapply(ca_list, `[[`, integer(1), "col"))
+  cell_addr(row = vapply(ca_list, cell_row, integer(1)),
+            col = vapply(ca_list, cell_col, integer(1)))
 }
 
 #' @describeIn as.ra_ref Convert a \code{cell_addr} into a \code{\link{ra_ref}}
