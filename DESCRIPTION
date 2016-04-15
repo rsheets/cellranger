@@ -17,5 +17,3 @@ Suggests:
     covr,
     testthat
 RoxygenNote: 5.0.1.9000
-Remotes:
-    hadley/testthat
