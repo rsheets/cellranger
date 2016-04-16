@@ -14,7 +14,9 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   rgCL <- cell_limits(ul = c(1, 1), lr = c(4, 3))
   expect_equal(as.cell_limits(rgA1), rgCL)
   expect_equal(as.cell_limits(rgRC), rgCL)
-  expect_equal(as.range(rgCL), rgA1)
+  #expect_equal(as.range(rgCL), rgA1)
+  # temporary patch up
+  expect_equal(as.range(rgCL), "$A$1:$C$4")
   expect_equal(as.range(rgCL, RC = TRUE), rgRC)
 
   rgA1sheet <- "sheet!A1:C4"
@@ -22,7 +24,9 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   rgCLwsn <- cell_limits(ul = c(1, 1), lr = c(4, 3), wsn = "sheet")
   expect_equal(as.cell_limits(rgA1sheet), rgCLwsn)
   expect_equal(as.cell_limits(rgRCsheet), rgCLwsn)
-  expect_equal(as.range(rgCLwsn), rgA1)
+  #expect_equal(as.range(rgCLwsn), rgA1)
+  # temporary patch up
+  expect_equal(as.range(rgCLwsn), "$A$1:$C$4")
   expect_equal(as.range(rgCLwsn, RC = TRUE), rgRC)
   expect_equal(as.range(rgCLwsn, RC = TRUE, wsn = TRUE), rgRCsheet)
 
@@ -35,7 +39,9 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.cell_limits(rgRC), rgCL)
   expect_equal(as.cell_limits(rgA1A1), rgCL)
   expect_equal(as.cell_limits(rgRCRC), rgCL)
-  expect_equal(as.range(rgCL), rgA1A1)
+  #expect_equal(as.range(rgCL), rgA1A1)
+  # temporary patch up
+  expect_equal(as.range(rgCL), "$E$7:$E$7")
   expect_equal(as.range(rgCL, RC = TRUE), rgRCRC)
 
   rgA1sheet <- "sheet!E7"
@@ -47,7 +53,9 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.cell_limits(rgRCsheet), rgCLsheet)
   expect_equal(as.cell_limits(rgA1A1sheet), rgCLsheet)
   expect_equal(as.cell_limits(rgRCRCsheet), rgCLsheet)
-  expect_equal(as.range(rgCLsheet, wsn = TRUE), rgA1A1sheet)
+  #expect_equal(as.range(rgCLsheet, wsn = TRUE), rgA1A1sheet)
+  # temporary patch up
+  expect_equal(as.range(rgCLsheet, wsn = TRUE), "sheet!$E$7:$E$7")
   expect_equal(as.range(rgCLsheet, RC = TRUE, wsn = TRUE), rgRCRCsheet)
 
   rgCL <- cell_limits(ul = c(NA, 1), lr = c(4, NA))
@@ -57,7 +65,8 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
 
 test_that("Whitespace-containing sheet names gain/lose single quotes", {
   x <- cell_limits(ul = c(1, 1), lr = c(4, 3), wsn = "aaa bbb")
-  expect_identical(as.range(x, wsn = TRUE), "'aaa bbb'!A1:C4")
+  ## HELLO! had to change this since everything is becoming absolute now
+  expect_identical(as.range(x, wsn = TRUE), "'aaa bbb'!$A$1:$C$4")
   expect_identical(as.cell_limits("'aaa bbb'!A1:C4"), x)
 })
 

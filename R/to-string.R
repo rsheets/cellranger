@@ -11,6 +11,15 @@
 #' @export
 to_string <- function(x, fo = c("R1C1", "A1")) UseMethod("to_string")
 
+#' @export
+to_string.logical <- function(x, ...) rep_len(NA_character_, length(x))
+## TO DO: it really would be better to have a way to accomodate NAs in the
+## objects I'm expecting, i.e. ra_ref and cell_addr, and get rid of this
+## cell_addr can hold them now but to_string.cell_addr doesn't work :(
+## which, in fact, is precisely because ra_ref() constructor doesn't
+## anticipate NA inputs
+## so really the same problem
+
 #' @describeIn to_string Convert a \code{\link{ra_ref}} object to a cell
 #'   reference string
 #' @examples

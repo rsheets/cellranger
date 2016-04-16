@@ -134,6 +134,6 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   if (fo == "A1") {
     A1_to_ra_ref(ref, strict = strict)[[1]]
   } else {
-    R1C1_to_ra_ref(ref)
+    R1C1_to_ra_ref(ref)[[1]]
   }
 }

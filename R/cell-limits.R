@@ -132,7 +132,7 @@ as.cell_limits.character <- function(x) {
   A1_regex <- "^[A-Za-z]{1,3}[0-9]+$"
 
   if (all(grepl(A1_regex, rg))) {
-    rg <- A1_to_RC(rg)
+    rg <- A1_to_RC(rg, strict = FALSE)
   } else if (!all(grepl(RC_regex, rg))) {
     stop("Trying to set cell limits, but requested range is invalid:\n",
          x_orig)

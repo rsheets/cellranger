@@ -30,6 +30,16 @@ is_abs_ref <- function(x) {
   x$rowAbs && x$colAbs
 }
 
+is_rel_ref <- function(x) {
+  stopifnot(inherits(x, "ra_ref"))
+  !x$rowAbs && !x$colAbs
+}
+
+is_mixed_ref <- function(x) {
+  stopifnot(inherits(x, "ra_ref"))
+  xor(x$rowAbs, x$colAbs)
+}
+
 absolutize <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
   ra_ref(rowRef = x$rowRef, rowAbs = TRUE, colRef = x$colRef, colAbs = TRUE)

@@ -112,10 +112,13 @@ cell_col.cell_addr <- function(x, ...) x$col
 as.cell_addr <-
   function(x, fo = NULL, strict = TRUE, ...) UseMethod("as.cell_addr")
 
+#' @describeIn as.cell_addr Convert a logical (NA, really) into a cell_addr
+#'   object ... I might design this away but need it for the moment
+#' @export
 as.cell_addr.logical <- function(x, ...) cell_addr(NA_integer_, NA_integer_)
 
-#' @describeIn as.cell_addr Convert a \code{\link{ra_ref}} object into a
-#'   \code{cell_addr} object
+#' @describeIn as.cell_addr Convert a logical (NA, really) into a cell_addr
+#'   object ... I might design this away but need it for the moment
 #' @export
 #' @examples
 #' as.cell_addr(ra_ref())
@@ -123,11 +126,8 @@ as.cell_addr.logical <- function(x, ...) cell_addr(NA_integer_, NA_integer_)
 #' as.cell_addr(rar)
 as.cell_addr.ra_ref <- function(x, ...) {
   if (!x$rowAbs || !x$colAbs) {
-    ## TO DO: for consistency's sake, maybe I should warn and return NA here?
-    stop("cell_addr objects give absolute row and column, not relative:\n",
-         " rowAbs = ", x$rowAbs, ", rowRef = ", x$rowRef, "\n",
-         " colAbs = ", x$colAbs, ", colRef = ", x$colRef, "\n",
-         call. = FALSE)
+    warning("Can't make cell_addr from a relative reference", call. = FALSE)
+    return(cell_addr(NA_integer_, NA_integer_))
   }
   cell_addr(row = x$rowRef, col = x$colRef)
 }

@@ -72,9 +72,10 @@ test_that("valid ra_ref objects can be converted to cell_addr", {
 })
 
 test_that("we refuse to convert invalid ra_ref objects to cell_addr", {
-  expect_error(as.cell_addr(ra_ref(2, FALSE, 5, FALSE)))
-  expect_error(as.cell_addr(ra_ref(2, TRUE, 5, FALSE)))
-  expect_error(as.cell_addr(ra_ref(2, FALSE, 5, TRUE)))
+  ca <- cell_addr(NA_integer_, NA_integer_)
+  expect_warning(expect_identical(as.cell_addr(ra_ref(2, FALSE, 5, FALSE)), ca))
+  expect_warning(expect_identical(as.cell_addr(ra_ref(2, TRUE, 5, FALSE)), ca))
+  expect_warning(expect_identical(as.cell_addr(ra_ref(2, FALSE, 5, TRUE)), ca))
 })
 
 test_that("valid cell ref strings can be converted to cell_addr", {
@@ -83,23 +84,15 @@ test_that("valid cell ref strings can be converted to cell_addr", {
 })
 
 test_that("we refuse to convert invalid cell ref strings to cell_addr", {
-
   na_ca <- cell_addr(NA_integer_, NA_integer_)
   expect_warning(expect_identical(as.cell_addr("$F2"), na_ca))
   expect_warning(expect_identical(as.cell_addr("F$2"), na_ca))
-
-  ## TO DO: get consistent about raising error or returning NA
-  expect_error(as.cell_addr("R[-4]C3"))
-  expect_error(as.cell_addr("R4C[3]"))
-  expect_error(as.cell_addr("RC"))
-  expect_error(as.cell_addr("RC3"))
+  expect_warning(expect_identical(as.cell_addr("R4C[3]"), na_ca))
+  expect_warning(expect_identical(as.cell_addr("RC"), na_ca))
 })
 
 test_that("relative cell ref strings convert to cell_addr if strict = FALSE", {
-  ca <- as.cell_addr("$F$2")
-  expect_identical(as.cell_addr("$F2", strict = FALSE), ca)
-  expect_identical(as.cell_addr("F$2", strict = FALSE), ca)
-  expect_identical(as.cell_addr("F2", strict = FALSE), ca)
+  expect_identical(as.cell_addr("F2", strict = FALSE), as.cell_addr("$F$2"))
 })
 
 test_that("a vector of cell ref strings is converted to cell_addr", {

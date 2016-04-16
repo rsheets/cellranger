@@ -58,10 +58,7 @@ test_that("convert an A1 formatted rel ref string to a ra_ref --> get NA", {
 })
 
 test_that("A1 formatted rel ref string --> absolutized ra_ref if strict = FALSE", {
-  raref <- ra_ref(4, TRUE, 1, TRUE)
-  expect_identical(as.ra_ref("A$4", strict = FALSE), raref)
-  expect_identical(as.ra_ref("$A4", strict = FALSE), raref)
-  expect_identical(as.ra_ref("A4", strict = FALSE), raref)
+  expect_identical(as.ra_ref("A4", strict = FALSE), ra_ref(4, TRUE, 1, TRUE))
 })
 
 test_that("valid cell ref string is converted to an ra_ref object", {

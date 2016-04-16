@@ -19,17 +19,16 @@ character vector of absolute cell references in R1C1 format
 Convert cell reference strings from A1 to R1C1 format. Strictly speaking,
 this only makes sense for absolute references, such as \code{"$B$4"}. Why?
 Because otherwise, we'd have to know the host cell of the reference. Set
-\code{strict = FALSE} to relax and treat relative (\code{"B4"}) and mixed
-(\code{"B$4"}) references as if they are absolute.
+\code{strict = FALSE} to relax and treat pure relative references, like
+(\code{"B4"}), as if they are absolute. Mixed references, like
+(\code{"B$4"}), will always return \code{NA}, no matter the value of
+\code{strict}.
 }
 \examples{
 A1_to_RC("$A$1")
-A1_to_RC("A1")              ## raises a warning, returns NA
-A1_to_RC("A1", strict = FALSE)
-A1_to_RC(c("$A$1", "AZ10")) ## raises a warning, includes an NA
-A1_to_RC(c("$A$1", "AZ10"), strict = FALSE)
-\dontrun{
-A1_to_RC("Q0", strict = FALSE) ## error because there is no row 0
-}
+A1_to_RC("A1")                 ## raises a warning, returns NA
+A1_to_RC("A1", strict = FALSE) ## unless strict = FALSE
+A1_to_RC(c("$A$1", "B$4")) ## raises a warning, includes an NA
+A1_to_RC(c("$A$1", "B$4"), strict = FALSE) ## here too
 }
 

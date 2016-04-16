@@ -1,6 +1,10 @@
-## nqa = "no questions asked!"
-## let calling functions worry about whether this conversion is a good idea
-A1_to_ra_ref_nqa <- function(x) {
+A1_to_ra_ref_ONE <- function(x) {
+  ## WARNING: operates on a "no questions asked!" basis
+  ## this conversion arguably makes no sense for
+  ## relative references like A1 and, especially,
+  ## mixed references like A$1 or $A1
+  ## RELATIVE TO WHAT?!?
+  ## but, anyway, the calling function is responsible for that
   y <- extract_named_captures(x, .cr$A1_ncg_rx)
   ## example: D$56 comes back as named list
   ## rowAbs = "$" rowRef = "56" colAbs = "" colRef = "D"
@@ -9,23 +13,22 @@ A1_to_ra_ref_nqa <- function(x) {
          colRef = letter_to_num(y$colRef), colAbs = nzchar(y$colAbs))
 }
 
-## this IS vectorized over x and always returns list
+## vectorized over x and always returns list
 A1_to_ra_ref <- function(x, strict = TRUE) {
-  y <- lapply(x, A1_to_ra_ref_nqa)
-  abs <- vapply(y, is_abs_ref, logical(1))
-  if (strict) {
-    if (any(!abs)) {
-      warning("Relative and/or mixed cell references ... NAs generated",
-              call. = FALSE)
-      y[!abs] <- NA
-    }
-  } else {
-    y <- lapply(y, absolutize)
+  y <- lapply(x, A1_to_ra_ref_ONE)
+  rel <- vapply(y, is_rel_ref, logical(1))
+  mixed <- vapply(y, is_mixed_ref, logical(1))
+  if (strict && any(rel)) mixed <- rel | mixed
+  if (any(mixed)) {
+    warning("Ambiguous cell references ... NAs generated", call. = FALSE)
+    ## TO DO: maybe I need to make a ra_ref with NAs everywhere instead?
+    y[mixed] <- NA
   }
+  if (!strict && any(rel)) y[rel] <- lapply(y[rel], absolutize)
   y
 }
 
-R1C1_to_ra_ref <- function(x) {
+R1C1_to_ra_ref_ONE <- function(x) {
   y <- extract_named_captures(x, .cr$R1C1_ncg_rx)
   ## example: R[-4]C7 comes back as named list
   ## rowAbs = "[" rowRef = "-4" colAbs = "" colRef = "7"
@@ -46,13 +49,18 @@ R1C1_to_ra_ref <- function(x) {
          colRef = as.integer(y$colRef), colAbs = y$colAbs)
 }
 
+## vectorized over x and always returns list
+R1C1_to_ra_ref <- function(x) lapply(x, R1C1_to_ra_ref_ONE)
+
 #' Convert cell reference strings from A1 to R1C1 format
 #'
 #' Convert cell reference strings from A1 to R1C1 format. Strictly speaking,
 #' this only makes sense for absolute references, such as \code{"$B$4"}. Why?
 #' Because otherwise, we'd have to know the host cell of the reference. Set
-#' \code{strict = FALSE} to relax and treat relative (\code{"B4"}) and mixed
-#' (\code{"B$4"}) references as if they are absolute.
+#' \code{strict = FALSE} to relax and treat pure relative references, like
+#' (\code{"B4"}), as if they are absolute. Mixed references, like
+#' (\code{"B$4"}), will always return \code{NA}, no matter the value of
+#' \code{strict}.
 #'
 #' @param x character vector of cell references in A1 format
 #' @param strict logical, indicates that only absolute references should be
@@ -62,19 +70,18 @@ R1C1_to_ra_ref <- function(x) {
 #'
 #' @examples
 #' A1_to_RC("$A$1")
-#' A1_to_RC("A1")              ## raises a warning, returns NA
-#' A1_to_RC("A1", strict = FALSE)
-#' A1_to_RC(c("$A$1", "AZ10")) ## raises a warning, includes an NA
-#' A1_to_RC(c("$A$1", "AZ10"), strict = FALSE)
-#' \dontrun{
-#' A1_to_RC("Q0", strict = FALSE) ## error because there is no row 0
-#' }
+#' A1_to_RC("A1")                 ## raises a warning, returns NA
+#' A1_to_RC("A1", strict = FALSE) ## unless strict = FALSE
+#' A1_to_RC(c("$A$1", "B$4")) ## raises a warning, includes an NA
+#' A1_to_RC(c("$A$1", "B$4"), strict = FALSE) ## here too
 #' @export
 A1_to_RC <- function(x, strict = TRUE) {
   stopifnot(is.character(x), all(grepl(.cr$is_A1_rx, x)))
   y <- A1_to_ra_ref(x, strict = strict)
   vapply(y,
          function(z) {
+           ## TO DO: this would get simpler if I just embraced NA for impossible
+           ## stuff everywhere and propagated in all methods
            if (inherits(z, "ra_ref")) to_string(z) else NA_character_
            },
          character(1))
@@ -90,20 +97,15 @@ A1_to_RC <- function(x, strict = TRUE) {
 #' RC_to_A1("R1C1")
 #' RC_to_A1("R10C52")
 #' RC_to_A1(c("R1C1", "R10C52"))
-#' RC_to_A1(c("", NA, "R0C0"))
-#'
 #' @export
 RC_to_A1 <- function(x) {
-
-  stopifnot(is.character(x))
-
-  col_part <- sub("^R[0-9]+C([0-9]+)$", "\\1", x)
-  col_part <- num_to_letter(as.integer(col_part))
-
-  row_part <- sub("^R([0-9]+)C[0-9]+$", "\\1", x)
-  row_part <- as.integer(row_part)
-  row_part <- ifelse(row_part > 0, row_part, NA)
-
-  ifelse(is.na(row_part) | is.na(col_part), NA,
-         paste0(col_part, row_part))
+  stopifnot(is.character(x), all(grepl(.cr$is_R1C1_rx, x)))
+  y <- R1C1_to_ra_ref(x)
+  abs <- vapply(y, is_abs_ref, logical(1))
+  if (any(!abs)) {
+    warning("Ambiguous cell references ... NAs generated", call. = FALSE)
+    ## TO DO: maybe I need to make a ra_ref with NAs everywhere instead?
+    y[!abs] <- NA
+  }
+  vapply(y, to_string, character(1), fo = "A1")
 }

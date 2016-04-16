@@ -19,7 +19,5 @@ Convert R1C1 positioning notation to A1 notation
 RC_to_A1("R1C1")
 RC_to_A1("R10C52")
 RC_to_A1(c("R1C1", "R10C52"))
-RC_to_A1(c("", NA, "R0C0"))
-
 }
 
