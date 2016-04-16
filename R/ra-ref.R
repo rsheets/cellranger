@@ -54,44 +54,6 @@ print.ra_ref <- function(x, ...) {
   cat(" ", to_string(x), "\n")
 }
 
-
-#' Get string representation of cell references
-#'
-#' If either the row or column reference is relative, note that, in general,
-#' it's impossible to convert to an "A1" formatted string. We would have to know
-#' "relative to what?".
-#'
-#' @param x a suitable representation of a cell or cell area reference
-#' @template param-fo
-#'
-#' @return a character vector of length one
-#' @export
-to_string <- function(x, fo = c("R1C1", "A1")) UseMethod("to_string")
-
-#' @describeIn to_string Convert a \code{\link{ra_ref}} object to a cell
-#'   reference string
-#' @examples
-#' to_string(ra_ref())
-#' to_string(ra_ref(), fo = "A1")
-#' to_string(ra_ref(rowRef = 3, colRef = 2))
-#' (rel_ref <- ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3))
-#' to_string(rel_ref)
-#' \dontrun{
-#' ## this won't work because row reference is relative and format is A1
-#' to_string(rel_ref, fo = "A1")
-#' }
-#' @export
-to_string.ra_ref <- function(x, fo = c("R1C1", "A1")) {
-  fo <- match.arg(fo)
-  if (fo == "A1") {
-    stopifnot_abs(x)
-    return(paste0(rel_abs_format(x$colAbs, fo = "A1"), num_to_letter(x$colRef),
-                  rel_abs_format(x$rowAbs, fo = "A1"), x$rowRef))
-  }
-  paste0("R", rel_abs_format(x$rowAbs, x$rowRef),
-         "C", rel_abs_format(x$colAbs, x$colRef))
-}
-
 #' Convert to a ra_ref object
 #'
 #' Convert various representations of a cell reference into an object of class
@@ -105,23 +67,25 @@ to_string.ra_ref <- function(x, fo = c("R1C1", "A1")) {
 #' @export
 as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 
-#' @describeIn as.ra_ref Convert the string representation of a single cell
-#'   reference into a \code{\link{ra_ref}}
+#' @describeIn as.ra_ref Convert a string representation of a cell reference
+#'   into an object of class \code{\link{ra_ref}}
 #'
 #' @param fo Optional specification of the cell reference format of the string
 #'   \code{x}. If given, it must be either "A1" or "R1C1"; it can usually be
 #'   inferred.
-#' @param warn Logical, requesting a warning if a file or worksheet name is
-#'   found in the string, since this cannot be represented in a
-#'   \code{\link{ra_ref}} object and will be dropped.
+#' @param warn Logical, requests a warning if a file or worksheet name is found
+#'   in the string, since this cannot be represented in a \code{\link{ra_ref}}
+#'   object and will be dropped.
+#' @param strict logical, indicates that only absolute references should be
+#'   converted; defaults to \code{TRUE}
 #'
 #' @examples
 #' as.ra_ref("$F$2")
 #' as.ra_ref("R[-4]C3")
 #'
 #' \dontrun{
-#' ## this won't work because column ref is relative
-#' as.ra_ref("D$4")
+#' as.ra_ref("D$4") ## won't work because column ref is relative
+#' as.ra_ref("D$4", strict = FALSE) ## let's pretend it's absolute!
 #'
 #' ## this is actually ambiguous! is format A1 or R1C1 format?
 #' as.ra_ref("RC2")
@@ -138,14 +102,14 @@ as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 #' f <- Vectorize(as.ra_ref, USE.NAMES = FALSE, SIMPLIFY = FALSE)
 #' f(cs)
 #' @export
-as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
+as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   stopifnot(length(x) == 1L)
   parsed <- parse_as_ref_string(x)
   if (warn && !all(is.null(unlist(parsed[c("fn", "wsn")])))) {
     warning("Can't store file and/or worksheet name in a ra_ref object:\n",
             parsed$input, call. = FALSE)
   }
-  ref <- unlist(strsplit(parsed$cell_ref, ":"))
+  ref <- unlist(strsplit(parsed$ref, ":"))
   if (length(ref) != 1L) {
     stop("Can't make a ra_ref object from a cell area reference:\n",
          parsed$cell_ref, call. = FALSE)
@@ -167,38 +131,9 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, ...) {
     fo <- match.arg(fo, c("R1C1", "A1"))
   }
 
-  if (fo == "A1") stopifnot_abs(ref)
-
-  y <- extract_named_captures(
-    ref,
-    pattern = if (fo == "A1") .cr$A1_ncg_rx else .cr$R1C1_ncg_rx
-  )
-
-  ## A1 case: presence of dollar sign indicates absolute reference
-  y$rowAbs <- nzchar(y$rowAbs)
-  y$colAbs <- nzchar(y$colAbs)
-
-  if (fo == "R1C1") {
-    ## R1C1 case: in general, opposite of A1 case
-    ## because presence of square bracket indicates relative reference
-    ## EXCEPT when the row or column reference is empty
-    if (y$rowRef == "") {
-      y$rowAbs <- FALSE
-      y$rowRef <- 0
-    } else {
-      y$rowAbs <- !y$rowAbs
-    }
-    if (y$colRef == "") {
-      y$colAbs <- FALSE
-      y$colRef <- 0
-    } else {
-      y$colAbs <- !y$colAbs
-    }
+  if (fo == "A1") {
+    A1_to_ra_ref(ref, strict = strict)[[1]]
+  } else {
+    R1C1_to_ra_ref(ref)
   }
-
-  ra_ref(rowRef = as.integer(y$rowRef),
-         rowAbs = y$rowAbs,
-         colRef = if (fo == "A1") letter_to_num(y$colRef) else as.integer(y$colRef),
-         colAbs = y$colAbs)
-
 }

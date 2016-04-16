@@ -25,6 +25,16 @@ rel_abs_format <- function(indAbs, rcRef, fo = c("R1C1", "A1")) {
   if (rcRef == 0) "" else paste0("[", rcRef, "]")
 }
 
+is_abs_ref <- function(x) {
+  stopifnot(inherits(x, "ra_ref"))
+  x$rowAbs && x$colAbs
+}
+
+absolutize <- function(x) {
+  stopifnot(inherits(x, "ra_ref"))
+  ra_ref(rowRef = x$rowRef, rowAbs = TRUE, colRef = x$colRef, colAbs = TRUE)
+}
+
 stopifnot_abs <- function(x, ...) UseMethod("stopifnot_abs")
 
 stopifnot_abs.ra_ref <- function(x, ...) {

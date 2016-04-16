@@ -2,26 +2,34 @@
 % Please edit documentation in R/A1-to-from-RC.R
 \name{A1_to_RC}
 \alias{A1_to_RC}
-\title{Convert A1 positioning notation to R1C1 notation}
+\title{Convert cell reference strings from A1 to R1C1 format}
 \usage{
-A1_to_RC(x)
+A1_to_RC(x, strict = TRUE)
 }
 \arguments{
-\item{x}{vector of cell positions in A1 notation}
+\item{x}{character vector of cell references in A1 format}
+
+\item{strict}{logical, indicates that only absolute references should be
+converted; defaults to \code{TRUE}}
 }
 \value{
-vector of cell positions in R1C1 notation
+character vector of absolute cell references in R1C1 format
 }
 \description{
-Convert "A1" style cell references to "R1C1" style. Dollar signs will be
-ignored.
+Convert cell reference strings from A1 to R1C1 format. Strictly speaking,
+this only makes sense for absolute references, such as \code{"$B$4"}. Why?
+Because otherwise, we'd have to know the host cell of the reference. Set
+\code{strict = FALSE} to relax and treat relative (\code{"B4"}) and mixed
+(\code{"B$4"}) references as if they are absolute.
 }
 \examples{
-A1_to_RC("A1")
-A1_to_RC("AZ10")
-A1_to_RC("AZ$10")
-A1_to_RC(c("A1", "AZ10"))
-A1_to_RC(c("", NA, "Q0"))
-
+A1_to_RC("$A$1")
+A1_to_RC("A1")              ## raises a warning, returns NA
+A1_to_RC("A1", strict = FALSE)
+A1_to_RC(c("$A$1", "AZ10")) ## raises a warning, includes an NA
+A1_to_RC(c("$A$1", "AZ10"), strict = FALSE)
+\dontrun{
+A1_to_RC("Q0", strict = FALSE) ## error because there is no row 0
+}
 }
 

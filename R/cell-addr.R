@@ -36,7 +36,7 @@ cell_addr <- function(row, col) {
   }
   row <- as.integer(row)
   col <- as.integer(col)
-  neg <- row < 1 | col < 1
+  neg <- (!is.na(row) & row < 1) | (!is.na(col) & col < 1)
   if (any(neg)) {
     ## data.frame's insistence on row names is actually nice here
     out <- data.frame(row, col)[neg, ,drop = FALSE]
@@ -96,18 +96,23 @@ cell_col.cell_addr <- function(x, ...) x$col
 #' Convert to a cell_addr object
 #'
 #' Convert various representations of a cell reference into an object of class
-#' \code{\link{cell_addr}}. Recall that \code{\link{cell_addr}} objects hold the
-#' absolute row and column of a single cell, so not all \code{\link{ra_ref}}
-#' objects or cell reference strings can be successfully converted.
+#' \code{\link{cell_addr}}. Recall that \code{\link{cell_addr}} objects hold
+#' absolute row and column location, so not all \code{\link{ra_ref}} objects or
+#' cell reference strings can be successfully converted.
 #'
 #' @param x a cell reference
+#' @param strict logical, indicates that only absolute references should be
+#'   converted; defaults to \code{TRUE}
 #' @param ... other arguments passed along to methods
 #' @template param-fo
 #'
 #' @return a \code{\link{cell_addr}} object
 #'
 #' @export
-as.cell_addr <- function(x, fo = NULL, ...) UseMethod("as.cell_addr")
+as.cell_addr <-
+  function(x, fo = NULL, strict = TRUE, ...) UseMethod("as.cell_addr")
+
+as.cell_addr.logical <- function(x, ...) cell_addr(NA_integer_, NA_integer_)
 
 #' @describeIn as.cell_addr Convert a \code{\link{ra_ref}} object into a
 #'   \code{cell_addr} object
@@ -118,6 +123,7 @@ as.cell_addr <- function(x, fo = NULL, ...) UseMethod("as.cell_addr")
 #' as.cell_addr(rar)
 as.cell_addr.ra_ref <- function(x, ...) {
   if (!x$rowAbs || !x$colAbs) {
+    ## TO DO: for consistency's sake, maybe I should warn and return NA here?
     stop("cell_addr objects give absolute row and column, not relative:\n",
          " rowAbs = ", x$rowAbs, ", rowRef = ", x$rowRef, "\n",
          " colAbs = ", x$colAbs, ", colRef = ", x$colRef, "\n",
@@ -137,11 +143,12 @@ as.cell_addr.ra_ref <- function(x, ...) {
 #'
 #' \dontrun{
 #' # none of these will work because they are relative references
+#' ## TO DO: first one works but gives NA, second one errors ... make consistent?
 #' as.cell_addr("$F2")
 #' as.cell_addr("R[-4]C3")
 #' }
-as.cell_addr.character <- function(x, fo = NULL, ...) {
-  ra_ref_list <- lapply(x, as.ra_ref, fo = fo)
+as.cell_addr.character <- function(x, fo = NULL, strict = TRUE, ...) {
+  ra_ref_list <- lapply(x, as.ra_ref, fo = fo, strict = strict)
   ca_list <- lapply(ra_ref_list, as.cell_addr)
   cell_addr(row = vapply(ca_list, cell_row, integer(1)),
             col = vapply(ca_list, cell_col, integer(1)))
@@ -165,24 +172,4 @@ as.ra_ref.cell_addr <- function(x, ...) {
   stopifnot(length(x) == 1L)
   ra_ref(rowRef = cell_row(x), rowAbs = TRUE,
          colRef = cell_col(x), colAbs = TRUE)
-}
-
-#' @describeIn to_string Convert a \code{\link{cell_addr}} object to a cell
-#'   reference string
-#'
-#' @examples
-#' ## cell_addr --> string
-#' (ca <- cell_addr(3, 8))
-#' to_string(ca)
-#' to_string(ca, fo = "A1")
-#'
-#' (ca <- cell_addr(1:4, 3))
-#' to_string(ca)
-#' to_string(ca, fo = "A1")
-#' @export
-to_string.cell_addr <- function(x, fo = c("R1C1", "A1")) {
-  fo <- match.arg(fo)
-  ra_ref_list <- mapply(ra_ref, rowRef = cell_row(x), colRef = cell_col(x),
-                        SIMPLIFY = FALSE)
-  vapply(ra_ref_list, to_string, character(1), fo = fo)
 }

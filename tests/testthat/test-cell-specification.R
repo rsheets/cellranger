@@ -3,33 +3,7 @@ context("cell specification")
 test_that("Dollar signs are removed", {
 
   expect_equal(rm_dollar_signs(c("A$1:$B$32", "$D11")), c("A1:B32", "D11"))
-  expect_equal(as.cell_limits("A$1:$B$32"), cell_limits(c(1, 1), c(32, 2)))
-
-})
-
-test_that("A1 notation converts to R1C1 notation", {
-
-  expect_equal(A1_to_RC("A1"), "R1C1")
-  expect_equal(A1_to_RC("AB10"), "R10C28")
-  expect_equal(A1_to_RC(
-    c(  "A1",    "ZZ100", NA, "Q", "4", "",     "ZZZ15", "Q0")),
-    c("R1C1", "R100C702", NA,  NA,  NA, NA, "R15C18278",   NA))
-
-  expect_error(A1_to_RC(1:5))
-  expect_error(A1_to_RC(factor(LETTERS)))
-
-})
-
-test_that("R1C1 notation converts to A1 notation", {
-
-  expect_equal(RC_to_A1("R1C1"), "A1")
-  expect_equal(RC_to_A1("R10C28"), "AB10")
-  expect_equal(RC_to_A1(
-    c("R1C1", "R100C702", "R15C18278", "", NA, "R5C0")),
-    c(  "A1",    "ZZ100",     "ZZZ15", NA, NA,     NA))
-
-  expect_error(RC_to_A1(1:5))
-  expect_error(RC_to_A1(factor(LETTERS)))
+  #expect_equal(as.cell_limits("A$1:$B$32"), cell_limits(c(1, 1), c(32, 2)))
 
 })
 

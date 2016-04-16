@@ -10,7 +10,8 @@
 
 as.ra_ref(x, ...)
 
-\method{as.ra_ref}{character}(x, fo = NULL, warn = TRUE, ...)
+\method{as.ra_ref}{character}(x, fo = NULL, warn = TRUE, strict = TRUE,
+  ...)
 }
 \arguments{
 \item{x}{a cell reference}
@@ -21,9 +22,12 @@ as.ra_ref(x, ...)
 \code{x}. If given, it must be either "A1" or "R1C1"; it can usually be
 inferred.}
 
-\item{warn}{Logical, requesting a warning if a file or worksheet name is
-found in the string, since this cannot be represented in a
-\code{\link{ra_ref}} object and will be dropped.}
+\item{warn}{Logical, requests a warning if a file or worksheet name is found
+in the string, since this cannot be represented in a \code{\link{ra_ref}}
+object and will be dropped.}
+
+\item{strict}{logical, indicates that only absolute references should be
+converted; defaults to \code{TRUE}}
 }
 \value{
 a \code{\link{ra_ref}} object
@@ -36,8 +40,8 @@ Convert various representations of a cell reference into an object of class
 \itemize{
 \item \code{cell_addr}: Convert a \code{cell_addr} into a \code{\link{ra_ref}}
 
-\item \code{character}: Convert the string representation of a single cell
-reference into a \code{\link{ra_ref}}
+\item \code{character}: Convert a string representation of a cell reference
+into an object of class \code{\link{ra_ref}}
 }}
 \examples{
 ca <- cell_addr(2, 5)
@@ -55,8 +59,8 @@ as.ra_ref("$F$2")
 as.ra_ref("R[-4]C3")
 
 \dontrun{
-## this won't work because column ref is relative
-as.ra_ref("D$4")
+as.ra_ref("D$4") ## won't work because column ref is relative
+as.ra_ref("D$4", strict = FALSE) ## let's pretend it's absolute!
 
 ## this is actually ambiguous! is format A1 or R1C1 format?
 as.ra_ref("RC2")

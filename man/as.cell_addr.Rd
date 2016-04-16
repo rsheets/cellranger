@@ -6,17 +6,20 @@
 \alias{as.cell_addr.ra_ref}
 \title{Convert to a cell_addr object}
 \usage{
-as.cell_addr(x, fo = NULL, ...)
+as.cell_addr(x, fo = NULL, strict = TRUE, ...)
 
 \method{as.cell_addr}{ra_ref}(x, ...)
 
-\method{as.cell_addr}{character}(x, fo = NULL, ...)
+\method{as.cell_addr}{character}(x, fo = NULL, strict = TRUE, ...)
 }
 \arguments{
 \item{x}{a cell reference}
 
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in some contexts, it can be inferred}
+
+\item{strict}{logical, indicates that only absolute references should be
+converted; defaults to \code{TRUE}}
 
 \item{...}{other arguments passed along to methods}
 }
@@ -25,9 +28,9 @@ a \code{\link{cell_addr}} object
 }
 \description{
 Convert various representations of a cell reference into an object of class
-\code{\link{cell_addr}}. Recall that \code{\link{cell_addr}} objects hold the
-absolute row and column of a single cell, so not all \code{\link{ra_ref}}
-objects or cell reference strings can be successfully converted.
+\code{\link{cell_addr}}. Recall that \code{\link{cell_addr}} objects hold
+absolute row and column location, so not all \code{\link{ra_ref}} objects or
+cell reference strings can be successfully converted.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -48,6 +51,7 @@ as.cell_addr(c("R4C3", "$C$4", "$D$12"))
 
 \dontrun{
 # none of these will work because they are relative references
+## TO DO: first one works but gives NA, second one errors ... make consistent?
 as.cell_addr("$F2")
 as.cell_addr("R[-4]C3")
 }
