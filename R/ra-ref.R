@@ -45,8 +45,20 @@ ra_ref <- function(rowRef = 1L,
             class = c("ra_ref", "list"))
 }
 
+#' Print ra_ref object
+#'
+#' @param x an object of class \code{\link{ra_ref}}
+#'
+#' @template param-fo
+#' @param ... further arguments passed to or from other methods
+#'
+#' @examples
+#' (rar <- ra_ref(3, TRUE, 1, TRUE))
+#' print(ra_ref(), fo = "A1")
+#'
 #' @export
-print.ra_ref <- function(x, ...) {
+print.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
+  fo <- match.arg(fo)
   row_ra <-
     switch(as.character(x$rowAbs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
   col_ra <-
@@ -54,7 +66,7 @@ print.ra_ref <- function(x, ...) {
   cat("<ra_ref>\n")
   cat(paste0(" row: ", x$rowRef, " (", row_ra, ")\n",
              " col: ", x$colRef, " (", col_ra, ")\n"))
-  cat(" ", to_string(x), "\n")
+  cat(" ", to_string(x, fo = fo), "\n")
 }
 
 #' Convert to a ra_ref object
