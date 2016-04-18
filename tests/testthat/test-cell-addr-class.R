@@ -1,9 +1,8 @@
 context("cell_addr class")
 
-test_that("cell_addr constructor rejects input of wrong amount, length, type", {
+test_that("cell_addr constructor requires row and col and checks lengths", {
   expect_error(cell_addr(1))
   expect_error(cell_addr(1:2, 1:3))
-  expect_error(cell_addr("row!", "column!"))
 })
 
 test_that("cell_addr constructor rejects row, column < 1", {
@@ -30,6 +29,13 @@ test_that("cell_addr constructor recycles length 1 row or col", {
   expect_is(ca, "cell_addr")
   expect_identical(ca$row, 1:3)
   expect_identical(ca$col, rep_len(6L, 3))
+})
+
+test_that("cell_addr constructor accepts NAs (and is not picky about type)", {
+  ca <- cell_addr(NA, NA)
+  expect_is(ca, "cell_addr")
+  expect_identical(ca$row, NA_integer_)
+  expect_identical(ca$col, NA_integer_)
 })
 
 test_that("cell_addr `[` indexing works", {
@@ -71,11 +77,13 @@ test_that("valid ra_ref objects can be converted to cell_addr", {
   expect_identical(as.cell_addr(ra_ref(2, TRUE, 5, TRUE)), cell_addr(2, 5))
 })
 
-test_that("we refuse to convert invalid ra_ref objects to cell_addr", {
-  ca <- cell_addr(NA_integer_, NA_integer_)
-  expect_warning(expect_identical(as.cell_addr(ra_ref(2, FALSE, 5, FALSE)), ca))
-  expect_warning(expect_identical(as.cell_addr(ra_ref(2, TRUE, 5, FALSE)), ca))
-  expect_warning(expect_identical(as.cell_addr(ra_ref(2, FALSE, 5, TRUE)), ca))
+test_that("ra_ref objects w/ NAs become cell_addr objects with NAs", {
+  expect_warning(expect_identical(as.cell_addr(ra_ref(2, FALSE, 5, FALSE)),
+                                  cell_addr(NA, NA)))
+  expect_warning(expect_identical(as.cell_addr(ra_ref(2, TRUE, 5, FALSE)),
+                                  cell_addr(2, NA)))
+  expect_warning(expect_identical(as.cell_addr(ra_ref(2, FALSE, 5, TRUE)),
+                                  cell_addr(NA, 5)))
 })
 
 test_that("valid cell ref strings can be converted to cell_addr", {
@@ -83,12 +91,11 @@ test_that("valid cell ref strings can be converted to cell_addr", {
   expect_identical(as.cell_addr("R4C3"), cell_addr(4, 3))
 })
 
-test_that("we refuse to convert invalid cell ref strings to cell_addr", {
-  na_ca <- cell_addr(NA_integer_, NA_integer_)
-  expect_warning(expect_identical(as.cell_addr("$F2"), na_ca))
-  expect_warning(expect_identical(as.cell_addr("F$2"), na_ca))
-  expect_warning(expect_identical(as.cell_addr("R4C[3]"), na_ca))
-  expect_warning(expect_identical(as.cell_addr("RC"), na_ca))
+test_that("relative refs in cell ref strings create NAs in cell_addr", {
+  expect_warning(expect_identical(as.cell_addr("$F2"), cell_addr(NA, 6)))
+  expect_warning(expect_identical(as.cell_addr("F$2"), cell_addr(2, NA)))
+  expect_warning(expect_identical(as.cell_addr("R4C[3]"), cell_addr(4, NA)))
+  expect_warning(expect_identical(as.cell_addr("RC"), cell_addr(NA, NA)))
 })
 
 test_that("relative cell ref strings convert to cell_addr if strict = FALSE", {

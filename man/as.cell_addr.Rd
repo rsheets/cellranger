@@ -3,13 +3,10 @@
 \name{as.cell_addr}
 \alias{as.cell_addr}
 \alias{as.cell_addr.character}
-\alias{as.cell_addr.logical}
 \alias{as.cell_addr.ra_ref}
 \title{Convert to a cell_addr object}
 \usage{
 as.cell_addr(x, fo = NULL, strict = TRUE, ...)
-
-\method{as.cell_addr}{logical}(x, ...)
 
 \method{as.cell_addr}{ra_ref}(x, ...)
 
@@ -37,11 +34,7 @@ cell reference strings can be successfully converted.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{logical}: Convert a logical (NA, really) into a cell_addr
-object ... I might design this away but need it for the moment
-
-\item \code{ra_ref}: Convert a logical (NA, really) into a cell_addr
-object ... I might design this away but need it for the moment
+\item \code{ra_ref}: Convert a \code{\link{ra_ref}} object
 
 \item \code{character}: Convert a string representation of absolute cell
 references into a \code{cell_addr} object

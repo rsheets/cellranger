@@ -14,17 +14,28 @@ A1_to_ra_ref_ONE <- function(x) {
 }
 
 ## vectorized over x and always returns list
+## strict = TRUE --> require explicit absolute references, otherwise return NA
+## example: $F$4
+## strict = FALSE --> pure relative references treated as absolute
+## example: F4 treated like $F$4
+## NO MATTER WHAT: relative references within mixed references --> NA
+## examples: F$4 or $F4
 A1_to_ra_ref <- function(x, strict = TRUE) {
   y <- lapply(x, A1_to_ra_ref_ONE)
+
   rel <- vapply(y, is_rel_ref, logical(1))
-  mixed <- vapply(y, is_mixed_ref, logical(1))
-  if (strict && any(rel)) mixed <- rel | mixed
-  if (any(mixed)) {
-    warning("Ambiguous cell references ... NAs generated", call. = FALSE)
-    ## TO DO: maybe I need to make a ra_ref with NAs everywhere instead?
-    y[mixed] <- NA
-  }
   if (!strict && any(rel)) y[rel] <- lapply(y[rel], absolutize)
+
+  not_abs <- vapply(y, is_not_abs_ref, logical(1))
+  if (any(not_abs)) {
+    warning("Ambiguous cell references ... NAs generated", call. = FALSE)
+    f <- function(z) {
+      if (!isTRUE(z$rowAbs)) z$rowRef <- NA
+      if (!isTRUE(z$colAbs)) z$colRef <- NA
+      ra_ref(z$rowRef, z$rowAbs, z$colRef, z$colAbs)
+    }
+    y[not_abs] <- lapply(y[not_abs], f)
+  }
   y
 }
 
@@ -73,18 +84,12 @@ R1C1_to_ra_ref <- function(x) lapply(x, R1C1_to_ra_ref_ONE)
 #' A1_to_RC("A1")                 ## raises a warning, returns NA
 #' A1_to_RC("A1", strict = FALSE) ## unless strict = FALSE
 #' A1_to_RC(c("$A$1", "B$4")) ## raises a warning, includes an NA
-#' A1_to_RC(c("$A$1", "B$4"), strict = FALSE) ## here too
+#' A1_to_RC(c("$A$1", "B$4"), strict = FALSE) ## mixed ref always returns NA
 #' @export
 A1_to_RC <- function(x, strict = TRUE) {
   stopifnot(is.character(x), all(grepl(.cr$is_A1_rx, x)))
   y <- A1_to_ra_ref(x, strict = strict)
-  vapply(y,
-         function(z) {
-           ## TO DO: this would get simpler if I just embraced NA for impossible
-           ## stuff everywhere and propagated in all methods
-           if (inherits(z, "ra_ref")) to_string(z) else NA_character_
-           },
-         character(1))
+  vapply(y, to_string, character(1))
 }
 
 #' Convert R1C1 positioning notation to A1 notation

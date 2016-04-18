@@ -24,7 +24,7 @@ absolute, relative, or mixed cell reference from, e.g., a formula.
 \details{
 An object of class \code{cell_addr} is a list with two components of equal
 length, named \code{row} and \code{col}, consisting of integers greater than
-or equal to one.
+or equal to one or \code{NA}.
 }
 \section{Reference}{
 

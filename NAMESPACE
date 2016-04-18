@@ -3,7 +3,6 @@
 S3method("[",cell_addr)
 S3method("[[",cell_addr)
 S3method(as.cell_addr,character)
-S3method(as.cell_addr,logical)
 S3method(as.cell_addr,ra_ref)
 S3method(as.cell_limits,"NULL")
 S3method(as.cell_limits,cell_limits)

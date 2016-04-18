@@ -1,9 +1,8 @@
 context("ra_ref class")
 
-test_that("ra_ref constructor rejects input of wrong length or type", {
+test_that("ra_ref constructor raises error for bad inputs", {
   expect_error(ra_ref(1:2))
   expect_error(ra_ref(rowAbs = "A1"))
-  expect_error(ra_ref("A1"))
 })
 
 test_that("ra_ref constructor rejects absolute references < 1", {
@@ -45,16 +44,25 @@ test_that("file and sheet qualified cell ref strings raise warning", {
   expect_warning(as.ra_ref("[filename.xlsx]'a sheet'!R1C1"))
 })
 
-test_that("we refuse to convert a relative ra_ref to A1 formatted string", {
-  expect_error(to_string(ra_ref(2, TRUE, 3, FALSE), fo = "A1"))
-  expect_error(to_string(ra_ref(2, FALSE, 3, TRUE), fo = "A1"))
-  expect_error(to_string(ra_ref(-2, FALSE, 3, FALSE), fo = "A1"))
+test_that("relative ra_refs become NA when converted to A1 formatted string", {
+  expect_warning(
+    expect_identical(to_string(ra_ref(2, TRUE, 3, FALSE), fo = "A1"),
+                     NA_character_))
+  expect_warning(
+    expect_identical(to_string(ra_ref(2, FALSE, 3, TRUE), fo = "A1"),
+                     NA_character_))
+  expect_warning(
+    expect_identical(to_string(ra_ref(-2, FALSE, 3, FALSE), fo = "A1"),
+                     NA_character_))
 })
 
 test_that("convert an A1 formatted rel ref string to a ra_ref --> get NA", {
-  expect_warning(expect_identical(as.ra_ref("A$4"), NA))
-  expect_warning(expect_identical(as.ra_ref("$A4"), NA))
-  expect_warning(expect_identical(as.ra_ref("A4"), NA))
+  expect_warning(expect_identical(as.ra_ref("A$4"),
+                                  ra_ref(4, TRUE, NA, FALSE)))
+  expect_warning(expect_identical(as.ra_ref("$A4"),
+                                  ra_ref(NA, FALSE, 1, TRUE)))
+  expect_warning(expect_identical(as.ra_ref("A4"),
+                                  ra_ref(NA, FALSE, NA, FALSE)))
 })
 
 test_that("A1 formatted rel ref string --> absolutized ra_ref if strict = FALSE", {

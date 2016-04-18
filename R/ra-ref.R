@@ -28,14 +28,13 @@ ra_ref <- function(rowRef = 1L,
                    rowAbs = TRUE,
                    colRef = 1L,
                    colAbs = TRUE) {
-  stopifnot(length(rowRef) == 1L, length(rowAbs) == 1L,
-            length(colRef) == 1L, length(colAbs) == 1L,
-            is.numeric(rowRef), is.numeric(colRef),
-            is.logical(rowAbs), is.logical(colAbs))
   rowRef <- as.integer(rowRef)
   colRef <- as.integer(colRef)
-  if ( (rowAbs && rowRef < 1) ||
-       (colAbs && colRef < 1) ) {
+  stopifnot(length(rowRef) == 1L, length(rowAbs) == 1L,
+            length(colRef) == 1L, length(colAbs) == 1L,
+            is.logical(rowAbs), is.logical(colAbs))
+  if ( (isTRUE(rowAbs) && isTRUE(rowRef < 1)) ||
+       (isTRUE(colAbs) && isTRUE(colRef < 1)) ) {
     stop("Absolute row or column references must be >= 1:\n",
          " rowAbs = ", rowAbs, ", rowRef = ", rowRef, "\n",
          " colAbs = ", colAbs, ", colRef = ", colRef, "\n",
@@ -48,9 +47,13 @@ ra_ref <- function(rowRef = 1L,
 
 #' @export
 print.ra_ref <- function(x, ...) {
+  row_ra <-
+    switch(as.character(x$rowAbs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
+  col_ra <-
+    switch(as.character(x$colAbs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
   cat("<ra_ref>\n")
-  cat(paste0(" row: ", x$rowRef, " (", if (x$rowAbs) "abs" else "rel", ")\n",
-             " col: ", x$colRef, " (", if (x$colAbs) "abs" else "rel", ")\n"))
+  cat(paste0(" row: ", x$rowRef, " (", row_ra, ")\n",
+             " col: ", x$colRef, " (", col_ra, ")\n"))
   cat(" ", to_string(x), "\n")
 }
 

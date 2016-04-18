@@ -29,6 +29,6 @@ A1_to_RC("$A$1")
 A1_to_RC("A1")                 ## raises a warning, returns NA
 A1_to_RC("A1", strict = FALSE) ## unless strict = FALSE
 A1_to_RC(c("$A$1", "B$4")) ## raises a warning, includes an NA
-A1_to_RC(c("$A$1", "B$4"), strict = FALSE) ## here too
+A1_to_RC(c("$A$1", "B$4"), strict = FALSE) ## mixed ref always returns NA
 }
 

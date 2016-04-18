@@ -34,9 +34,14 @@ to_string.logical <- function(x, ...) rep_len(NA_character_, length(x))
 #' }
 #' @export
 to_string.ra_ref <- function(x, fo = c("R1C1", "A1")) {
+  if (any(vapply(x, is.na, logical(1)))) return(NA_character_)
   fo <- match.arg(fo)
   if (fo == "A1") {
-    stopifnot_abs(x)
+    if (!x$rowAbs || !x$colAbs) {
+      warning("Relative references can't be converted to A1 formatted string ",
+              "... NAs generated", call. = FALSE)
+      return(NA_character_)
+    }
     return(paste0(rel_abs_format(x$colAbs, fo = "A1"), num_to_letter(x$colRef),
                   rel_abs_format(x$rowAbs, fo = "A1"), x$rowRef))
   }

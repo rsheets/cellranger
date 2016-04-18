@@ -7,7 +7,7 @@
 #'
 #' An object of class \code{cell_addr} is a list with two components of equal
 #' length, named \code{row} and \code{col}, consisting of integers greater than
-#' or equal to one.
+#' or equal to one or \code{NA}.
 #'
 #' @param row integer. Must be the same length as \code{col} or of length one,
 #'   which will be recycled to the length of \code{col}.
@@ -25,8 +25,11 @@
 #' ca[[4]]
 #' length(ca)
 cell_addr <- function(row, col) {
-  stopifnot(length(row) > 0L, length(col) > 0L,
-            is.numeric(row), is.numeric(col))
+  ## this way we don't have to require NA_integer_ which is annoying
+  ## integer conversion was going to happen anyway
+  row <- as.integer(row)
+  col <- as.integer(col)
+  stopifnot(length(row) > 0, length(col) > 0)
   if (length(row) > 1 && length(col) > 1) {
     stopifnot(length(row) == length(col))
   } else {
@@ -34,9 +37,7 @@ cell_addr <- function(row, col) {
     row <- rep_len(row, n)
     col <- rep_len(col, n)
   }
-  row <- as.integer(row)
-  col <- as.integer(col)
-  neg <- (!is.na(row) & row < 1) | (!is.na(col) & col < 1)
+  neg <- isTRUE_v(row < 1) | isTRUE_v(col < 1)
   if (any(neg)) {
     ## data.frame's insistence on row names is actually nice here
     out <- data.frame(row, col)[neg, ,drop = FALSE]
@@ -55,13 +56,15 @@ print.cell_addr <- function(x, ...) {
 }
 
 #' @export
-`[.cell_addr` <- function(x, i) cell_addr(row = x$row[i], col = x$col[i])
+`[.cell_addr` <-
+  function(x, i) cell_addr(row = cell_row(x)[i], col = cell_col(x)[i])
 
 #' @export
-`[[.cell_addr` <- function(x, i) cell_addr(row = x$row[[i]], col = x$col[[i]])
+`[[.cell_addr` <-
+  function(x, i) cell_addr(row = cell_row(x)[[i]], col = cell_col(x)[[i]])
 
 #' @export
-length.cell_addr <- function(x) length(x$row)
+length.cell_addr <- function(x) length(cell_row(x))
 
 #' Get row from cell location or reference
 #'
@@ -112,22 +115,21 @@ cell_col.cell_addr <- function(x, ...) x$col
 as.cell_addr <-
   function(x, fo = NULL, strict = TRUE, ...) UseMethod("as.cell_addr")
 
-#' @describeIn as.cell_addr Convert a logical (NA, really) into a cell_addr
-#'   object ... I might design this away but need it for the moment
-#' @export
-as.cell_addr.logical <- function(x, ...) cell_addr(NA_integer_, NA_integer_)
-
-#' @describeIn as.cell_addr Convert a logical (NA, really) into a cell_addr
-#'   object ... I might design this away but need it for the moment
+#' @describeIn as.cell_addr Convert a \code{\link{ra_ref}} object
 #' @export
 #' @examples
 #' as.cell_addr(ra_ref())
 #' rar <- ra_ref(2, TRUE, 5, TRUE)
 #' as.cell_addr(rar)
 as.cell_addr.ra_ref <- function(x, ...) {
-  if (!x$rowAbs || !x$colAbs) {
-    warning("Can't make cell_addr from a relative reference", call. = FALSE)
-    return(cell_addr(NA_integer_, NA_integer_))
+  if (!isTRUE(x$rowAbs) || !isTRUE(x$colAbs)) {
+    warning("Non-absolute references found ... NAs generated", call. = FALSE)
+    if (!isTRUE(x$rowAbs)) {
+      x$rowRef <- NA
+    }
+    if (!isTRUE(x$colAbs)) {
+      x$colRef <- NA
+    }
   }
   cell_addr(row = x$rowRef, col = x$colRef)
 }
@@ -170,6 +172,6 @@ as.cell_addr.character <- function(x, fo = NULL, strict = TRUE, ...) {
 #' f(ca)
 as.ra_ref.cell_addr <- function(x, ...) {
   stopifnot(length(x) == 1L)
-  ra_ref(rowRef = cell_row(x), rowAbs = TRUE,
-         colRef = cell_col(x), colAbs = TRUE)
+  ra_ref(rowRef = cell_row(x), rowAbs = if (is.na(cell_row(x))) NA else TRUE,
+         colRef = cell_col(x), colAbs = if (is.na(cell_row(x))) NA else TRUE)
 }

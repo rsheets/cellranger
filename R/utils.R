@@ -4,6 +4,8 @@ char0_to_NA <- function(x) if (length(x) < 1) NA_character_ else x
 
 isTOGGLE <- function(x) is.null(x) || isTRUE(x) || identical(x, FALSE)
 
+isTRUE_v <- function(x) !is.na(x) & x
+
 ## https://twitter.com/kevin_ushey/status/710223546929119232
 transpose <- function(list) do.call(Map, c(c, list))
 
@@ -18,11 +20,11 @@ remove_single_quotes <- function(x) gsub("^'|'$", "", x)
 
 rel_abs_format <- function(indAbs, rcRef, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
-  if (fo == "A1") return(if (indAbs) "$" else "")
+  if (fo == "A1") return(if (isTRUE_v(indAbs)) "$" else "")
   ## R1C1 case:
-  if (indAbs) return(rcRef)
+  if (isTRUE_v(indAbs)) return(rcRef)
   ## unfortunate convention where R and C are used instead of R[0] and C[0]
-  if (rcRef == 0) "" else paste0("[", rcRef, "]")
+  if (!is.na(rcRef) && rcRef == 0) "" else paste0("[", rcRef, "]")
 }
 
 is_abs_ref <- function(x) {
@@ -35,9 +37,9 @@ is_rel_ref <- function(x) {
   !x$rowAbs && !x$colAbs
 }
 
-is_mixed_ref <- function(x) {
+is_not_abs_ref <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
-  xor(x$rowAbs, x$colAbs)
+  !isTRUE(x$rowAbs) || !isTRUE(x$colAbs)
 }
 
 absolutize <- function(x) {
