@@ -47,26 +47,6 @@ absolutize <- function(x) {
   ra_ref(rowRef = x$rowRef, rowAbs = TRUE, colRef = x$colRef, colAbs = TRUE)
 }
 
-stopifnot_abs <- function(x, ...) UseMethod("stopifnot_abs")
-
-stopifnot_abs.ra_ref <- function(x, ...) {
-  if (!x$rowAbs || !x$colAbs) {
-    printed_x <- capture.output(print(x))
-    stop("Operation doesn't make sense for a relative cell reference:\n",
-         paste(printed_x, collapse = "\n"), call. = FALSE)
-  }
-  x
-}
-
-stopifnot_abs.character <- function(x, ...) {
-  n_dollar_signs <- length(gregexpr("\\$", x)[[1]])
-  if (n_dollar_signs < 2) {
-    stop("Operation doesn't make sense for a relative cell reference:\n", x,
-         call. = FALSE)
-  }
-  x
-}
-
 extract_named_captures <- function(string, pattern) {
   stopifnot(length(string) == 1L, length(pattern) == 1L)
   regexpr_output <- regexpr(pattern, string, perl = TRUE)
