@@ -50,7 +50,7 @@ ra_ref <- function(rowRef = 1L,
 #' @param x an object of class \code{\link{ra_ref}}
 #'
 #' @template param-fo
-#' @param ... further arguments passed to or from other methods
+#' @template param-ddd
 #'
 #' @examples
 #' (rar <- ra_ref(3, TRUE, 1, TRUE))
@@ -76,7 +76,7 @@ print.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
 #' examples.
 #'
 #' @param x a cell reference
-#' @param ... further arguments passed to or from other methods
+#' @template param-ddd
 #'
 #' @return a \code{\link{ra_ref}} object
 #'
@@ -134,7 +134,9 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   }
 
   if (is.null(fo)) {
-    fo <- guess_fo(ref)
+    ## guess_fo will warn when it returns c("R1C1", "A1")
+    ## so let's just honor the usual R1C1 default and get on with things
+    fo <- guess_fo(ref)[1]
   } else {
     fo <- match.arg(fo, c("R1C1", "A1"))
   }

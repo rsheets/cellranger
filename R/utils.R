@@ -64,13 +64,13 @@ guess_fo <- function(x) {
   m <- c(R1C1 = grep(.cr$is_R1C1_rx, x), A1 = grep(.cr$is_A1_rx, x))
   if (length(m) < 1) {
     warning("Cell reference follows neither the A1 nor R1C1 format:\n",
-            ref, "\nPutative format is NA.", call. = FALSE)
+            x, "\nPutative format is NA.", call. = FALSE)
     return(NA_character_)
   }
   if (length(m) > 1) {
     ## OMFG this can actually happen. Example: RCx
     warning("Not clear if cell reference is in A1 or R1C1 format:\n",
-            ref, "\nSpecify format via `fo` argument.\n",
+            x, "\nSpecify format via `fo` argument.\n",
             "Putative format is c(\"R1C1\", \"A1\"), which is probably ",
             "not what you want.", call. = FALSE)
   }

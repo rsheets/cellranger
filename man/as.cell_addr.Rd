@@ -6,7 +6,7 @@
 \alias{as.cell_addr.ra_ref}
 \title{Convert to a cell_addr object}
 \usage{
-as.cell_addr(x, fo = NULL, strict = TRUE, ...)
+as.cell_addr(x, ...)
 
 \method{as.cell_addr}{ra_ref}(x, ...)
 
@@ -15,13 +15,13 @@ as.cell_addr(x, fo = NULL, strict = TRUE, ...)
 \arguments{
 \item{x}{a cell reference}
 
+\item{...}{further arguments passed to or from other methods}
+
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
 
 \item{strict}{logical, indicates that only absolute references should be
 converted; defaults to \code{TRUE}}
-
-\item{...}{other arguments passed along to methods}
 }
 \value{
 a \code{\link{cell_addr}} object
@@ -44,15 +44,9 @@ as.cell_addr(ra_ref())
 rar <- ra_ref(2, TRUE, 5, TRUE)
 as.cell_addr(rar)
 as.cell_addr("$D$12")
-as.cell_addr("$C$4")
 as.cell_addr("R4C3")
 as.cell_addr(c("R4C3", "$C$4", "$D$12"))
-
-\dontrun{
-# none of these will work because they are relative references
-## TO DO: first one works but gives NA, second one errors ... make consistent?
 as.cell_addr("$F2")
 as.cell_addr("R[-4]C3")
-}
 }
 

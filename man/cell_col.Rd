@@ -12,7 +12,7 @@ cell_col(x, ...)
 \arguments{
 \item{x}{a suitable representation of cell(s) or a cell area reference}
 
-\item{...}{other arguments passed along to methods}
+\item{...}{further arguments passed to or from other methods}
 }
 \value{
 integer vector

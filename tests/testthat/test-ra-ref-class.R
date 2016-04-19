@@ -73,7 +73,9 @@ test_that("valid cell ref string is converted to an ra_ref object", {
   expect_identical(as.ra_ref("R[1]C[-4]"), ra_ref(1, FALSE, -4, FALSE))
   expect_identical(as.ra_ref("$C$6"), ra_ref(6, TRUE, 3, TRUE))
   ## special case when rel ref offset is 0 --> no square brackets
-  expect_error(as.ra_ref("RC1")) ## omfg RC1 is actually ambiguous
+  expect_warning(x <- as.ra_ref("RC1"))
+  ## omfg RC1 is actually ambiguous
+  expect_identical(x, ra_ref(0, FALSE, 1, TRUE))
   expect_identical(as.ra_ref("RC1", fo = "R1C1"), ra_ref(0, FALSE))
   expect_identical(as.ra_ref("R4C"), ra_ref(4, TRUE, 0, FALSE))
 })

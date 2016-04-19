@@ -17,14 +17,11 @@ a \code{cell_addr} object
 }
 \description{
 The \code{cell_addr} class is used to hold the absolute row and column
-location for one or more cells. This is in contrast to the
-\code{\link{ra_ref}} class, which holds a representation of a single
-absolute, relative, or mixed cell reference from, e.g., a formula.
-}
-\details{
-An object of class \code{cell_addr} is a list with two components of equal
-length, named \code{row} and \code{col}, consisting of integers greater than
-or equal to one or \code{NA}.
+location for one or more cells. An object of class \code{cell_addr} is a list
+with two components of equal length, named \code{row} and \code{col},
+consisting of integers greater than or equal to one or \code{NA}. This is in
+contrast to the \code{\link{ra_ref}} class, which holds a representation of a
+single absolute, relative, or mixed cell reference from, e.g., a formula.
 }
 \section{Reference}{
 

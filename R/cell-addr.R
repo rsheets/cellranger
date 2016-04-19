@@ -1,13 +1,11 @@
 #' cell_addr class
 #'
 #' The \code{cell_addr} class is used to hold the absolute row and column
-#' location for one or more cells. This is in contrast to the
-#' \code{\link{ra_ref}} class, which holds a representation of a single
-#' absolute, relative, or mixed cell reference from, e.g., a formula.
-#'
-#' An object of class \code{cell_addr} is a list with two components of equal
-#' length, named \code{row} and \code{col}, consisting of integers greater than
-#' or equal to one or \code{NA}.
+#' location for one or more cells. An object of class \code{cell_addr} is a list
+#' with two components of equal length, named \code{row} and \code{col},
+#' consisting of integers greater than or equal to one or \code{NA}. This is in
+#' contrast to the \code{\link{ra_ref}} class, which holds a representation of a
+#' single absolute, relative, or mixed cell reference from, e.g., a formula.
 #'
 #' @param row integer. Must be the same length as \code{col} or of length one,
 #'   which will be recycled to the length of \code{col}.
@@ -69,7 +67,7 @@ length.cell_addr <- function(x) length(cell_row(x))
 #' Get row from cell location or reference
 #'
 #' @param x a suitable representation of cell(s) or a cell area reference
-#' @param ... other arguments passed along to methods
+#' @template param-ddd
 #'
 #' @return integer vector
 #' @export
@@ -78,7 +76,7 @@ cell_row <- function(x, ...) UseMethod("cell_row")
 #' Get column from cell location or reference
 #'
 #' @param x a suitable representation of cell(s) or a cell area reference
-#' @param ... other arguments passed along to methods
+#' @template param-ddd
 #'
 #' @return integer vector
 #' @export
@@ -104,16 +102,12 @@ cell_col.cell_addr <- function(x, ...) x$col
 #' cell reference strings can be successfully converted.
 #'
 #' @param x a cell reference
-#' @param strict logical, indicates that only absolute references should be
-#'   converted; defaults to \code{TRUE}
-#' @param ... other arguments passed along to methods
-#' @template param-fo
+#' @template param-ddd
 #'
 #' @return a \code{\link{cell_addr}} object
 #'
 #' @export
-as.cell_addr <-
-  function(x, fo = NULL, strict = TRUE, ...) UseMethod("as.cell_addr")
+as.cell_addr <- function(x, ...) UseMethod("as.cell_addr")
 
 #' @describeIn as.cell_addr Convert a \code{\link{ra_ref}} object
 #' @export
@@ -136,19 +130,16 @@ as.cell_addr.ra_ref <- function(x, ...) {
 
 #' @describeIn as.cell_addr Convert a string representation of absolute cell
 #'   references into a \code{cell_addr} object
+#' @param strict logical, indicates that only absolute references should be
+#'   converted; defaults to \code{TRUE}
+#' @template param-fo
 #' @export
 #' @examples
 #' as.cell_addr("$D$12")
-#' as.cell_addr("$C$4")
 #' as.cell_addr("R4C3")
 #' as.cell_addr(c("R4C3", "$C$4", "$D$12"))
-#'
-#' \dontrun{
-#' # none of these will work because they are relative references
-#' ## TO DO: first one works but gives NA, second one errors ... make consistent?
 #' as.cell_addr("$F2")
 #' as.cell_addr("R[-4]C3")
-#' }
 as.cell_addr.character <- function(x, fo = NULL, strict = TRUE, ...) {
   ra_ref_list <- lapply(x, as.ra_ref, fo = fo, strict = strict)
   ca_list <- lapply(ra_ref_list, as.cell_addr)
