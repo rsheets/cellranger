@@ -16,25 +16,28 @@ as.ra_ref(x, ...)
 \arguments{
 \item{x}{a cell reference}
 
-\item{...}{other arguments passed along to methods}
+\item{...}{further arguments passed to or from other methods}
 
-\item{fo}{Optional specification of the cell reference format of the string
-\code{x}. If given, it must be either "A1" or "R1C1"; it can usually be
-inferred.}
+\item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
+cell reference format; in many contexts, it can be inferred and is optional}
 
-\item{warn}{Logical, requests a warning if a file or worksheet name is found
-in the string, since this cannot be represented in a \code{\link{ra_ref}}
-object and will be dropped.}
+\item{warn}{logical, \code{TRUE} (default) requests a warning if a file or
+worksheet name is found in the string, since this cannot be represented in
+a \code{\link{ra_ref}} object and will be dropped.}
 
-\item{strict}{logical, indicates that only absolute references should be
-converted; defaults to \code{TRUE}}
+\item{strict}{logical, \code{TRUE} (default) indicates that, for references
+in "A1" format, only absolute references should be converted. If
+\code{FALSE} a purely relative "A1" reference, like B4, will be treated as
+purely absolute, i.e. like $B$4. Regardless of \code{strict}, a mixed
+"A1" reference will lead to \code{NA}(s) in the affected position(s).}
 }
 \value{
 a \code{\link{ra_ref}} object
 }
 \description{
 Convert various representations of a cell reference into an object of class
-\code{\link{ra_ref}}.
+\code{\link{ra_ref}}. Note this function is NOT vectorized, but see the
+examples.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -57,15 +60,16 @@ f <- Vectorize(as.ra_ref, USE.NAMES = FALSE, SIMPLIFY = FALSE)
 f(ca)
 as.ra_ref("$F$2")
 as.ra_ref("R[-4]C3")
+as.ra_ref("B4")
+as.ra_ref("B4", strict = FALSE)
+as.ra_ref("B$4")
 
 \dontrun{
-as.ra_ref("D$4") ## won't work because column ref is relative
-as.ra_ref("D$4", strict = FALSE) ## let's pretend it's absolute!
-
 ## this is actually ambiguous! is format A1 or R1C1 format?
 as.ra_ref("RC2")
 ## format must be specified in this case
 as.ra_ref("RC2", fo = "R1C1")
+as.ra_ref("RC2", fo = "A1", strict = FALSE)
 }
 
 cs <- c("$A$1", "$F$14")

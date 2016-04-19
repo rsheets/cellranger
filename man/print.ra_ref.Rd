@@ -10,7 +10,7 @@
 \item{x}{an object of class \code{\link{ra_ref}}}
 
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
-cell reference format; in some contexts, it can be inferred}
+cell reference format; in many contexts, it can be inferred and is optional}
 
 \item{...}{further arguments passed to or from other methods}
 }

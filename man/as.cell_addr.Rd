@@ -16,7 +16,7 @@ as.cell_addr(x, fo = NULL, strict = TRUE, ...)
 \item{x}{a cell reference}
 
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
-cell reference format; in some contexts, it can be inferred}
+cell reference format; in many contexts, it can be inferred and is optional}
 
 \item{strict}{logical, indicates that only absolute references should be
 converted; defaults to \code{TRUE}}

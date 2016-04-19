@@ -72,10 +72,11 @@ print.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
 #' Convert to a ra_ref object
 #'
 #' Convert various representations of a cell reference into an object of class
-#' \code{\link{ra_ref}}.
+#' \code{\link{ra_ref}}. Note this function is NOT vectorized, but see the
+#' examples.
 #'
 #' @param x a cell reference
-#' @param ... other arguments passed along to methods
+#' @param ... further arguments passed to or from other methods
 #'
 #' @return a \code{\link{ra_ref}} object
 #'
@@ -85,27 +86,29 @@ as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 #' @describeIn as.ra_ref Convert a string representation of a cell reference
 #'   into an object of class \code{\link{ra_ref}}
 #'
-#' @param fo Optional specification of the cell reference format of the string
-#'   \code{x}. If given, it must be either "A1" or "R1C1"; it can usually be
-#'   inferred.
-#' @param warn Logical, requests a warning if a file or worksheet name is found
-#'   in the string, since this cannot be represented in a \code{\link{ra_ref}}
-#'   object and will be dropped.
-#' @param strict logical, indicates that only absolute references should be
-#'   converted; defaults to \code{TRUE}
+#' @template param-fo
+#' @param warn logical, \code{TRUE} (default) requests a warning if a file or
+#'   worksheet name is found in the string, since this cannot be represented in
+#'   a \code{\link{ra_ref}} object and will be dropped.
+#' @param strict logical, \code{TRUE} (default) indicates that, for references
+#'   in "A1" format, only absolute references should be converted. If
+#'   \code{FALSE} a purely relative "A1" reference, like B4, will be treated as
+#'   purely absolute, i.e. like $B$4. Regardless of \code{strict}, a mixed
+#'   "A1" reference will lead to \code{NA}(s) in the affected position(s).
 #'
 #' @examples
 #' as.ra_ref("$F$2")
 #' as.ra_ref("R[-4]C3")
+#' as.ra_ref("B4")
+#' as.ra_ref("B4", strict = FALSE)
+#' as.ra_ref("B$4")
 #'
 #' \dontrun{
-#' as.ra_ref("D$4") ## won't work because column ref is relative
-#' as.ra_ref("D$4", strict = FALSE) ## let's pretend it's absolute!
-#'
 #' ## this is actually ambiguous! is format A1 or R1C1 format?
 #' as.ra_ref("RC2")
 #' ## format must be specified in this case
 #' as.ra_ref("RC2", fo = "R1C1")
+#' as.ra_ref("RC2", fo = "A1", strict = FALSE)
 #' }
 #'
 #' cs <- c("$A$1", "$F$14")
@@ -131,17 +134,7 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   }
 
   if (is.null(fo)) {
-    m <- c(A1 = grep(.cr$is_A1_rx, ref), R1C1 = grep(.cr$is_R1C1_rx, ref))
-    if (length(m) < 1) {
-      stop("Cell reference follows neither the A1 nor R1C1 format:\n",
-           ref, call. = FALSE)
-    }
-    if (length(m) > 1) {
-      ## example: RCx
-      stop("Not clear if cell reference is in A1 or R1C1 format:\n",
-           ref, "\nSpecify format via `fo` argument.\n", call. = FALSE)
-    }
-    fo <- names(m)
+    fo <- guess_fo(ref)
   } else {
     fo <- match.arg(fo, c("R1C1", "A1"))
   }

@@ -2,7 +2,9 @@ rm_dollar_signs <- function(x) gsub('$', '', x, fixed = TRUE)
 
 char0_to_NA <- function(x) if (length(x) < 1) NA_character_ else x
 
-isTOGGLE <- function(x) is.null(x) || isTRUE(x) || identical(x, FALSE)
+isFALSE <- function(x) identical(x, FALSE)
+
+isTOGGLE <- function(x) is.null(x) || isTRUE(x) || isFALSE(x)
 
 isTRUE_v <- function(x) !is.na(x) & x
 
@@ -29,12 +31,12 @@ rel_abs_format <- function(indAbs, rcRef, fo = c("R1C1", "A1")) {
 
 is_abs_ref <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
-  x$rowAbs && x$colAbs
+  isTRUE(x$rowAbs) && isTRUE(x$colAbs)
 }
 
 is_rel_ref <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
-  !x$rowAbs && !x$colAbs
+  isFALSE(x$rowAbs) && isFALSE(x$colAbs)
 }
 
 is_not_abs_ref <- function(x) {
@@ -56,4 +58,21 @@ extract_named_captures <- function(string, pattern) {
   stop <- start + cl - 1
   out <- as.list(substring(string, start, stop))
   setNames(out, attr(regexpr_output, "capture.names"))
+}
+
+guess_fo <- function(x) {
+  m <- c(R1C1 = grep(.cr$is_R1C1_rx, x), A1 = grep(.cr$is_A1_rx, x))
+  if (length(m) < 1) {
+    warning("Cell reference follows neither the A1 nor R1C1 format:\n",
+            ref, "\nPutative format is NA.", call. = FALSE)
+    return(NA_character_)
+  }
+  if (length(m) > 1) {
+    ## OMFG this can actually happen. Example: RCx
+    warning("Not clear if cell reference is in A1 or R1C1 format:\n",
+            ref, "\nSpecify format via `fo` argument.\n",
+            "Putative format is c(\"R1C1\", \"A1\"), which is probably ",
+            "not what you want.", call. = FALSE)
+  }
+  names(m)
 }
