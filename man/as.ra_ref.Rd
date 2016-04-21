@@ -64,13 +64,11 @@ as.ra_ref("B4")
 as.ra_ref("B4", strict = FALSE)
 as.ra_ref("B$4")
 
-\dontrun{
 ## this is actually ambiguous! is format A1 or R1C1 format?
 as.ra_ref("RC2")
-## format must be specified in this case
+## format could be specified in this case
 as.ra_ref("RC2", fo = "R1C1")
 as.ra_ref("RC2", fo = "A1", strict = FALSE)
-}
 
 cs <- c("$A$1", "$F$14")
 \dontrun{

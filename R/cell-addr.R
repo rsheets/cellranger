@@ -98,8 +98,9 @@ cell_col.cell_addr <- function(x, ...) x$col
 #'
 #' Convert various representations of a cell reference into an object of class
 #' \code{\link{cell_addr}}. Recall that \code{\link{cell_addr}} objects hold
-#' absolute row and column location, so not all \code{\link{ra_ref}} objects or
-#' cell reference strings can be successfully converted.
+#' absolute row and column location, so \code{\link{ra_ref}} objects or cell
+#' reference strings with relative or mixed references will raise a warning and
+#' generate \code{NA}s.
 #'
 #' @param x a cell reference
 #' @template param-ddd
@@ -114,6 +115,9 @@ as.cell_addr <- function(x, ...) UseMethod("as.cell_addr")
 #' @examples
 #' as.cell_addr(ra_ref())
 #' rar <- ra_ref(2, TRUE, 5, TRUE)
+#' as.cell_addr(rar)
+#' ## mixed reference
+#' rar <- ra_ref(2, FALSE, 5, TRUE)
 #' as.cell_addr(rar)
 as.cell_addr.ra_ref <- function(x, ...) {
   if (!isTRUE(x$rowAbs) || !isTRUE(x$colAbs)) {
@@ -140,8 +144,12 @@ as.cell_addr.ra_ref <- function(x, ...) {
 #' as.cell_addr(c("R4C3", "$C$4", "$D$12"))
 #' as.cell_addr("$F2")
 #' as.cell_addr("R[-4]C3")
+#' as.cell_addr("F2", strict = FALSE)
 as.cell_addr.character <- function(x, fo = NULL, strict = TRUE, ...) {
-  ra_ref_list <- lapply(x, as.ra_ref, fo = fo, strict = strict)
+  suppressWarnings(
+    ## one warning is enough -- let as.cell_addr take care of it in next step
+    ra_ref_list <- lapply(x, as.ra_ref, fo = fo, strict = strict)
+  )
   ca_list <- lapply(ra_ref_list, as.cell_addr)
   cell_addr(row = vapply(ca_list, cell_row, integer(1)),
             col = vapply(ca_list, cell_col, integer(1)))

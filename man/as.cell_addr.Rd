@@ -29,8 +29,9 @@ a \code{\link{cell_addr}} object
 \description{
 Convert various representations of a cell reference into an object of class
 \code{\link{cell_addr}}. Recall that \code{\link{cell_addr}} objects hold
-absolute row and column location, so not all \code{\link{ra_ref}} objects or
-cell reference strings can be successfully converted.
+absolute row and column location, so \code{\link{ra_ref}} objects or cell
+reference strings with relative or mixed references will raise a warning and
+generate \code{NA}s.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -43,10 +44,14 @@ references into a \code{cell_addr} object
 as.cell_addr(ra_ref())
 rar <- ra_ref(2, TRUE, 5, TRUE)
 as.cell_addr(rar)
+## mixed reference
+rar <- ra_ref(2, FALSE, 5, TRUE)
+as.cell_addr(rar)
 as.cell_addr("$D$12")
 as.cell_addr("R4C3")
 as.cell_addr(c("R4C3", "$C$4", "$D$12"))
 as.cell_addr("$F2")
 as.cell_addr("R[-4]C3")
+as.cell_addr("F2", strict = FALSE)
 }
 

@@ -6,17 +6,19 @@
 \alias{to_string.ra_ref}
 \title{Get string representation of cell references}
 \usage{
-to_string(x, fo = c("R1C1", "A1"))
+to_string(x, fo = c("R1C1", "A1"), ...)
 
-\method{to_string}{ra_ref}(x, fo = c("R1C1", "A1"))
+\method{to_string}{ra_ref}(x, fo = c("R1C1", "A1"), ...)
 
-\method{to_string}{cell_addr}(x, fo = c("R1C1", "A1"))
+\method{to_string}{cell_addr}(x, fo = c("R1C1", "A1"), ...)
 }
 \arguments{
 \item{x}{a suitable representation of a cell or cell area reference}
 
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
+
+\item{...}{further arguments passed to or from other methods}
 }
 \value{
 a character vector of length one
@@ -35,14 +37,16 @@ reference string
 reference string
 }}
 \examples{
+## ra_ref --> string
 to_string(ra_ref())
 to_string(ra_ref(), fo = "A1")
 to_string(ra_ref(rowRef = 3, colRef = 2))
-(rel_ref <- ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3))
-to_string(rel_ref)
+(mixed_ref <- ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3))
+to_string(mixed_ref)
 \dontrun{
-## this won't work because row reference is relative and format is A1
-to_string(rel_ref, fo = "A1")
+## this will raise warning and generate NA, because row reference is
+## relative and format is A1
+to_string(mixed_ref, fo = "A1")
 }
 ## cell_addr --> string
 (ca <- cell_addr(3, 8))

@@ -28,7 +28,7 @@ A1_to_ra_ref <- function(x, strict = TRUE) {
 
   not_abs <- vapply(y, is_not_abs_ref, logical(1))
   if (any(not_abs)) {
-    warning("Ambiguous cell references ... NAs generated", call. = FALSE)
+    warning("Non-absolute references found ... NAs generated ", call. = FALSE)
     f <- function(z) {
       if (!isTRUE(z$rowAbs)) z$rowRef <- NA
       if (!isTRUE(z$colAbs)) z$colRef <- NA
@@ -109,8 +109,9 @@ RC_to_A1 <- function(x) {
   abs <- vapply(y, is_abs_ref, logical(1))
   if (any(!abs)) {
     warning("Ambiguous cell references ... NAs generated", call. = FALSE)
-    ## TO DO: maybe I need to make a ra_ref with NAs everywhere instead?
-    y[!abs] <- NA
+    y[!abs] <- lapply(y[!abs], function(x) {
+      ra_ref(rowRef = NA, rowAbs = NA, colRef = NA, colAbs = NA)
+    })
   }
   vapply(y, to_string, character(1), fo = "A1")
 }
