@@ -72,20 +72,32 @@ print.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
 #' Convert to a ra_ref object
 #'
 #' Convert various representations of a cell reference into an object of class
-#' \code{\link{ra_ref}}. Note this function is NOT vectorized, but see the
-#' examples.
+#' \code{\link{ra_ref}}.
+#' \itemize{
+#' \item \code{as.ra_ref} is NOT vectorized and therefore requires the input to
+#' represent exactly one cell, i.e. be of length 1.
+#' \item \code{as.ra_ref_v} accepts input of length >= 1 and returns a list of
+#' \code{\link{ra_ref}} objects.
+#' }
 #'
-#' @param x a cell reference
+#' @param x one or more cell references, as a character vector or
+#' \code{\link{cell_addr}} object
 #' @template param-ddd
 #'
-#' @return a \code{\link{ra_ref}} object
-#'
+#' @return a \code{\link{ra_ref}} object, in the case of \code{as.ra_ref}, or a
+#'   list of them, in the case of \code{as.ra_ref_v}
+#' @name as.ra_ref
+NULL
+
+#' @rdname as.ra_ref
 #' @export
 as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 
-#' @describeIn as.ra_ref Convert a string representation of a cell reference
-#'   into an object of class \code{\link{ra_ref}}
-#'
+#' @rdname as.ra_ref
+#' @export
+as.ra_ref_v <- function(x, ...) UseMethod("as.ra_ref_v")
+
+#' @rdname as.ra_ref
 #' @template param-fo
 #' @param warn logical, \code{TRUE} (default) requests a warning if a file or
 #'   worksheet name is found in the string, since this cannot be represented in
@@ -93,10 +105,11 @@ as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 #' @param strict logical, \code{TRUE} (default) indicates that, for references
 #'   in "A1" format, only absolute references should be converted. If
 #'   \code{FALSE} a purely relative "A1" reference, like B4, will be treated as
-#'   purely absolute, i.e. like $B$4. Regardless of \code{strict}, a mixed
-#'   "A1" reference will lead to \code{NA}(s) in the affected position(s).
+#'   purely absolute, i.e. like $B$4. Regardless of \code{strict}, a mixed "A1"
+#'   reference will lead to \code{NA}(s) in the affected position(s).
 #'
 #' @examples
+#' ## as.ra_ref.character()
 #' as.ra_ref("$F$2")
 #' as.ra_ref("R[-4]C3")
 #' as.ra_ref("B4")
@@ -109,14 +122,6 @@ as.ra_ref <- function(x, ...) UseMethod("as.ra_ref")
 #' as.ra_ref("RC2", fo = "R1C1")
 #' as.ra_ref("RC2", fo = "A1", strict = FALSE)
 #'
-#' cs <- c("$A$1", "$F$14")
-#' \dontrun{
-#' ## won't work because as.ra_ref methods not natively vectorized
-#' as.ra_ref(cs)
-#' }
-#' ## but it's easy enough to do with Vectorize
-#' f <- Vectorize(as.ra_ref, USE.NAMES = FALSE, SIMPLIFY = FALSE)
-#' f(cs)
 #' @export
 as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   stopifnot(length(x) == 1L)
@@ -140,8 +145,52 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   }
 
   if (fo == "A1") {
-    A1_to_ra_ref(ref, strict = strict)[[1]]
+    A1_to_ra_ref(ref, warn = warn, strict = strict)[[1]]
   } else {
     R1C1_to_ra_ref(ref)[[1]]
   }
+}
+
+#' @rdname as.ra_ref
+#' @export
+#' @examples
+#' ## as.ra_ref_v.character()
+#' cs <- c("$A$1", "$F$14", "B$4", "D9")
+#' \dontrun{
+#' ## won't work because as.ra_ref methods not natively vectorized
+#' as.ra_ref(cs)
+#' }
+#' ## use as.ra_ref_v instead
+#' as.ra_ref_v(cs, strict = FALSE, warn = FALSE)
+as.ra_ref_v.character <- function(x, fo = NULL, warn = TRUE,
+                                  strict = TRUE, ...) {
+  lapply(x, as.ra_ref, fo = fo, warn = warn, strict = strict)
+}
+
+#' @rdname as.ra_ref
+#' @export
+#' @examples
+#' ## as.ra_ref.cell_addr
+#' ca <- cell_addr(2, 5)
+#' as.ra_ref(ca)
+as.ra_ref.cell_addr <- function(x, ...) {
+  stopifnot(length(x) == 1L)
+  ra_ref(rowRef = cell_row(x), rowAbs = if (is.na(cell_row(x))) NA else TRUE,
+         colRef = cell_col(x), colAbs = if (is.na(cell_row(x))) NA else TRUE)
+}
+
+#' @rdname as.ra_ref
+#' @export
+#' @examples
+#' ## as.ra_ref_v.cell_addr()
+#'
+#' ca <- cell_addr(1:3, 1)
+#' \dontrun{
+#' ## won't work because as.ra_ref methods not natively vectorized
+#' as.ra_ref(ca)
+#' }
+#' ## use as.ra_ref_v instead
+#' as.ra_ref_v(ca)
+as.ra_ref_v.cell_addr <- function(x, ...) {
+  mapply(ra_ref, rowRef = cell_row(x), colRef = cell_col(x), SIMPLIFY = FALSE)
 }

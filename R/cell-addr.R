@@ -110,6 +110,9 @@ cell_col.cell_addr <- function(x, ...) x$col
 #' @export
 as.cell_addr <- function(x, ...) UseMethod("as.cell_addr")
 
+#' @export
+as.cell_addr_v <- function(x, ...) UseMethod("as.cell_addr_v")
+
 #' @describeIn as.cell_addr Convert a \code{\link{ra_ref}} object
 #' @export
 #' @examples
@@ -132,6 +135,14 @@ as.cell_addr.ra_ref <- function(x, ...) {
   cell_addr(row = x$rowRef, col = x$colRef)
 }
 
+#' @export
+as.cell_addr_v.list <- function(x, ...) {
+  stopifnot(all(vapply(x, inherits, logical(1), what = "ra_ref")))
+  ca_list <- lapply(x, as.cell_addr)
+  cell_addr(row = vapply(ca_list, cell_row, integer(1)),
+            col = vapply(ca_list, cell_col, integer(1)))
+}
+
 #' @describeIn as.cell_addr Convert a string representation of absolute cell
 #'   references into a \code{cell_addr} object
 #' @param strict logical, indicates that only absolute references should be
@@ -150,27 +161,5 @@ as.cell_addr.character <- function(x, fo = NULL, strict = TRUE, ...) {
     ## one warning is enough -- let as.cell_addr take care of it in next step
     ra_ref_list <- lapply(x, as.ra_ref, fo = fo, strict = strict)
   )
-  ca_list <- lapply(ra_ref_list, as.cell_addr)
-  cell_addr(row = vapply(ca_list, cell_row, integer(1)),
-            col = vapply(ca_list, cell_col, integer(1)))
-}
-
-#' @describeIn as.ra_ref Convert a \code{cell_addr} into a \code{\link{ra_ref}}
-#' @export
-#' @examples
-#' ca <- cell_addr(2, 5)
-#' as.ra_ref(ca)
-#'
-#' ca <- cell_addr(1:3, 1)
-#' \dontrun{
-#' ## won't work because as.ra_ref methods not natively vectorized
-#' as.ra_ref(ca)
-#' }
-#' ## but it's easy enough to do with Vectorize
-#' f <- Vectorize(as.ra_ref, USE.NAMES = FALSE, SIMPLIFY = FALSE)
-#' f(ca)
-as.ra_ref.cell_addr <- function(x, ...) {
-  stopifnot(length(x) == 1L)
-  ra_ref(rowRef = cell_row(x), rowAbs = if (is.na(cell_row(x))) NA else TRUE,
-         colRef = cell_col(x), colAbs = if (is.na(cell_row(x))) NA else TRUE)
+  as.cell_addr_v(ra_ref_list)
 }

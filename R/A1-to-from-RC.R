@@ -20,7 +20,7 @@ A1_to_ra_ref_ONE <- function(x) {
 ## example: F4 treated like $F$4
 ## NO MATTER WHAT: relative references within mixed references --> NA
 ## examples: F$4 or $F4
-A1_to_ra_ref <- function(x, strict = TRUE) {
+A1_to_ra_ref <- function(x, warn = TRUE, strict = TRUE) {
   y <- lapply(x, A1_to_ra_ref_ONE)
 
   rel <- vapply(y, is_rel_ref, logical(1))
@@ -28,7 +28,9 @@ A1_to_ra_ref <- function(x, strict = TRUE) {
 
   not_abs <- vapply(y, is_not_abs_ref, logical(1))
   if (any(not_abs)) {
-    warning("Non-absolute references found ... NAs generated ", call. = FALSE)
+    if (warn) {
+      warning("Non-absolute references found ... NAs generated ", call. = FALSE)
+    }
     f <- function(z) {
       if (!isTRUE(z$rowAbs)) z$rowRef <- NA
       if (!isTRUE(z$colAbs)) z$colRef <- NA
