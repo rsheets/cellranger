@@ -177,6 +177,9 @@ as.range <- function(x, RC = FALSE, wsn = FALSE) {
 
   if (anyNA(unlist(x[c("ul", "lr")]))) return(NA_character_)
 
+  ## TO DO: only place this helper is used
+  ## replace with to_string when I come back through here
+  row_col_to_RC <- function(x) paste0("R", x[1], "C", x[2])
   range <- c(row_col_to_RC(x$ul), row_col_to_RC(x$lr))
   if (!RC) {
     range <- RC_to_A1(range)

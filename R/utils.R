@@ -20,13 +20,13 @@ add_single_quotes <- function(x) {
 
 remove_single_quotes <- function(x) gsub("^'|'$", "", x)
 
-rel_abs_format <- function(indAbs, rcRef, fo = c("R1C1", "A1")) {
+rel_abs_format <- function(is_abs, rc_ref, fo = c("R1C1", "A1")) {
   fo <- match.arg(fo)
-  if (fo == "A1") return(if (isTRUE_v(indAbs)) "$" else "")
+  if (fo == "A1") return(if (isTRUE_v(is_abs)) "$" else "")
   ## R1C1 case:
-  if (isTRUE_v(indAbs)) return(rcRef)
+  if (isTRUE_v(is_abs)) return(rc_ref)
   ## unfortunate convention where R and C are used instead of R[0] and C[0]
-  if (!is.na(rcRef) && rcRef == 0) "" else paste0("[", rcRef, "]")
+  if (!is.na(rc_ref) && rc_ref == 0) "" else paste0("[", rc_ref, "]")
 }
 
 is_abs_ref <- function(x) {
