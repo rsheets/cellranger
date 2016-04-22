@@ -3,3 +3,4 @@
 .RData
 internal/*.html
 scratch.R
+inst/doc
