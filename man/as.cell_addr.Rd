@@ -5,6 +5,7 @@
 \alias{as.cell_addr.character}
 \alias{as.cell_addr.ra_ref}
 \alias{as.cell_addr_v}
+\alias{as.cell_addr_v.character}
 \alias{as.cell_addr_v.list}
 \title{Convert to a cell_addr object}
 \usage{
@@ -17,6 +18,8 @@ as.cell_addr_v(x, ...)
 \method{as.cell_addr_v}{list}(x, ...)
 
 \method{as.cell_addr}{character}(x, fo = NULL, strict = TRUE, ...)
+
+\method{as.cell_addr_v}{character}(x, fo = NULL, strict = TRUE, ...)
 }
 \arguments{
 \item{x}{a cell reference}

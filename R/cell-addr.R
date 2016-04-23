@@ -172,5 +172,6 @@ as.cell_addr.character <- function(x, fo = NULL, strict = TRUE, ...) {
   as.cell_addr_v(ra_ref_list)
 }
 
+#' @rdname as.cell_addr
 #' @export
 as.cell_addr_v.character <- as.cell_addr.character
