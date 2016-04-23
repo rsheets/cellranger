@@ -56,6 +56,15 @@ test_that("relative ra_refs become NA when converted to A1 formatted string", {
                      NA_character_))
 })
 
+test_that("list of ra_ref's is converted to character", {
+  rar_list <-
+    list(ra_ref(), ra_ref(2, TRUE, 5, TRUE), ra_ref(2, FALSE, 5, TRUE))
+  expect_identical(to_string_v(rar_list), c("R1C1", "R2C5", "R[2]C5"))
+  expect_warning(
+    expect_identical(to_string_v(rar_list, fo = "A1"), c("$A$1", "$E$2", NA))
+  )
+})
+
 test_that("convert an A1 formatted rel ref string to a ra_ref --> get NA", {
   expect_warning(expect_identical(as.ra_ref("A$4"),
                                   ra_ref(4, TRUE, NA, FALSE)))

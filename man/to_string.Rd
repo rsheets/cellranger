@@ -4,16 +4,27 @@
 \alias{to_string}
 \alias{to_string.cell_addr}
 \alias{to_string.ra_ref}
+\alias{to_string_v}
+\alias{to_string_v.cell_addr}
+\alias{to_string_v.list}
 \title{Get string representation of cell references}
 \usage{
 to_string(x, fo = c("R1C1", "A1"), ...)
 
+to_string_v(x, fo = c("R1C1", "A1"), ...)
+
 \method{to_string}{ra_ref}(x, fo = c("R1C1", "A1"), ...)
 
+\method{to_string_v}{list}(x, fo = c("R1C1", "A1"), ...)
+
 \method{to_string}{cell_addr}(x, fo = c("R1C1", "A1"), ...)
+
+\method{to_string_v}{cell_addr}(x, fo = c("R1C1", "A1"), ...)
 }
 \arguments{
-\item{x}{a suitable representation of a cell or cell area reference}
+\item{x}{a suitable representation of a cell or cell area reference: a single
+\code{\link{ra_ref}} object or a list of them or a \code{\link{cell_addr}}
+object}
 
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
@@ -21,33 +32,40 @@ cell reference format; in many contexts, it can be inferred and is optional}
 \item{...}{further arguments passed to or from other methods}
 }
 \value{
-a character vector of length one
+a character vector
 }
 \description{
+Convert various representations of a cell reference to character
+\itemize{
+\item \code{to_string} is not necessarily vectorized. For example, when the
+the input is of class \code{\link{ra_ref}}, it must of be of length one.
+However, to be honest, this will actually work for \code{\link{cell_addr}},
+even when length > 1.
+\item \code{to_string_v} is guaranteed to be vectorized. In particular, input
+can be a \code{\link{cell_addr}} of length >= 1 or a list of
+\code{\link{ra_ref}} objects.
+}
 If either the row or column reference is relative, note that, in general,
 it's impossible to convert to an "A1" formatted string. We would have to know
 "relative to what?".
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{ra_ref}: Convert a \code{\link{ra_ref}} object to a cell
-reference string
-
-\item \code{cell_addr}: Convert a \code{\link{cell_addr}} object to a cell
-reference string
-}}
 \examples{
-## ra_ref --> string
+## exactly one ra_ref --> string
 to_string(ra_ref())
 to_string(ra_ref(), fo = "A1")
 to_string(ra_ref(row_ref = 3, col_ref = 2))
 (mixed_ref <- ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3))
 to_string(mixed_ref)
-\dontrun{
+
 ## this will raise warning and generate NA, because row reference is
 ## relative and format is A1
 to_string(mixed_ref, fo = "A1")
-}
+
+## a list of ra_ref's --> character vector
+ra_ref_list <-
+  list(ra_ref(), ra_ref(2, TRUE, 5, TRUE), ra_ref(2, FALSE, 5, TRUE))
+to_string_v(ra_ref_list)
+
 ## cell_addr --> string
 (ca <- cell_addr(3, 8))
 to_string(ca)
@@ -56,5 +74,9 @@ to_string(ca, fo = "A1")
 (ca <- cell_addr(1:4, 3))
 to_string(ca)
 to_string(ca, fo = "A1")
+## explicitly go from cell_addr, length > 1 --> character vector
+(ca <- cell_addr(1:4, 3))
+to_string_v(ca)
+to_string_v(ca, fo = "A1")
 }
 
