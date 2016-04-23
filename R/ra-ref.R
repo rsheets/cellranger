@@ -145,7 +145,7 @@ as.ra_ref_v <- function(x, ...) UseMethod("as.ra_ref_v")
 #' @export
 as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   stopifnot(length(x) == 1L)
-  parsed <- parse_as_ref_string(x)
+  parsed <- as.list(parse_as_ref_string(x)[1, , drop = TRUE])
   ref <- unlist(strsplit(parsed$ref, ":"))
   if (length(ref) != 1L) {
     stop("Can't make a ra_ref object from a cell area reference:\n",
@@ -163,8 +163,8 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   } else {
     rar <- R1C1_to_ra_ref(ref)[[1]]
   }
-  rar$sheet <- parsed$sheet %||% rar$sheet
-  rar$file <- parsed$file %||% rar$file
+  rar$sheet <- if (identical(parsed$sheet, "")) rar$sheet else parsed$sheet
+  rar$file <- if (identical(parsed$file, "")) rar$file else parsed$file
   rar
 }
 

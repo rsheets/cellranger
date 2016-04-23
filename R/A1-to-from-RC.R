@@ -5,7 +5,7 @@ A1_to_ra_ref_ONE <- function(x) {
   ## mixed references like A$1 or $A1
   ## RELATIVE TO WHAT?!?
   ## but, anyway, the calling function is responsible for that
-  y <- extract_named_captures(x, .cr$A1_ncg_rx)
+  y <- as.list(rematch::re_match(.cr$A1_ncg_rx, x)[1, , drop = TRUE])
   ## example: D$56 comes back as named list
   ## row_abs = "$" row_ref = "56" col_abs = "" col_ref = "D"
   ## presence of "$" decoration in original row or col ref --> absolute
@@ -42,7 +42,7 @@ A1_to_ra_ref <- function(x, warn = TRUE, strict = TRUE) {
 }
 
 R1C1_to_ra_ref_ONE <- function(x) {
-  y <- extract_named_captures(x, .cr$R1C1_ncg_rx)
+  y <- as.list(rematch::re_match(.cr$R1C1_ncg_rx, x)[1, , drop = TRUE])
   ## example: R[-4]C7 comes back as named list
   ## row_abs = "[" row_ref = "-4" col_abs = "" col_ref = "7"
   ## presence of square brackets `[x]` --> relative

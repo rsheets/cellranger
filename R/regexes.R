@@ -8,6 +8,15 @@
 .cr$string_rx <- sprintf("^(?:%s%s%s|(.*))$", .cr$filename_rx,
                          .cr$worksheetname_rx, .cr$ref_rx)
 
+## returns a character matrix
+## one row per element of x
+## columns are as named below
+parse_as_ref_string <- function(x) {
+  params <- rematch::re_match(.cr$string_rx, x)
+  colnames(params) <- c("input", "file", "sheet", "ref", "invalid")
+  params
+}
+
 ## for validating single cell references
 .cr$is_A1_rx <- "^\\$?[A-Z]{1,3}\\$?[0-9]+$"
 .cr$is_R1C1_rx <- "^R\\[?[0-9\\-]*\\]?C\\[?[0-9\\-]*\\]?$"
@@ -19,16 +28,3 @@
   paste0("^R(?P<row_abs>\\[?)(?P<row_ref>[0-9\\-]*)(?:\\]?)",
           "C(?P<col_abs>\\[?)(?P<col_ref>[0-9\\-]*)(?:\\]?)$")
 
-parse_as_ref_string <- function(x, must_work = TRUE) {
-  param_names <- c("file", "sheet", "ref", "invalid")
-  replace <-
-    stats::setNames(sprintf("\\%d", seq_along(param_names)), param_names)
-  params <-
-    lapply(replace, function(r) gsub(.cr$string_rx, r, x, perl = TRUE))
-  if (must_work && nzchar(params$invalid)) {
-    stop("Invalid string for a cell reference:\n", params$invalid,
-         call. = FALSE)
-  }
-  params$input <- x
-  params[nzchar(params, keepNA = TRUE)]
-}

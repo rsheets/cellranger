@@ -54,17 +54,6 @@ absolutize <- function(x) {
   ra_ref(row_ref = x$row_ref, row_abs = TRUE, col_ref = x$col_ref, col_abs = TRUE)
 }
 
-extract_named_captures <- function(string, pattern) {
-  stopifnot(length(string) == 1L, length(pattern) == 1L)
-  regexpr_output <- regexpr(pattern, string, perl = TRUE)
-  if (regexpr_output == -1) return("")
-  start <- attr(regexpr_output, "capture.start")[1, , drop = TRUE]
-  cl <- attr(regexpr_output, "capture.length")[1, , drop = TRUE]
-  stop <- start + cl - 1
-  out <- as.list(substring(string, start, stop))
-  setNames(out, attr(regexpr_output, "capture.names"))
-}
-
 guess_fo <- function(x) {
   m <- c(R1C1 = grep(.cr$is_R1C1_rx, x), A1 = grep(.cr$is_A1_rx, x))
   if (length(m) < 1) {
