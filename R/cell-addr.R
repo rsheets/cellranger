@@ -106,14 +106,18 @@ cell_col.cell_addr <- function(x, ...) x$col
 #' @template param-ddd
 #'
 #' @return a \code{\link{cell_addr}} object
-#'
+#' @name as.cell_addr
+NULL
+
+#' @rdname as.cell_addr
 #' @export
 as.cell_addr <- function(x, ...) UseMethod("as.cell_addr")
 
+#' @rdname as.cell_addr
 #' @export
 as.cell_addr_v <- function(x, ...) UseMethod("as.cell_addr_v")
 
-#' @describeIn as.cell_addr Convert a \code{\link{ra_ref}} object
+#' @rdname as.cell_addr
 #' @export
 #' @examples
 #' as.cell_addr(ra_ref())
@@ -135,6 +139,11 @@ as.cell_addr.ra_ref <- function(x, ...) {
   cell_addr(row = x$rowRef, col = x$colRef)
 }
 
+#' @rdname as.cell_addr
+#' @examples
+#' ra_ref_list <-
+#'   list(ra_ref(), ra_ref(2, TRUE, 5, TRUE), ra_ref(2, FALSE, 5, TRUE))
+#' as.cell_addr_v(ra_ref_list)
 #' @export
 as.cell_addr_v.list <- function(x, ...) {
   stopifnot(all(vapply(x, inherits, logical(1), what = "ra_ref")))
@@ -143,8 +152,7 @@ as.cell_addr_v.list <- function(x, ...) {
             col = vapply(ca_list, cell_col, integer(1)))
 }
 
-#' @describeIn as.cell_addr Convert a string representation of absolute cell
-#'   references into a \code{cell_addr} object
+#' @rdname as.cell_addr
 #' @param strict logical, indicates that only absolute references should be
 #'   converted; defaults to \code{TRUE}
 #' @template param-fo
@@ -159,7 +167,10 @@ as.cell_addr_v.list <- function(x, ...) {
 as.cell_addr.character <- function(x, fo = NULL, strict = TRUE, ...) {
   suppressWarnings(
     ## one warning is enough -- let as.cell_addr take care of it in next step
-    ra_ref_list <- lapply(x, as.ra_ref, fo = fo, strict = strict)
+    ra_ref_list <- as.ra_ref_v(x, fo = fo, strict = strict)
   )
   as.cell_addr_v(ra_ref_list)
 }
+
+#' @export
+as.cell_addr_v.character <- as.cell_addr.character

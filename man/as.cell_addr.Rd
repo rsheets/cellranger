@@ -4,11 +4,17 @@
 \alias{as.cell_addr}
 \alias{as.cell_addr.character}
 \alias{as.cell_addr.ra_ref}
+\alias{as.cell_addr_v}
+\alias{as.cell_addr_v.list}
 \title{Convert to a cell_addr object}
 \usage{
 as.cell_addr(x, ...)
 
+as.cell_addr_v(x, ...)
+
 \method{as.cell_addr}{ra_ref}(x, ...)
+
+\method{as.cell_addr_v}{list}(x, ...)
 
 \method{as.cell_addr}{character}(x, fo = NULL, strict = TRUE, ...)
 }
@@ -33,13 +39,6 @@ absolute row and column location, so \code{\link{ra_ref}} objects or cell
 reference strings with relative or mixed references will raise a warning and
 generate \code{NA}s.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{ra_ref}: Convert a \code{\link{ra_ref}} object
-
-\item \code{character}: Convert a string representation of absolute cell
-references into a \code{cell_addr} object
-}}
 \examples{
 as.cell_addr(ra_ref())
 rar <- ra_ref(2, TRUE, 5, TRUE)
@@ -47,6 +46,9 @@ as.cell_addr(rar)
 ## mixed reference
 rar <- ra_ref(2, FALSE, 5, TRUE)
 as.cell_addr(rar)
+ra_ref_list <-
+  list(ra_ref(), ra_ref(2, TRUE, 5, TRUE), ra_ref(2, FALSE, 5, TRUE))
+as.cell_addr_v(ra_ref_list)
 as.cell_addr("$D$12")
 as.cell_addr("R4C3")
 as.cell_addr(c("R4C3", "$C$4", "$D$12"))

@@ -1,17 +1,6 @@
----
-title: "Classes and methods to deal with cell references"
-author: "Jenny Bryan"
-date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    toc: true
-    toc_depth: 4
-    keep_md: true
-vignette: >
-  %\VignetteIndexEntry{Classes and methods to deal with cell references}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+# Classes and methods to deal with cell references
+Jenny Bryan  
+`r Sys.Date()`  
 
 Following Testoft's book Spreadsheet Implementation Technology: Basics and Extensions.
 
