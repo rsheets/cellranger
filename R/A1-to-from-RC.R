@@ -82,13 +82,13 @@ R1C1_to_ra_ref <- function(x) lapply(x, R1C1_to_ra_ref_ONE)
 #' @return character vector of absolute cell references in R1C1 format
 #'
 #' @examples
-#' A1_to_RC("$A$1")
-#' A1_to_RC("A1")                 ## raises a warning, returns NA
-#' A1_to_RC("A1", strict = FALSE) ## unless strict = FALSE
-#' A1_to_RC(c("$A$1", "B$4")) ## raises a warning, includes an NA
-#' A1_to_RC(c("$A$1", "B$4"), strict = FALSE) ## mixed ref always returns NA
+#' A1_to_R1C1("$A$1")
+#' A1_to_R1C1("A1")                 ## raises a warning, returns NA
+#' A1_to_R1C1("A1", strict = FALSE) ## unless strict = FALSE
+#' A1_to_R1C1(c("$A$1", "B$4")) ## raises a warning, includes an NA
+#' A1_to_R1C1(c("$A$1", "B$4"), strict = FALSE) ## mixed ref always returns NA
 #' @export
-A1_to_RC <- function(x, strict = TRUE) {
+A1_to_R1C1 <- function(x, strict = TRUE) {
   stopifnot(is.character(x), all(grepl(.cr$is_A1_rx, x)))
   y <- A1_to_ra_ref(x, strict = strict)
   vapply(y, to_string, character(1))
@@ -101,11 +101,11 @@ A1_to_RC <- function(x, strict = TRUE) {
 #' @return vector of cell positions in A1 notation
 #'
 #' @examples
-#' RC_to_A1("R1C1")
-#' RC_to_A1("R10C52")
-#' RC_to_A1(c("R1C1", "R10C52"))
+#' R1C1_to_A1("R1C1")
+#' R1C1_to_A1("R10C52")
+#' R1C1_to_A1(c("R1C1", "R10C52"))
 #' @export
-RC_to_A1 <- function(x) {
+R1C1_to_A1 <- function(x) {
   stopifnot(is.character(x), all(grepl(.cr$is_R1C1_rx, x)))
   y <- R1C1_to_ra_ref(x)
   abs <- vapply(y, is_abs_ref, logical(1))
