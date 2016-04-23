@@ -4,18 +4,23 @@
 \alias{ra_ref}
 \title{ra_ref class}
 \usage{
-ra_ref(row_ref = 1L, row_abs = TRUE, col_ref = 1L, col_abs = TRUE)
+ra_ref(row_ref = 1L, row_abs = TRUE, col_ref = 1L, col_abs = TRUE,
+  sheet = NA_character_, file = NA_character_)
 }
 \arguments{
-\item{row_ref}{integer, row}
+\item{row_ref}{integer, row or row offset}
 
 \item{row_abs}{logical indicating whether \code{row_ref} is absolute or
 relative}
 
-\item{col_ref}{integer, column}
+\item{col_ref}{integer, column or column offset}
 
 \item{col_abs}{logical indicating whether \code{col_ref} is absolute or
 relative}
+
+\item{sheet}{the name of a sheet (a.k.a. worksheet or tab)}
+
+\item{file}{the name of a file (a.k.a. workbook)}
 }
 \value{
 a \code{ra_ref} object
@@ -29,6 +34,15 @@ absolute sense. When \code{row_abs} is \code{FALSE}, it means that
 address of the cell containing the formula that contains the associated cell
 reference. Ditto for \code{col_abs} and \code{col_ref}.
 }
+\details{
+A \code{ra_ref} object can also store the name of a sheet and a file, though
+these will often be \code{NA}. A cell reference in a formula can potentially
+be qualified like this: \code{[my_workbook.xlxs]Sheet1!R2C3}. In Testoft
+(2014), he creates an entirely separate class for this, a \code{cell_ref},
+which consists of a sheet- and file-ignorant \code{ra_ref} object and a sheet
+reference (he doesn't allow formulas to refer to other files). I hope I
+don't regret choosing a different path.
+}
 \section{Reference}{
 
 
@@ -40,5 +54,6 @@ MIT Press 2014
 ra_ref()
 ra_ref(row_ref = 3, col_ref = 2)
 ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3, col_abs = TRUE)
+ra_ref(sheet = "a sheet")
 }
 

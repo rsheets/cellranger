@@ -8,12 +8,22 @@
 #' address of the cell containing the formula that contains the associated cell
 #' reference. Ditto for \code{col_abs} and \code{col_ref}.
 #'
-#' @param row_ref integer, row
+#' A \code{ra_ref} object can also store the name of a sheet and a file, though
+#' these will often be \code{NA}. A cell reference in a formula can potentially
+#' be qualified like this: \code{[my_workbook.xlxs]Sheet1!R2C3}. In Testoft
+#' (2014), he creates an entirely separate class for this, a \code{cell_ref},
+#' which consists of a sheet- and file-ignorant \code{ra_ref} object and a sheet
+#' reference (he doesn't allow formulas to refer to other files). I hope I
+#' don't regret choosing a different path.
+#'
+#' @param row_ref integer, row or row offset
 #' @param row_abs logical indicating whether \code{row_ref} is absolute or
 #'   relative
-#' @param col_ref integer, column
+#' @param col_ref integer, column or column offset
 #' @param col_abs logical indicating whether \code{col_ref} is absolute or
 #'   relative
+#' @param sheet the name of a sheet (a.k.a. worksheet or tab)
+#' @param file the name of a file (a.k.a. workbook)
 #'
 #' @return a \code{ra_ref} object
 #' @export
@@ -24,15 +34,20 @@
 #' ra_ref()
 #' ra_ref(row_ref = 3, col_ref = 2)
 #' ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3, col_abs = TRUE)
+#' ra_ref(sheet = "a sheet")
 ra_ref <- function(row_ref = 1L,
                    row_abs = TRUE,
                    col_ref = 1L,
-                   col_abs = TRUE) {
+                   col_abs = TRUE,
+                   sheet = NA_character_,
+                   file = NA_character_) {
   row_ref <- as.integer(row_ref)
   col_ref <- as.integer(col_ref)
   stopifnot(length(row_ref) == 1L, length(row_abs) == 1L,
             length(col_ref) == 1L, length(col_abs) == 1L,
-            is.logical(row_abs), is.logical(col_abs))
+            is.logical(row_abs), is.logical(col_abs),
+            is.character(sheet), is.character(file),
+            length(sheet) == 1, length(file) == 1)
   if ( (isTRUE(row_abs) && isTRUE(row_ref < 1)) ||
        (isTRUE(col_abs) && isTRUE(col_ref < 1)) ) {
     stop("Absolute row or column references must be >= 1:\n",
@@ -41,7 +56,8 @@ ra_ref <- function(row_ref = 1L,
          call. = FALSE)
   }
   structure(list(row_ref = row_ref, row_abs = row_abs,
-                 col_ref = col_ref, col_abs = col_abs),
+                 col_ref = col_ref, col_abs = col_abs,
+                 sheet = sheet, file = file),
             class = c("ra_ref", "list"))
 }
 
@@ -59,14 +75,18 @@ ra_ref <- function(row_ref = 1L,
 #' @export
 print.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
   fo <- match.arg(fo)
-  row_ra <-
-    switch(as.character(x$row_abs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
-  col_ra <-
-    switch(as.character(x$col_abs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
+  ra_part <- c(`TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
+  row_ra <- ra_part[as.character(x$row_abs)]
+  col_ra <- ra_part[as.character(x$col_abs)]
+  sheet_part <- paste0(" sheet: ", add_single_quotes(x$sheet), "\n")
+  sheet_part <- if (is.na(x$sheet)) "" else sheet_part
+
   cat("<ra_ref>\n")
-  cat(paste0(" row: ", x$row_ref, " (", row_ra, ")\n",
-             " col: ", x$col_ref, " (", col_ra, ")\n"))
-  cat(" ", to_string(x, fo = fo), "\n")
+  cat("   row: ", x$row_ref, " (", row_ra, ")\n",
+      "   col: ", x$col_ref, " (", col_ra, ")\n",
+      sheet_part, sep = "")
+  ## no printing of file name ... wait til I see it needed IRL
+  cat(" ", to_string(x, fo = fo), "\n", sep = "")
 }
 
 #' Convert to a ra_ref object
@@ -126,16 +146,11 @@ as.ra_ref_v <- function(x, ...) UseMethod("as.ra_ref_v")
 as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   stopifnot(length(x) == 1L)
   parsed <- parse_as_ref_string(x)
-  if (warn && !all(is.null(unlist(parsed[c("fn", "wsn")])))) {
-    warning("Can't store file and/or worksheet name in a ra_ref object:\n",
-            parsed$input, call. = FALSE)
-  }
   ref <- unlist(strsplit(parsed$ref, ":"))
   if (length(ref) != 1L) {
     stop("Can't make a ra_ref object from a cell area reference:\n",
          parsed$cell_ref, call. = FALSE)
   }
-
   if (is.null(fo)) {
     ## guess_fo will warn when it returns c("R1C1", "A1")
     ## so let's just honor the usual R1C1 default and get on with things
@@ -143,19 +158,21 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
   } else {
     fo <- match.arg(fo, c("R1C1", "A1"))
   }
-
   if (fo == "A1") {
-    A1_to_ra_ref(ref, warn = warn, strict = strict)[[1]]
+    rar <- A1_to_ra_ref(ref, warn = warn, strict = strict)[[1]]
   } else {
-    R1C1_to_ra_ref(ref)[[1]]
+    rar <- R1C1_to_ra_ref(ref)[[1]]
   }
+  rar$sheet <- parsed$sheet %||% rar$sheet
+  rar$file <- parsed$file %||% rar$file
+  rar
 }
 
 #' @rdname as.ra_ref
 #' @export
 #' @examples
 #' ## as.ra_ref_v.character()
-#' cs <- c("$A$1", "$F$14", "B$4", "D9")
+#' cs <- c("$A$1", "Sheet1!$F$14", "Sheet2!B$4", "D9")
 #' \dontrun{
 #' ## won't work because as.ra_ref methods not natively vectorized
 #' as.ra_ref(cs)

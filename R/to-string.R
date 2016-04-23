@@ -18,6 +18,8 @@
 #'   \code{\link{ra_ref}} object or a list of them or a \code{\link{cell_addr}}
 #'   object
 #' @template param-fo
+#' @param sheet logical, indicating whether to include sheet references, if
+#'   present
 #' @template param-ddd
 #'
 #' @return a character vector
@@ -26,11 +28,13 @@ NULL
 
 #' @rdname to_string
 #' @export
-to_string <- function(x, fo = c("R1C1", "A1"), ...) UseMethod("to_string")
+to_string <-
+  function(x, fo = c("R1C1", "A1"), sheet = TRUE, ...) UseMethod("to_string")
 
 #' @rdname to_string
 #' @export
-to_string_v <- function(x, fo = c("R1C1", "A1"), ...) UseMethod("to_string_v")
+to_string_v <-
+  function(x, fo = c("R1C1", "A1"), sheet = TRUE, ...) UseMethod("to_string_v")
 
 #' @rdname to_string
 #' @examples
@@ -46,8 +50,9 @@ to_string_v <- function(x, fo = c("R1C1", "A1"), ...) UseMethod("to_string_v")
 #' to_string(mixed_ref, fo = "A1")
 #'
 #' @export
-to_string.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
-  if (any(vapply(x, is.na, logical(1)))) return(NA_character_)
+to_string.ra_ref <- function(x, fo = c("R1C1", "A1"), sheet = TRUE, ...) {
+  if (any(vapply(x[c("row_ref", "row_abs", "col_ref", "col_abs")],
+                 is.na, logical(1)))) return(NA_character_)
   fo <- match.arg(fo)
   if (fo == "A1") {
     if (!isTRUE(x$row_abs) || !isTRUE(x$col_abs)) {
@@ -58,8 +63,13 @@ to_string.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
     return(paste0(rel_abs_format(x$col_abs, fo = "A1"), num_to_letter(x$col_ref),
                   rel_abs_format(x$row_abs, fo = "A1"), x$row_ref))
   }
-  paste0("R", rel_abs_format(x$row_abs, x$row_ref),
-         "C", rel_abs_format(x$col_abs, x$col_ref))
+  ref_string <- paste0("R", rel_abs_format(x$row_abs, x$row_ref),
+                       "C", rel_abs_format(x$col_abs, x$col_ref))
+  if (sheet && !is.na(x$sheet)) {
+    ref_string <- paste(add_single_quotes(x$sheet), ref_string, sep = "!")
+  }
+  ## no support to put file name in the string ... wait til I see it needed IRL
+  ref_string
 }
 
 #' @rdname to_string
@@ -70,7 +80,7 @@ to_string.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
 #' to_string_v(ra_ref_list)
 #'
 #' @export
-to_string_v.list <- function(x, fo = c("R1C1", "A1"), ...) {
+to_string_v.list <- function(x, fo = c("R1C1", "A1"), sheet = TRUE, ...) {
   stopifnot(all(vapply(x, inherits, logical(1), what = "ra_ref")))
   vapply(x, to_string, character(1), fo = fo)
 }
@@ -86,7 +96,7 @@ to_string_v.list <- function(x, fo = c("R1C1", "A1"), ...) {
 #' to_string(ca)
 #' to_string(ca, fo = "A1")
 #' @export
-to_string.cell_addr <- function(x, fo = c("R1C1", "A1"), ...) {
+to_string.cell_addr <- function(x, fo = c("R1C1", "A1"), sheet = TRUE, ...) {
   fo <- match.arg(fo)
   ra_ref_list <- mapply(ra_ref, row_ref = cell_row(x), col_ref = cell_col(x),
                         SIMPLIFY = FALSE)

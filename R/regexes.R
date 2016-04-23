@@ -20,7 +20,7 @@
           "C(?P<col_abs>\\[?)(?P<col_ref>[0-9\\-]*)(?:\\]?)$")
 
 parse_as_ref_string <- function(x, must_work = TRUE) {
-  param_names <- c("fn", "wsn", "ref", "invalid")
+  param_names <- c("file", "sheet", "ref", "invalid")
   replace <-
     stats::setNames(sprintf("\\%d", seq_along(param_names)), param_names)
   params <-

@@ -11,6 +11,11 @@ isTRUE_v <- function(x) !is.na(x) & x
 ## https://twitter.com/kevin_ushey/status/710223546929119232
 transpose <- function(list) do.call(Map, c(c, list))
 
+## from
+## https://github.com/hadley/purrr/blob/9534c29411f4ec262995498b0c2a78d0a619eae4/R/utils.R#L149-L155
+## among other places
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 add_single_quotes <- function(x) {
   if (grepl("\\s+", x)) {
     x <- paste0("'", x, "'")

@@ -9,17 +9,17 @@
 \alias{to_string_v.list}
 \title{Get string representation of cell references}
 \usage{
-to_string(x, fo = c("R1C1", "A1"), ...)
+to_string(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
 
-to_string_v(x, fo = c("R1C1", "A1"), ...)
+to_string_v(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
 
-\method{to_string}{ra_ref}(x, fo = c("R1C1", "A1"), ...)
+\method{to_string}{ra_ref}(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
 
-\method{to_string_v}{list}(x, fo = c("R1C1", "A1"), ...)
+\method{to_string_v}{list}(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
 
-\method{to_string}{cell_addr}(x, fo = c("R1C1", "A1"), ...)
+\method{to_string}{cell_addr}(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
 
-\method{to_string_v}{cell_addr}(x, fo = c("R1C1", "A1"), ...)
+\method{to_string_v}{cell_addr}(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
 }
 \arguments{
 \item{x}{a suitable representation of a cell or cell area reference: a single
@@ -28,6 +28,9 @@ object}
 
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
+
+\item{sheet}{logical, indicating whether to include sheet references, if
+present}
 
 \item{...}{further arguments passed to or from other methods}
 }

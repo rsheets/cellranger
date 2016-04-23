@@ -15,7 +15,8 @@ test_that("ra_ref constructor is not changing", {
     ra_ref(),
     ra_ref(2, TRUE,  3, FALSE),
     ra_ref(4, FALSE, 5,  TRUE),
-    ra_ref(6, FALSE, 6, FALSE)
+    ra_ref(6, FALSE, 6, FALSE),
+    ra_ref(sheet = "a sheet", file = "filename.xlsx")
   )
   expect_equal_to_reference(ra_list, test_path("reference", "ra_list.rds"))
   ## THE FIRST TIME make sure wd is tests/testthat and do this:
@@ -28,6 +29,8 @@ test_that("ra_ref is converted to string", {
   expect_identical(to_string(ra_ref(2, TRUE,  3, FALSE)), "R2C[3]")
   expect_identical(to_string(ra_ref(4, FALSE, 5,  TRUE)), "R[4]C5")
   expect_identical(to_string(ra_ref(6, FALSE, -6, FALSE)), "R[6]C[-6]")
+  expect_identical(to_string(ra_ref(6, FALSE, -6, FALSE, "a sheet")),
+                   "'a sheet'!R[6]C[-6]")
   ## special case when rel ref offset is 0 --> no square brackets
   expect_identical(to_string(ra_ref(0, FALSE)), "RC1")
   expect_identical(to_string(ra_ref(4, TRUE, 0, FALSE)), "R4C")
@@ -39,9 +42,11 @@ test_that("invalid single cell ref strings raise error", {
   expect_error(as.ra_ref("A1:D4"))
 })
 
-test_that("file and sheet qualified cell ref strings raise warning", {
-  expect_warning(as.ra_ref("Sheet1!$D$4"))
-  expect_warning(as.ra_ref("[filename.xlsx]'a sheet'!R1C1"))
+test_that("file and sheet qualified cell ref strings work", {
+  expect_identical(as.ra_ref("Sheet1!$D$4"),
+                   ra_ref(4, TRUE, 4, TRUE, "Sheet1"))
+  expect_identical(as.ra_ref("[filename.xlsx]'a sheet'!R1C1"),
+                   ra_ref(sheet = "a sheet", file = "filename.xlsx"))
 })
 
 test_that("relative ra_refs become NA when converted to A1 formatted string", {
