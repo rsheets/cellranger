@@ -31,22 +31,22 @@ rel_abs_format <- function(is_abs, rc_ref, fo = c("R1C1", "A1")) {
 
 is_abs_ref <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
-  isTRUE(x$rowAbs) && isTRUE(x$colAbs)
+  isTRUE(x$row_abs) && isTRUE(x$col_abs)
 }
 
 is_rel_ref <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
-  isFALSE(x$rowAbs) && isFALSE(x$colAbs)
+  isFALSE(x$row_abs) && isFALSE(x$col_abs)
 }
 
 is_not_abs_ref <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
-  !isTRUE(x$rowAbs) || !isTRUE(x$colAbs)
+  !isTRUE(x$row_abs) || !isTRUE(x$col_abs)
 }
 
 absolutize <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
-  ra_ref(rowRef = x$rowRef, rowAbs = TRUE, colRef = x$colRef, colAbs = TRUE)
+  ra_ref(row_ref = x$row_ref, row_abs = TRUE, col_ref = x$col_ref, col_abs = TRUE)
 }
 
 extract_named_captures <- function(string, pattern) {

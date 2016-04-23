@@ -4,17 +4,17 @@
 \alias{ra_ref}
 \title{ra_ref class}
 \usage{
-ra_ref(rowRef = 1L, rowAbs = TRUE, colRef = 1L, colAbs = TRUE)
+ra_ref(row_ref = 1L, row_abs = TRUE, col_ref = 1L, col_abs = TRUE)
 }
 \arguments{
-\item{rowRef}{integer, row}
+\item{row_ref}{integer, row}
 
-\item{rowAbs}{logical indicating whether \code{rowRef} is absolute or
+\item{row_abs}{logical indicating whether \code{row_ref} is absolute or
 relative}
 
-\item{colRef}{integer, column}
+\item{col_ref}{integer, column}
 
-\item{colAbs}{logical indicating whether \code{colRef} is absolute or
+\item{col_abs}{logical indicating whether \code{col_ref} is absolute or
 relative}
 }
 \value{
@@ -22,12 +22,12 @@ a \code{ra_ref} object
 }
 \description{
 The \code{ra_ref} class is used to represent a single relative, absolute, or
-mixed cell reference, presumably found in a formula. When \code{rowAbs} is
-\code{TRUE}, it means that \code{rowRef} identifies a specific row in an
-absolute sense. When \code{rowAbs} is \code{FALSE}, it means that
-\code{rowRef} holds a positive, zero, or negative offset relative to the
+mixed cell reference, presumably found in a formula. When \code{row_abs} is
+\code{TRUE}, it means that \code{row_ref} identifies a specific row in an
+absolute sense. When \code{row_abs} is \code{FALSE}, it means that
+\code{row_ref} holds a positive, zero, or negative offset relative to the
 address of the cell containing the formula that contains the associated cell
-reference. Ditto for \code{colAbs} and \code{colRef}.
+reference. Ditto for \code{col_abs} and \code{col_ref}.
 }
 \section{Reference}{
 
@@ -38,7 +38,7 @@ MIT Press 2014
 }
 \examples{
 ra_ref()
-ra_ref(rowRef = 3, colRef = 2)
-ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3, colAbs = TRUE)
+ra_ref(row_ref = 3, col_ref = 2)
+ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3, col_abs = TRUE)
 }
 

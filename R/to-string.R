@@ -18,8 +18,8 @@ to_string <- function(x, fo = c("R1C1", "A1"), ...) UseMethod("to_string")
 #' ## ra_ref --> string
 #' to_string(ra_ref())
 #' to_string(ra_ref(), fo = "A1")
-#' to_string(ra_ref(rowRef = 3, colRef = 2))
-#' (mixed_ref <- ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3))
+#' to_string(ra_ref(row_ref = 3, col_ref = 2))
+#' (mixed_ref <- ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3))
 #' to_string(mixed_ref)
 #' \dontrun{
 #' ## this will raise warning and generate NA, because row reference is
@@ -31,16 +31,16 @@ to_string.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
   if (any(vapply(x, is.na, logical(1)))) return(NA_character_)
   fo <- match.arg(fo)
   if (fo == "A1") {
-    if (!isTRUE(x$rowAbs) || !isTRUE(x$colAbs)) {
+    if (!isTRUE(x$row_abs) || !isTRUE(x$col_abs)) {
       warning("Only absolute references can be converted to an A1 formatted ",
               "string ... NAs generated", call. = FALSE)
       return(NA_character_)
     }
-    return(paste0(rel_abs_format(x$colAbs, fo = "A1"), num_to_letter(x$colRef),
-                  rel_abs_format(x$rowAbs, fo = "A1"), x$rowRef))
+    return(paste0(rel_abs_format(x$col_abs, fo = "A1"), num_to_letter(x$col_ref),
+                  rel_abs_format(x$row_abs, fo = "A1"), x$row_ref))
   }
-  paste0("R", rel_abs_format(x$rowAbs, x$rowRef),
-         "C", rel_abs_format(x$colAbs, x$colRef))
+  paste0("R", rel_abs_format(x$row_abs, x$row_ref),
+         "C", rel_abs_format(x$col_abs, x$col_ref))
 }
 
 #' @describeIn to_string Convert a \code{\link{cell_addr}} object to a cell
@@ -58,7 +58,7 @@ to_string.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
 #' @export
 to_string.cell_addr <- function(x, fo = c("R1C1", "A1"), ...) {
   fo <- match.arg(fo)
-  ra_ref_list <- mapply(ra_ref, rowRef = cell_row(x), colRef = cell_col(x),
+  ra_ref_list <- mapply(ra_ref, row_ref = cell_row(x), col_ref = cell_col(x),
                         SIMPLIFY = FALSE)
   vapply(ra_ref_list, to_string, character(1), fo = fo)
 }

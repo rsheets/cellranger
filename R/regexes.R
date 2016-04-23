@@ -14,10 +14,10 @@
 
 ## for parsing single cell references
 .cr$A1_ncg_rx <-
-  "(?P<colAbs>\\$?)(?P<colRef>[A-Z]+)(?P<rowAbs>\\$?)(?P<rowRef>[0-9]+)"
+  "(?P<col_abs>\\$?)(?P<col_ref>[A-Z]+)(?P<row_abs>\\$?)(?P<row_ref>[0-9]+)"
 .cr$R1C1_ncg_rx <-
-  paste0("^R(?P<rowAbs>\\[?)(?P<rowRef>[0-9\\-]*)(?:\\]?)",
-          "C(?P<colAbs>\\[?)(?P<colRef>[0-9\\-]*)(?:\\]?)$")
+  paste0("^R(?P<row_abs>\\[?)(?P<row_ref>[0-9\\-]*)(?:\\]?)",
+          "C(?P<col_abs>\\[?)(?P<col_ref>[0-9\\-]*)(?:\\]?)$")
 
 parse_as_ref_string <- function(x, must_work = TRUE) {
   param_names <- c("fn", "wsn", "ref", "invalid")

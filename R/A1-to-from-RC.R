@@ -7,10 +7,10 @@ A1_to_ra_ref_ONE <- function(x) {
   ## but, anyway, the calling function is responsible for that
   y <- extract_named_captures(x, .cr$A1_ncg_rx)
   ## example: D$56 comes back as named list
-  ## rowAbs = "$" rowRef = "56" colAbs = "" colRef = "D"
+  ## row_abs = "$" row_ref = "56" col_abs = "" col_ref = "D"
   ## presence of "$" decoration in original row or col ref --> absolute
-  ra_ref(rowRef = as.integer(y$rowRef), rowAbs = nzchar(y$rowAbs),
-         colRef = letter_to_num(y$colRef), colAbs = nzchar(y$colAbs))
+  ra_ref(row_ref = as.integer(y$row_ref), row_abs = nzchar(y$row_abs),
+         col_ref = letter_to_num(y$col_ref), col_abs = nzchar(y$col_abs))
 }
 
 ## vectorized over x and always returns list
@@ -32,9 +32,9 @@ A1_to_ra_ref <- function(x, warn = TRUE, strict = TRUE) {
       warning("Non-absolute references found ... NAs generated ", call. = FALSE)
     }
     f <- function(z) {
-      if (!isTRUE(z$rowAbs)) z$rowRef <- NA
-      if (!isTRUE(z$colAbs)) z$colRef <- NA
-      ra_ref(z$rowRef, z$rowAbs, z$colRef, z$colAbs)
+      if (!isTRUE(z$row_abs)) z$row_ref <- NA
+      if (!isTRUE(z$col_abs)) z$col_ref <- NA
+      ra_ref(z$row_ref, z$row_abs, z$col_ref, z$col_abs)
     }
     y[not_abs] <- lapply(y[not_abs], f)
   }
@@ -44,22 +44,22 @@ A1_to_ra_ref <- function(x, warn = TRUE, strict = TRUE) {
 R1C1_to_ra_ref_ONE <- function(x) {
   y <- extract_named_captures(x, .cr$R1C1_ncg_rx)
   ## example: R[-4]C7 comes back as named list
-  ## rowAbs = "[" rowRef = "-4" colAbs = "" colRef = "7"
+  ## row_abs = "[" row_ref = "-4" col_abs = "" col_ref = "7"
   ## presence of square brackets `[x]` --> relative
-  y$rowAbs <- !nzchar(y$rowAbs)
-  y$colAbs <- !nzchar(y$colAbs)
+  y$row_abs <- !nzchar(y$row_abs)
+  y$col_abs <- !nzchar(y$col_abs)
   ## EXCEPT when row or column reference is empty, e.g., RC, RCx, RxC
   ## which means "this row or column" --> offset is 0 and ref is relative
-  if (y$rowRef == "") {
-    y$rowAbs <- FALSE
-    y$rowRef <- 0
+  if (y$row_ref == "") {
+    y$row_abs <- FALSE
+    y$row_ref <- 0
   }
-  if (y$colRef == "") {
-    y$colAbs <- FALSE
-    y$colRef <- 0
+  if (y$col_ref == "") {
+    y$col_abs <- FALSE
+    y$col_ref <- 0
   }
-  ra_ref(rowRef = as.integer(y$rowRef), rowAbs = y$rowAbs,
-         colRef = as.integer(y$colRef), colAbs = y$colAbs)
+  ra_ref(row_ref = as.integer(y$row_ref), row_abs = y$row_abs,
+         col_ref = as.integer(y$col_ref), col_abs = y$col_abs)
 }
 
 ## vectorized over x and always returns list
@@ -112,7 +112,7 @@ R1C1_to_A1 <- function(x) {
   if (any(!abs)) {
     warning("Ambiguous cell references ... NAs generated", call. = FALSE)
     y[!abs] <- lapply(y[!abs], function(x) {
-      ra_ref(rowRef = NA, rowAbs = NA, colRef = NA, colAbs = NA)
+      ra_ref(row_ref = NA, row_abs = NA, col_ref = NA, col_abs = NA)
     })
   }
   vapply(y, to_string, character(1), fo = "A1")

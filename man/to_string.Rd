@@ -40,8 +40,8 @@ reference string
 ## ra_ref --> string
 to_string(ra_ref())
 to_string(ra_ref(), fo = "A1")
-to_string(ra_ref(rowRef = 3, colRef = 2))
-(mixed_ref <- ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3))
+to_string(ra_ref(row_ref = 3, col_ref = 2))
+(mixed_ref <- ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3))
 to_string(mixed_ref)
 \dontrun{
 ## this will raise warning and generate NA, because row reference is

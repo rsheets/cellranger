@@ -64,7 +64,7 @@ test_that("row and column extraction work for cell_addr objects", {
 
 test_that("cell_addr objects can be converted to ra_ref", {
   expect_identical(as.ra_ref(cell_addr(2, 5)),
-                   ra_ref(rowRef = 2, colRef = 5))
+                   ra_ref(row_ref = 2, col_ref = 5))
 })
 
 test_that("cell_addr objects can be converted to string", {

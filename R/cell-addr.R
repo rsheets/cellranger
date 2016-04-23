@@ -127,16 +127,16 @@ as.cell_addr_v <- function(x, ...) UseMethod("as.cell_addr_v")
 #' rar <- ra_ref(2, FALSE, 5, TRUE)
 #' as.cell_addr(rar)
 as.cell_addr.ra_ref <- function(x, ...) {
-  if (!isTRUE(x$rowAbs) || !isTRUE(x$colAbs)) {
+  if (!isTRUE(x$row_abs) || !isTRUE(x$col_abs)) {
     warning("Non-absolute references found ... NAs generated", call. = FALSE)
-    if (!isTRUE(x$rowAbs)) {
-      x$rowRef <- NA
+    if (!isTRUE(x$row_abs)) {
+      x$row_ref <- NA
     }
-    if (!isTRUE(x$colAbs)) {
-      x$colRef <- NA
+    if (!isTRUE(x$col_abs)) {
+      x$col_ref <- NA
     }
   }
-  cell_addr(row = x$rowRef, col = x$colRef)
+  cell_addr(row = x$row_ref, col = x$col_ref)
 }
 
 #' @rdname as.cell_addr

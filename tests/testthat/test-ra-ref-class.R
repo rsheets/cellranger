@@ -2,12 +2,12 @@ context("ra_ref class")
 
 test_that("ra_ref constructor raises error for bad inputs", {
   expect_error(ra_ref(1:2))
-  expect_error(ra_ref(rowAbs = "A1"))
+  expect_error(ra_ref(row_abs = "A1"))
 })
 
 test_that("ra_ref constructor rejects absolute references < 1", {
-  expect_error(ra_ref(rowRef = -1))
-  expect_error(ra_ref(colRef = -2))
+expect_error(ra_ref(row_ref = -1))
+  expect_error(ra_ref(col_ref = -2))
 })
 
 test_that("ra_ref constructor is not changing", {
@@ -93,14 +93,14 @@ test_that("ra_ref --> string --> ra_ref round trips work", {
 
 test_that("vectorized version of as.ra_ref.character works", {
   input <- c("$A$1", "$F$14", "B$4", "D9")
-  output <- list(ra_ref(), ra_ref(rowRef = 14, colRef = 6),
-                 ra_ref(4, colRef = NA, colAbs = FALSE),
-                 ra_ref(rowRef = 9, colRef = 4))
+  output <- list(ra_ref(), ra_ref(row_ref = 14, col_ref = 6),
+                 ra_ref(4, col_ref = NA, col_abs = FALSE),
+                 ra_ref(row_ref = 9, col_ref = 4))
   expect_identical(as.ra_ref_v(input, strict = FALSE, warn = FALSE), output)
 })
 
 test_that("vectorized version of as.ra_ref.cell_addr works", {
   input <- cell_addr(1:3, 1)
-  output <- list(ra_ref(), ra_ref(rowRef = 2), ra_ref(rowRef = 3))
+  output <- list(ra_ref(), ra_ref(row_ref = 2), ra_ref(row_ref = 3))
   expect_identical(as.ra_ref_v(input), output)
 })

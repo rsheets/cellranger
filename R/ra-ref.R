@@ -1,18 +1,18 @@
 #' ra_ref class
 #'
 #' The \code{ra_ref} class is used to represent a single relative, absolute, or
-#' mixed cell reference, presumably found in a formula. When \code{rowAbs} is
-#' \code{TRUE}, it means that \code{rowRef} identifies a specific row in an
-#' absolute sense. When \code{rowAbs} is \code{FALSE}, it means that
-#' \code{rowRef} holds a positive, zero, or negative offset relative to the
+#' mixed cell reference, presumably found in a formula. When \code{row_abs} is
+#' \code{TRUE}, it means that \code{row_ref} identifies a specific row in an
+#' absolute sense. When \code{row_abs} is \code{FALSE}, it means that
+#' \code{row_ref} holds a positive, zero, or negative offset relative to the
 #' address of the cell containing the formula that contains the associated cell
-#' reference. Ditto for \code{colAbs} and \code{colRef}.
+#' reference. Ditto for \code{col_abs} and \code{col_ref}.
 #'
-#' @param rowRef integer, row
-#' @param rowAbs logical indicating whether \code{rowRef} is absolute or
+#' @param row_ref integer, row
+#' @param row_abs logical indicating whether \code{row_ref} is absolute or
 #'   relative
-#' @param colRef integer, column
-#' @param colAbs logical indicating whether \code{colRef} is absolute or
+#' @param col_ref integer, column
+#' @param col_abs logical indicating whether \code{col_ref} is absolute or
 #'   relative
 #'
 #' @return a \code{ra_ref} object
@@ -22,26 +22,26 @@
 #'
 #' @examples
 #' ra_ref()
-#' ra_ref(rowRef = 3, colRef = 2)
-#' ra_ref(rowRef = 10, rowAbs = FALSE, colRef = 3, colAbs = TRUE)
-ra_ref <- function(rowRef = 1L,
-                   rowAbs = TRUE,
-                   colRef = 1L,
-                   colAbs = TRUE) {
-  rowRef <- as.integer(rowRef)
-  colRef <- as.integer(colRef)
-  stopifnot(length(rowRef) == 1L, length(rowAbs) == 1L,
-            length(colRef) == 1L, length(colAbs) == 1L,
-            is.logical(rowAbs), is.logical(colAbs))
-  if ( (isTRUE(rowAbs) && isTRUE(rowRef < 1)) ||
-       (isTRUE(colAbs) && isTRUE(colRef < 1)) ) {
+#' ra_ref(row_ref = 3, col_ref = 2)
+#' ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3, col_abs = TRUE)
+ra_ref <- function(row_ref = 1L,
+                   row_abs = TRUE,
+                   col_ref = 1L,
+                   col_abs = TRUE) {
+  row_ref <- as.integer(row_ref)
+  col_ref <- as.integer(col_ref)
+  stopifnot(length(row_ref) == 1L, length(row_abs) == 1L,
+            length(col_ref) == 1L, length(col_abs) == 1L,
+            is.logical(row_abs), is.logical(col_abs))
+  if ( (isTRUE(row_abs) && isTRUE(row_ref < 1)) ||
+       (isTRUE(col_abs) && isTRUE(col_ref < 1)) ) {
     stop("Absolute row or column references must be >= 1:\n",
-         " rowAbs = ", rowAbs, ", rowRef = ", rowRef, "\n",
-         " colAbs = ", colAbs, ", colRef = ", colRef, "\n",
+         " row_abs = ", row_abs, ", row_ref = ", row_ref, "\n",
+         " col_abs = ", col_abs, ", col_ref = ", col_ref, "\n",
          call. = FALSE)
   }
-  structure(list(rowRef = rowRef, rowAbs = rowAbs,
-                 colRef = colRef, colAbs = colAbs),
+  structure(list(row_ref = row_ref, row_abs = row_abs,
+                 col_ref = col_ref, col_abs = col_abs),
             class = c("ra_ref", "list"))
 }
 
@@ -60,12 +60,12 @@ ra_ref <- function(rowRef = 1L,
 print.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
   fo <- match.arg(fo)
   row_ra <-
-    switch(as.character(x$rowAbs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
+    switch(as.character(x$row_abs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
   col_ra <-
-    switch(as.character(x$colAbs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
+    switch(as.character(x$col_abs), `TRUE` = "abs", `FALSE` = "rel", `NA` = "NA")
   cat("<ra_ref>\n")
-  cat(paste0(" row: ", x$rowRef, " (", row_ra, ")\n",
-             " col: ", x$colRef, " (", col_ra, ")\n"))
+  cat(paste0(" row: ", x$row_ref, " (", row_ra, ")\n",
+             " col: ", x$col_ref, " (", col_ra, ")\n"))
   cat(" ", to_string(x, fo = fo), "\n")
 }
 
@@ -175,8 +175,8 @@ as.ra_ref_v.character <- function(x, fo = NULL, warn = TRUE,
 #' as.ra_ref(ca)
 as.ra_ref.cell_addr <- function(x, ...) {
   stopifnot(length(x) == 1L)
-  ra_ref(rowRef = cell_row(x), rowAbs = if (is.na(cell_row(x))) NA else TRUE,
-         colRef = cell_col(x), colAbs = if (is.na(cell_row(x))) NA else TRUE)
+  ra_ref(row_ref = cell_row(x), row_abs = if (is.na(cell_row(x))) NA else TRUE,
+         col_ref = cell_col(x), col_abs = if (is.na(cell_row(x))) NA else TRUE)
 }
 
 #' @rdname as.ra_ref
@@ -192,5 +192,5 @@ as.ra_ref.cell_addr <- function(x, ...) {
 #' ## use as.ra_ref_v instead
 #' as.ra_ref_v(ca)
 as.ra_ref_v.cell_addr <- function(x, ...) {
-  mapply(ra_ref, rowRef = cell_row(x), colRef = cell_col(x), SIMPLIFY = FALSE)
+  mapply(ra_ref, row_ref = cell_row(x), col_ref = cell_col(x), SIMPLIFY = FALSE)
 }
