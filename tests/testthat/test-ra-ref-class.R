@@ -90,3 +90,17 @@ test_that("ra_ref --> string --> ra_ref round trips work", {
   ## strings in A1 format must contain absolute references
   roundtrip("$A$1", "A1")
 })
+
+test_that("vectorized version of as.ra_ref.character works", {
+  input <- c("$A$1", "$F$14", "B$4", "D9")
+  output <- list(ra_ref(), ra_ref(rowRef = 14, colRef = 6),
+                 ra_ref(4, colRef = NA, colAbs = FALSE),
+                 ra_ref(rowRef = 9, colRef = 4))
+  expect_identical(as.ra_ref_v(input, strict = FALSE, warn = FALSE), output)
+})
+
+test_that("vectorized version of as.ra_ref.cell_addr works", {
+  input <- cell_addr(1:3, 1)
+  output <- list(ra_ref(), ra_ref(rowRef = 2), ra_ref(rowRef = 3))
+  expect_identical(as.ra_ref_v(input), output)
+})
