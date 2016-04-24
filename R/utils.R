@@ -49,7 +49,14 @@ is_not_abs_ref <- function(x) {
 
 absolutize <- function(x) {
   stopifnot(inherits(x, "ra_ref"))
-  ra_ref(row_ref = x$row_ref, row_abs = TRUE, col_ref = x$col_ref, col_abs = TRUE)
+  x$row_abs <- x$col_abs <- TRUE
+  x
+}
+
+relativize <- function(x) {
+  stopifnot(inherits(x, "ra_ref"))
+  x$row_abs <- x$col_abs <- FALSE
+  x
 }
 
 guess_fo <- function(x) {

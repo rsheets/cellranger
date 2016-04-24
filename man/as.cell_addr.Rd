@@ -29,8 +29,14 @@ as.cell_addr_v(x, ...)
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
 
-\item{strict}{logical, indicates that only absolute references should be
-converted; defaults to \code{TRUE}}
+\item{strict}{logical, affects reading and writing of A1 formatted cell
+references. When \code{strict = TRUE}, references must be declared absolute
+through the use of dollar signs, e.g., \code{$A$1},  for parsing. When
+making a string, \code{strict = TRUE} requests dollar signs for absolute
+reference. When \code{strict = FALSE}, pure relative reference strings will
+be interpreted as absolute, i.e. \code{A1} and \code{$A$1} are treated the
+same. When making a string, \code{strict = FALSE} will cause dollars signs
+to be omitted in the reference string.}
 }
 \value{
 a \code{\link{cell_addr}} object

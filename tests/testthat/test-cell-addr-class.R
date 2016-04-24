@@ -70,6 +70,7 @@ test_that("cell_addr objects can be converted to ra_ref", {
 test_that("cell_addr objects can be converted to string", {
   expect_identical(to_string(cell_addr(3, 8)), "R3C8")
   expect_identical(to_string(cell_addr(3, 8), fo = "A1"), "$H$3")
+  expect_identical(to_string(cell_addr(3, 8), fo = "A1", strict = FALSE), "H3")
 })
 
 test_that("valid ra_ref objects can be converted to cell_addr", {

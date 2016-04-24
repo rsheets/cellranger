@@ -26,6 +26,7 @@ test_that("ra_ref constructor is not changing", {
 test_that("ra_ref is converted to string", {
   expect_identical(to_string(ra_ref()), "R1C1")
   expect_identical(to_string(ra_ref(), fo = "A1"), "$A$1")
+  expect_identical(to_string(ra_ref(), fo = "A1", strict = FALSE), "A1")
   expect_identical(to_string(ra_ref(2, TRUE,  3, FALSE)), "R2C[3]")
   expect_identical(to_string(ra_ref(4, FALSE, 5,  TRUE)), "R[4]C5")
   expect_identical(to_string(ra_ref(6, FALSE, -6, FALSE)), "R[6]C[-6]")
@@ -101,7 +102,6 @@ test_that("ra_ref --> string --> ra_ref round trips work", {
   roundtrip("RC1", "R1C1")
   roundtrip("R4C")
   roundtrip("R[-2]C8")
-  ## strings in A1 format must contain absolute references
   roundtrip("$A$1", "A1")
 })
 

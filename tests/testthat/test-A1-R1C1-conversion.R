@@ -30,6 +30,7 @@ test_that("garbage alleged to be A1 formatted references is not converted", {
 
 test_that("R1C1 notation converts to A1 notation", {
   expect_identical(R1C1_to_A1("R10C28"), "$AB$10")
+  expect_identical(R1C1_to_A1("R10C28", strict = FALSE), "AB10")
   expect_identical(R1C1_to_A1(c("R1C1", "R100C702")), c("$A$1",  "$ZZ$100"))
 })
 

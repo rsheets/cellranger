@@ -30,11 +30,14 @@ as.ra_ref_v(x, ...)
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
 
-\item{strict}{logical, \code{TRUE} (default) indicates that, for references
-in "A1" format, only absolute references should be converted. If
-\code{FALSE} a purely relative "A1" reference, like B4, will be treated as
-purely absolute, i.e. like $B$4. Regardless of \code{strict}, a mixed "A1"
-reference will lead to \code{NA}(s) in the affected position(s).}
+\item{strict}{logical, affects reading and writing of A1 formatted cell
+references. When \code{strict = TRUE}, references must be declared absolute
+through the use of dollar signs, e.g., \code{$A$1},  for parsing. When
+making a string, \code{strict = TRUE} requests dollar signs for absolute
+reference. When \code{strict = FALSE}, pure relative reference strings will
+be interpreted as absolute, i.e. \code{A1} and \code{$A$1} are treated the
+same. When making a string, \code{strict = FALSE} will cause dollars signs
+to be omitted in the reference string.}
 }
 \value{
 a \code{\link{ra_ref}} object, in the case of \code{as.ra_ref}, or a

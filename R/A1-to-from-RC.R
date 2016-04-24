@@ -73,8 +73,7 @@ R1C1_to_ra_ref <- function(x) lapply(x, R1C1_to_ra_ref_ONE)
 #' \code{strict}.
 #'
 #' @param x character vector of cell references in A1 format
-#' @param strict logical, indicates that only absolute references should be
-#'   converted; defaults to \code{TRUE}
+#' @template param-strict
 #'
 #' @return character vector of absolute cell references in R1C1 format
 #'
@@ -105,23 +104,25 @@ A1_to_R1C1 <- function(x, strict = TRUE) {
 #' \code{NA}.
 #'
 #' @param x vector of cell positions in R1C1 notation
+#' @template param-strict
 #'
 #' @return character vector of absolute cell references in A1 notation
 #'
 #' @examples
 #' R1C1_to_A1("R1C1")
-#' R1C1_to_A1("R10C52")
+#' R1C1_to_A1("R10C52", strict = FALSE)
 #' R1C1_to_A1(c("R1C1", "R10C52", "RC4", "R[-3]C[9]"))
 #' @export
-R1C1_to_A1 <- function(x) {
+R1C1_to_A1 <- function(x, strict = TRUE) {
   stopifnot(is.character(x), all(grepl(.cr$is_R1C1_rx, x)))
   y <- R1C1_to_ra_ref(x)
   abs <- vapply(y, is_abs_ref, logical(1))
   if (any(!abs)) {
     warning("Ambiguous cell references ... NAs generated", call. = FALSE)
     y[!abs] <- lapply(y[!abs], function(x) {
-      ra_ref(row_ref = NA, row_abs = NA, col_ref = NA, col_abs = NA)
+      ra_ref(row_ref = NA, row_abs = NA, col_ref = NA, col_abs = NA,
+             sheet = x$sheet, file = x$file)
     })
   }
-  vapply(y, to_string, character(1), fo = "A1")
+  vapply(y, to_string, character(1), fo = "A1", strict = strict)
 }

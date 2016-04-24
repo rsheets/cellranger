@@ -102,7 +102,7 @@ as.cell_limits.NULL <- function(x, ...) cell_limits()
 #' @template param-fo
 #' @examples
 #' as.cell_limits("A1")
-#' as.cell_limits("Q24")
+#' as.cell_limits("$Q$24")
 #' as.cell_limits("A1:D8")
 #' as.cell_limits("R5C11")
 #' as.cell_limits("R2C3:R6C9")
@@ -110,14 +110,16 @@ as.cell_limits.NULL <- function(x, ...) cell_limits()
 #' as.cell_limits("'Spaces are evil'!R2C3:R6C9")
 #'
 #' \dontrun{
-#' ## mixed references won't work
+#' ## explicitly mixed A1 references won't work
 #' as.cell_limits("A$2")
-#' as.cell_limits("A$2:A$4")
+#' ## mixed or relative R1C1 references won't work
+#' as.cell_limits("RC[4]")
 #' }
 #' @export
 as.cell_limits.character <- function(x, fo = NULL, ...) {
   stopifnot(length(x) == 1L)
   parsed <- parse_ref_string(x, fo = fo)
+  ## parsed$ref_v has length 1 or 2, depending on whether input was a range
   if (parsed$fo == "A1") {
     rar_list <- A1_to_ra_ref(parsed$ref_v, strict = FALSE)
   } else {
@@ -143,8 +145,8 @@ as.cell_limits.character <- function(x, fo = NULL, ...) {
 #'
 #' @param x a cell_limits object
 #' @template param-fo
-#' @param sheet logical, specifying whether worksheet name should be prepended
-#'   to the range, e.g. \code{Sheet1!A1:D4}
+#' @template param-strict
+#' @template param-sheet
 #'
 #' @return length one character vector holding a cell range
 #'
@@ -157,15 +159,14 @@ as.cell_limits.character <- function(x, fo = NULL, ...) {
 #' as.range(rgCL_ws)
 #' as.range(rgCL_ws, fo = "A1")
 #' @export
-as.range <- function(x, fo = c("R1C1", "A1"), sheet = NULL) {
-  stopifnot(inherits(x, "cell_limits"), isTOGGLE(sheet))
+as.range <- function(x, fo = c("R1C1", "A1"), strict = FALSE, sheet = NULL) {
+  stopifnot(inherits(x, "cell_limits"), isTOGGLE(strict), isTOGGLE(sheet))
   fo <- match.arg(fo)
   if (anyNA(unlist(x[c("ul", "lr")]))) return(NA_character_)
   ca <- cell_addr(c(x$ul[1], x$lr[1]), c(x$ul[2], x$lr[2]))
-  range <- paste(to_string(ca, fo = fo), collapse = ":")
-  if (is.null(sheet)) {
-    sheet <- !is.na(x$sheet)
-  }
+  ## right here is where I need to enforce strict when fo = A1
+  range <- paste(to_string(ca, fo = fo, strict = strict), collapse = ":")
+  sheet <- sheet %||% !is.na(x$sheet)
   if (sheet) {
     range <- paste(add_single_quotes(x$sheet), range, sep = "!")
   }

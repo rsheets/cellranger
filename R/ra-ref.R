@@ -119,11 +119,7 @@ as.ra_ref_v <- function(x, ...) UseMethod("as.ra_ref_v")
 
 #' @rdname as.ra_ref
 #' @template param-fo
-#' @param strict logical, \code{TRUE} (default) indicates that, for references
-#'   in "A1" format, only absolute references should be converted. If
-#'   \code{FALSE} a purely relative "A1" reference, like B4, will be treated as
-#'   purely absolute, i.e. like $B$4. Regardless of \code{strict}, a mixed "A1"
-#'   reference will lead to \code{NA}(s) in the affected position(s).
+#' @template param-strict
 #'
 #' @examples
 #' ## as.ra_ref.character()
@@ -164,9 +160,6 @@ as.ra_ref.character <- function(x, fo = NULL, strict = TRUE, ...) {
   }
   rar
 }
-
-#   rar_list[[1]]
-# }
 
 #' @rdname as.ra_ref
 #' @export

@@ -153,9 +153,8 @@ as.cell_addr_v.list <- function(x, ...) {
 }
 
 #' @rdname as.cell_addr
-#' @param strict logical, indicates that only absolute references should be
-#'   converted; defaults to \code{TRUE}
 #' @template param-fo
+#' @template param-strict
 #' @export
 #' @examples
 #' as.cell_addr("$D$12")

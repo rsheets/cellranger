@@ -8,9 +8,7 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.cell_limits(rgA1), rgCL)
   expect_equal(as.cell_limits(rgRC), rgCL)
   expect_equal(as.range(rgCL), rgRC)
-  ## revisit once I have option to suppress dollar signs
-  expect_equal(as.range(rgCL, fo = "A1"), "$A$1:$C$4")
-  #expect_equal(as.range(rgCL), rgA1)
+  expect_equal(as.range(rgCL, fo = "A1"), rgA1)
 
   rgA1sheet <- "sheet!A1:C4"
   rgRCsheet <- "sheet!R1C1:R4C3"
@@ -19,9 +17,7 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.cell_limits(rgRCsheet), rgCLwsn)
   expect_equal(as.range(rgCLwsn), rgRCsheet)
   expect_equal(as.range(rgCLwsn, sheet = FALSE), rgRC)
-  ## revisit once I have option to suppress dollar signs
-  expect_equal(as.range(rgCLwsn, fo = "A1"), "sheet!$A$1:$C$4")
-  #expect_equal(as.range(rgCLwsn), rgA1)
+  expect_equal(as.range(rgCLwsn, fo = "A1"), rgA1sheet)
 
   rgA1 <- "E7"
   rgA1A1 <- "E7:E7"
@@ -33,8 +29,7 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.cell_limits(rgA1A1), rgCL)
   expect_equal(as.cell_limits(rgRCRC), rgCL)
   expect_equal(as.range(rgCL), rgRCRC)
-  expect_equal(as.range(rgCL, fo = "A1"), "$E$7:$E$7")
-  #expect_equal(as.range(rgCL), rgA1A1)
+  expect_equal(as.range(rgCL, fo = "A1"), rgA1A1)
 
   rgA1sheet <- "sheet!E7"
   rgA1A1sheet <- "sheet!E7:E7"
@@ -46,8 +41,7 @@ test_that("Cell range is converted to a cell_limit object and vice versa", {
   expect_equal(as.cell_limits(rgA1A1sheet), rgCLsheet)
   expect_equal(as.cell_limits(rgRCRCsheet), rgCLsheet)
   expect_equal(as.range(rgCLsheet), rgRCRCsheet)
-  expect_equal(as.range(rgCLsheet, fo = "A1"), "sheet!$E$7:$E$7")
-  #expect_equal(as.range(rgCLsheet, wsn = TRUE), rgA1A1sheet)
+  expect_equal(as.range(rgCLsheet, fo = "A1"), rgA1A1sheet)
 
   rgCL <- cell_limits(ul = c(NA, 1), lr = c(4, NA))
   expect_true(is.na(as.range(rgCL)))

@@ -4,7 +4,7 @@
 \alias{as.range}
 \title{Convert a cell_limits object to a cell range}
 \usage{
-as.range(x, fo = c("R1C1", "A1"), sheet = NULL)
+as.range(x, fo = c("R1C1", "A1"), strict = FALSE, sheet = NULL)
 }
 \arguments{
 \item{x}{a cell_limits object}
@@ -12,8 +12,17 @@ as.range(x, fo = c("R1C1", "A1"), sheet = NULL)
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
 
-\item{sheet}{logical, specifying whether worksheet name should be prepended
-to the range, e.g. \code{Sheet1!A1:D4}}
+\item{strict}{logical, affects reading and writing of A1 formatted cell
+references. When \code{strict = TRUE}, references must be declared absolute
+through the use of dollar signs, e.g., \code{$A$1},  for parsing. When
+making a string, \code{strict = TRUE} requests dollar signs for absolute
+reference. When \code{strict = FALSE}, pure relative reference strings will
+be interpreted as absolute, i.e. \code{A1} and \code{$A$1} are treated the
+same. When making a string, \code{strict = FALSE} will cause dollars signs
+to be omitted in the reference string.}
+
+\item{sheet}{logical, indicating whether to include worksheet name; if
+\code{NULL}, worksheet is included if worksheet name is not \code{NA}}
 }
 \value{
 length one character vector holding a cell range

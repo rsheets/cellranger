@@ -9,17 +9,21 @@
 \alias{to_string_v.list}
 \title{Get string representation of cell references}
 \usage{
-to_string(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
+to_string(x, fo = c("R1C1", "A1"), strict = TRUE, sheet = NULL, ...)
 
-to_string_v(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
+to_string_v(x, fo = c("R1C1", "A1"), strict = TRUE, sheet = NULL, ...)
 
-\method{to_string}{ra_ref}(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
+\method{to_string}{ra_ref}(x, fo = c("R1C1", "A1"), strict = TRUE,
+  sheet = NULL, ...)
 
-\method{to_string_v}{list}(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
+\method{to_string_v}{list}(x, fo = c("R1C1", "A1"), strict = TRUE,
+  sheet = NULL, ...)
 
-\method{to_string}{cell_addr}(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
+\method{to_string}{cell_addr}(x, fo = c("R1C1", "A1"), strict = TRUE,
+  sheet = FALSE, ...)
 
-\method{to_string_v}{cell_addr}(x, fo = c("R1C1", "A1"), sheet = TRUE, ...)
+\method{to_string_v}{cell_addr}(x, fo = c("R1C1", "A1"), strict = TRUE,
+  sheet = FALSE, ...)
 }
 \arguments{
 \item{x}{a suitable representation of a cell or cell area reference: a single
@@ -29,8 +33,17 @@ object}
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
 
-\item{sheet}{logical, indicating whether to include sheet references, if
-present}
+\item{strict}{logical, affects reading and writing of A1 formatted cell
+references. When \code{strict = TRUE}, references must be declared absolute
+through the use of dollar signs, e.g., \code{$A$1},  for parsing. When
+making a string, \code{strict = TRUE} requests dollar signs for absolute
+reference. When \code{strict = FALSE}, pure relative reference strings will
+be interpreted as absolute, i.e. \code{A1} and \code{$A$1} are treated the
+same. When making a string, \code{strict = FALSE} will cause dollars signs
+to be omitted in the reference string.}
+
+\item{sheet}{logical, indicating whether to include worksheet name; if
+\code{NULL}, worksheet is included if worksheet name is not \code{NA}}
 
 \item{...}{further arguments passed to or from other methods}
 }
@@ -56,7 +69,9 @@ it's impossible to convert to an "A1" formatted string. We would have to know
 ## exactly one ra_ref --> string
 to_string(ra_ref())
 to_string(ra_ref(), fo = "A1")
+to_string(ra_ref(), fo = "A1", strict = FALSE)
 to_string(ra_ref(row_ref = 3, col_ref = 2))
+to_string(ra_ref(row_ref = 3, col_ref = 2, sheet = "helloooo"))
 (mixed_ref <- ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3))
 to_string(mixed_ref)
 
