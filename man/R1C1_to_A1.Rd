@@ -10,14 +10,18 @@ R1C1_to_A1(x)
 \item{x}{vector of cell positions in R1C1 notation}
 }
 \value{
-vector of cell positions in A1 notation
+character vector of absolute cell references in A1 notation
 }
 \description{
-Convert R1C1 positioning notation to A1 notation
+Convert cell reference strings from R1C1 to A1 format. This only makes sense
+for absolute references, such as \code{"R4C2"}. Why? Because otherwise, we'd
+have to know the host cell of the reference. Relative and mixed references,
+like (\code{"R[3]C[-1]"} and \code{"R[1]C5"}), will therefore return
+\code{NA}.
 }
 \examples{
 R1C1_to_A1("R1C1")
 R1C1_to_A1("R10C52")
-R1C1_to_A1(c("R1C1", "R10C52"))
+R1C1_to_A1(c("R1C1", "R10C52", "RC4", "R[-3]C[9]"))
 }
 

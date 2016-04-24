@@ -28,7 +28,7 @@ Because otherwise, we'd have to know the host cell of the reference. Set
 A1_to_R1C1("$A$1")
 A1_to_R1C1("A1")                 ## raises a warning, returns NA
 A1_to_R1C1("A1", strict = FALSE) ## unless strict = FALSE
-A1_to_R1C1(c("$A$1", "B$4")) ## raises a warning, includes an NA
+A1_to_R1C1(c("$A$1", "B$4")) ## raises a warning, includes an NA, because
 A1_to_R1C1(c("$A$1", "B$4"), strict = FALSE) ## mixed ref always returns NA
 }
 

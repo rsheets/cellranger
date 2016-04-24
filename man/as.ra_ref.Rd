@@ -13,11 +13,9 @@ as.ra_ref(x, ...)
 
 as.ra_ref_v(x, ...)
 
-\method{as.ra_ref}{character}(x, fo = NULL, warn = TRUE, strict = TRUE,
-  ...)
+\method{as.ra_ref}{character}(x, fo = NULL, strict = TRUE, ...)
 
-\method{as.ra_ref_v}{character}(x, fo = NULL, warn = TRUE, strict = TRUE,
-  ...)
+\method{as.ra_ref_v}{character}(x, fo = NULL, strict = TRUE, ...)
 
 \method{as.ra_ref}{cell_addr}(x, ...)
 
@@ -31,10 +29,6 @@ as.ra_ref_v(x, ...)
 
 \item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
 cell reference format; in many contexts, it can be inferred and is optional}
-
-\item{warn}{logical, \code{TRUE} (default) requests a warning if a file or
-worksheet name is found in the string, since this cannot be represented in
-a \code{\link{ra_ref}} object and will be dropped.}
 
 \item{strict}{logical, \code{TRUE} (default) indicates that, for references
 in "A1" format, only absolute references should be converted. If
@@ -77,7 +71,7 @@ cs <- c("$A$1", "Sheet1!$F$14", "Sheet2!B$4", "D9")
 as.ra_ref(cs)
 }
 ## use as.ra_ref_v instead
-as.ra_ref_v(cs, strict = FALSE, warn = FALSE)
+as.ra_ref_v(cs, strict = FALSE)
 ## as.ra_ref.cell_addr
 ca <- cell_addr(2, 5)
 as.ra_ref(ca)

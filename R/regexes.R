@@ -8,13 +8,25 @@
 .cr$string_rx <- sprintf("^(?:%s%s%s|(.*))$", .cr$filename_rx,
                          .cr$worksheetname_rx, .cr$ref_rx)
 
-## returns a character matrix
-## one row per element of x
-## columns are as named below
-parse_as_ref_string <- function(x) {
-  params <- rematch::re_match(.cr$string_rx, x)
-  colnames(params) <- c("input", "file", "sheet", "ref", "invalid")
-  params
+parse_ref_string <- function(x, fo = NULL) {
+  parsed <- as.list(rematch::re_match(.cr$string_rx, x)[1, , drop = TRUE])
+  names(parsed) <- c("input", "file", "sheet", "ref", "invalid")
+  parsed$ref_v <- unlist(strsplit(parsed$ref, ":"))
+  stopifnot(length(parsed$ref_v) %in% 1:2)
+  if (is.null(fo)) {
+    fo_v <- lapply(parsed$ref_v, guess_fo)
+    ## guess_fo will warn when it returns c("R1C1", "A1")
+    ## so let's just honor the usual R1C1 default and get on with things
+    fo_v <- vapply(fo_v, `[[`, character(1), 1)
+    parsed$fo <- unique(fo_v)
+    if (length(parsed$fo) > 1) {
+      stop("Can't tell if cell references are in A1 or R1C1 format:\n",
+           parsed$ref, call. = FALSE)
+    }
+  } else {
+    parsed$fo <- match.arg(fo, c("R1C1", "A1"))
+  }
+  parsed
 }
 
 ## for validating single cell references

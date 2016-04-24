@@ -1,5 +1,3 @@
-rm_dollar_signs <- function(x) gsub('$', '', x, fixed = TRUE)
-
 char0_to_NA <- function(x) if (length(x) < 1) NA_character_ else x
 
 isFALSE <- function(x) identical(x, FALSE)
@@ -57,9 +55,8 @@ absolutize <- function(x) {
 guess_fo <- function(x) {
   m <- c(R1C1 = grep(.cr$is_R1C1_rx, x), A1 = grep(.cr$is_A1_rx, x))
   if (length(m) < 1) {
-    warning("Cell reference follows neither the A1 nor R1C1 format:\n",
-            x, "\nPutative format is NA.", call. = FALSE)
-    return(NA_character_)
+    stop("Cell reference follows neither the A1 nor R1C1 format:\n",
+         x, call. = FALSE)
   }
   if (length(m) > 1) {
     ## OMFG this can actually happen. Example: RCx

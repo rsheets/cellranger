@@ -20,7 +20,7 @@ A1_to_ra_ref_ONE <- function(x) {
 ## example: F4 treated like $F$4
 ## NO MATTER WHAT: relative references within mixed references --> NA
 ## examples: F$4 or $F4
-A1_to_ra_ref <- function(x, warn = TRUE, strict = TRUE) {
+A1_to_ra_ref <- function(x, strict = TRUE) {
   y <- lapply(x, A1_to_ra_ref_ONE)
 
   rel <- vapply(y, is_rel_ref, logical(1))
@@ -28,9 +28,6 @@ A1_to_ra_ref <- function(x, warn = TRUE, strict = TRUE) {
 
   not_abs <- vapply(y, is_not_abs_ref, logical(1))
   if (any(not_abs)) {
-    if (warn) {
-      warning("Non-absolute references found ... NAs generated ", call. = FALSE)
-    }
     f <- function(z) {
       if (!isTRUE(z$row_abs)) z$row_ref <- NA
       if (!isTRUE(z$col_abs)) z$col_ref <- NA
@@ -85,25 +82,36 @@ R1C1_to_ra_ref <- function(x) lapply(x, R1C1_to_ra_ref_ONE)
 #' A1_to_R1C1("$A$1")
 #' A1_to_R1C1("A1")                 ## raises a warning, returns NA
 #' A1_to_R1C1("A1", strict = FALSE) ## unless strict = FALSE
-#' A1_to_R1C1(c("$A$1", "B$4")) ## raises a warning, includes an NA
+#' A1_to_R1C1(c("$A$1", "B$4")) ## raises a warning, includes an NA, because
 #' A1_to_R1C1(c("$A$1", "B$4"), strict = FALSE) ## mixed ref always returns NA
 #' @export
 A1_to_R1C1 <- function(x, strict = TRUE) {
   stopifnot(is.character(x), all(grepl(.cr$is_A1_rx, x)))
   y <- A1_to_ra_ref(x, strict = strict)
+  not_abs <- vapply(y, is_not_abs_ref, logical(1))
+  if (any(not_abs)) {
+    warning("Mixed or relative cell references found ... NAs generated",
+            call. = FALSE)
+  }
   vapply(y, to_string, character(1))
 }
 
 #' Convert R1C1 positioning notation to A1 notation
 #'
+#' Convert cell reference strings from R1C1 to A1 format. This only makes sense
+#' for absolute references, such as \code{"R4C2"}. Why? Because otherwise, we'd
+#' have to know the host cell of the reference. Relative and mixed references,
+#' like (\code{"R[3]C[-1]"} and \code{"R[1]C5"}), will therefore return
+#' \code{NA}.
+#'
 #' @param x vector of cell positions in R1C1 notation
 #'
-#' @return vector of cell positions in A1 notation
+#' @return character vector of absolute cell references in A1 notation
 #'
 #' @examples
 #' R1C1_to_A1("R1C1")
 #' R1C1_to_A1("R10C52")
-#' R1C1_to_A1(c("R1C1", "R10C52"))
+#' R1C1_to_A1(c("R1C1", "R10C52", "RC4", "R[-3]C[9]"))
 #' @export
 R1C1_to_A1 <- function(x) {
   stopifnot(is.character(x), all(grepl(.cr$is_R1C1_rx, x)))

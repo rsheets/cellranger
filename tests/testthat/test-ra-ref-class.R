@@ -110,7 +110,9 @@ test_that("vectorized version of as.ra_ref.character works", {
   output <- list(ra_ref(), ra_ref(row_ref = 14, col_ref = 6),
                  ra_ref(4, col_ref = NA, col_abs = FALSE),
                  ra_ref(row_ref = 9, col_ref = 4))
-  expect_identical(as.ra_ref_v(input, strict = FALSE, warn = FALSE), output)
+  expect_warning(
+    expect_identical(as.ra_ref_v(input, strict = FALSE), output)
+  )
 })
 
 test_that("vectorized version of as.ra_ref.cell_addr works", {

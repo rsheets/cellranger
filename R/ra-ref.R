@@ -119,9 +119,6 @@ as.ra_ref_v <- function(x, ...) UseMethod("as.ra_ref_v")
 
 #' @rdname as.ra_ref
 #' @template param-fo
-#' @param warn logical, \code{TRUE} (default) requests a warning if a file or
-#'   worksheet name is found in the string, since this cannot be represented in
-#'   a \code{\link{ra_ref}} object and will be dropped.
 #' @param strict logical, \code{TRUE} (default) indicates that, for references
 #'   in "A1" format, only absolute references should be converted. If
 #'   \code{FALSE} a purely relative "A1" reference, like B4, will be treated as
@@ -143,30 +140,33 @@ as.ra_ref_v <- function(x, ...) UseMethod("as.ra_ref_v")
 #' as.ra_ref("RC2", fo = "A1", strict = FALSE)
 #'
 #' @export
-as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
+as.ra_ref.character <- function(x, fo = NULL, strict = TRUE, ...) {
   stopifnot(length(x) == 1L)
-  parsed <- as.list(parse_as_ref_string(x)[1, , drop = TRUE])
-  ref <- unlist(strsplit(parsed$ref, ":"))
-  if (length(ref) != 1L) {
-    stop("Can't make a ra_ref object from a cell area reference:\n",
-         parsed$cell_ref, call. = FALSE)
+  parsed <- parse_ref_string(x, fo = fo)
+  if (length(parsed$ref_v) > 1) {
+    stop("This appears to be a cell range, which is not allowed here.\n",
+         parsed$ref, call. = FALSE)
   }
-  if (is.null(fo)) {
-    ## guess_fo will warn when it returns c("R1C1", "A1")
-    ## so let's just honor the usual R1C1 default and get on with things
-    fo <- guess_fo(ref)[1]
+  if (parsed$fo == "A1") {
+    rar <- A1_to_ra_ref(parsed$ref_v, strict = strict)[[1]]
+    if (is_not_abs_ref(rar)) {
+      warning("Non-absolute reference ... NAs generated:\n",
+              parsed$ref, call. = FALSE)
+    }
   } else {
-    fo <- match.arg(fo, c("R1C1", "A1"))
+    rar <- R1C1_to_ra_ref(parsed$ref_v)[[1]]
   }
-  if (fo == "A1") {
-    rar <- A1_to_ra_ref(ref, warn = warn, strict = strict)[[1]]
-  } else {
-    rar <- R1C1_to_ra_ref(ref)[[1]]
+  if (!identical(parsed$sheet, "")) {
+    rar$sheet <- parsed$sheet
   }
-  rar$sheet <- if (identical(parsed$sheet, "")) rar$sheet else parsed$sheet
-  rar$file <- if (identical(parsed$file, "")) rar$file else parsed$file
+  if (!identical(parsed$file, "")) {
+    rar$file <- parsed$file
+  }
   rar
 }
+
+#   rar_list[[1]]
+# }
 
 #' @rdname as.ra_ref
 #' @export
@@ -178,10 +178,9 @@ as.ra_ref.character <- function(x, fo = NULL, warn = TRUE, strict = TRUE, ...) {
 #' as.ra_ref(cs)
 #' }
 #' ## use as.ra_ref_v instead
-#' as.ra_ref_v(cs, strict = FALSE, warn = FALSE)
-as.ra_ref_v.character <- function(x, fo = NULL, warn = TRUE,
-                                  strict = TRUE, ...) {
-  lapply(x, as.ra_ref, fo = fo, warn = warn, strict = strict)
+#' as.ra_ref_v(cs, strict = FALSE)
+as.ra_ref_v.character <- function(x, fo = NULL, strict = TRUE, ...) {
+  lapply(x, as.ra_ref, fo = fo, strict = strict)
 }
 
 #' @rdname as.ra_ref

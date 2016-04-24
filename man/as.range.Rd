@@ -4,19 +4,19 @@
 \alias{as.range}
 \title{Convert a cell_limits object to a cell range}
 \usage{
-as.range(x, RC = FALSE, wsn = FALSE)
+as.range(x, fo = c("R1C1", "A1"), sheet = NULL)
 }
 \arguments{
 \item{x}{a cell_limits object}
 
-\item{RC}{logical, requesting "R1C1" positioning notation}
+\item{fo}{either \code{"R1C1"} (the default) or \code{"A1"} specifying the
+cell reference format; in many contexts, it can be inferred and is optional}
 
-\item{wsn}{logical, specifying whether worksheet name should be prepended to
-the range, e.g. \code{Sheet1!A1:D4}}
+\item{sheet}{logical, specifying whether worksheet name should be prepended
+to the range, e.g. \code{Sheet1!A1:D4}}
 }
 \value{
-length one character vector holding a cell range, in either A1 or
-  R1C1 positioning notation
+length one character vector holding a cell range
 }
 \description{
 Convert a cell_limits object to a cell range
@@ -24,11 +24,10 @@ Convert a cell_limits object to a cell range
 \examples{
 rgCL <- cell_limits(ul = c(1, 2), lr = c(7, 6))
 as.range(rgCL)
-as.range(rgCL, RC = TRUE)
+as.range(rgCL, fo = "A1")
 
-rgCL_ws <- cell_limits(ul = c(1, 2), lr = c(7, 6), wsn = "A Sheet")
+rgCL_ws <- cell_limits(ul = c(1, 2), lr = c(7, 6), sheet = "A Sheet")
 as.range(rgCL_ws)
-as.range(rgCL_ws, RC = TRUE, wsn = TRUE)
-
+as.range(rgCL_ws, fo = "A1")
 }
 
