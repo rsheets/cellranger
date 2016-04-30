@@ -1,3 +1,6 @@
 .Rproj.user
 .Rhistory
 .RData
+internal/*.html
+scratch.R
+inst/doc

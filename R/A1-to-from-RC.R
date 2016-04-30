@@ -1,131 +1,128 @@
-#' Convert column IDs from letter representation to integer
-#'
-#' @param x character vector of letter-style column IDs (case insensitive)
-#'
-#' @return vector of positive integers, giving associated column numbers
-#'
-#' @examples
-#' letter_to_num('Z')
-#' letter_to_num(c('AA', 'ZZ', 'ABD', 'ZZZ'))
-#' letter_to_num(c(NA, ''))
-#'
-#' @export
-letter_to_num <- function(x) {
-
-  stopifnot(is.character(x))
-
-  x <- strsplit(toupper(x), '')
-  x <- lapply(x, char0_to_NA)
-  x <- lapply(x, match, table = LETTERS)
-  x <- lapply(x, function(z) sum((26 ^ rev(seq_along(z) - 1)) * z))
-  as.integer(x)
-
+A1_to_ra_ref_ONE <- function(x) {
+  ## WARNING: operates on a "no questions asked!" basis
+  ## this conversion arguably makes no sense for
+  ## relative references like A1 and, especially,
+  ## mixed references like A$1 or $A1
+  ## RELATIVE TO WHAT?!?
+  ## but, anyway, the calling function is responsible for that
+  y <- as.list(rematch::re_match(.cr$A1_ncg_rx, x)[1, , drop = TRUE])
+  ## example: D$56 comes back as named list
+  ## row_abs = "$" row_ref = "56" col_abs = "" col_ref = "D"
+  ## presence of "$" decoration in original row or col ref --> absolute
+  ra_ref(row_ref = as.integer(y$row_ref), row_abs = nzchar(y$row_abs),
+         col_ref = letter_to_num(y$col_ref), col_abs = nzchar(y$col_abs))
 }
 
-#' Convert column numbers to letter representation
-#'
-#' @param y vector of column numbers
-#'
-#' @return character vector of letter-style column IDs
-#'
-#' @examples
-#' num_to_letter(28)
-#' num_to_letter(900)
-#' num_to_letter(18278)
-#' num_to_letter(c(25, 52, 900, 18278))
-#' num_to_letter(c(NA, 0, 4.8, -4))
-#'
-#' @export
-num_to_letter <- function(y) {
+## vectorized over x and always returns list
+## strict = TRUE --> require explicit absolute references, otherwise return NA
+## example: $F$4
+## strict = FALSE --> pure relative references treated as absolute
+## example: F4 treated like $F$4
+## NO MATTER WHAT: relative references within mixed references --> NA
+## examples: F$4 or $F4
+A1_to_ra_ref <- function(x, strict = TRUE) {
+  y <- lapply(x, A1_to_ra_ref_ONE)
 
-  stopifnot(is.numeric(y))
+  rel <- vapply(y, is_rel_ref, logical(1))
+  if (!strict && any(rel)) y[rel] <- lapply(y[rel], absolutize)
 
-  # FYI Google spreadsheets have 300 columns max
-  # Excel 2010 spreadsheets have up to 16,384 columns
-  #  ZZ <-->    702
-  # ZZZ <--> 18,278
-
-  # fcn to express column number in this weird form of base 26
-  jfun <- function(div) {
-    if (is.na(div)) {
-      return(NA_character_)
+  not_abs <- vapply(y, is_not_abs_ref, logical(1))
+  if (any(not_abs)) {
+    f <- function(z) {
+      if (!isTRUE(z$row_abs)) z$row_ref <- NA
+      if (!isTRUE(z$col_abs)) z$col_ref <- NA
+      ra_ref(z$row_ref, z$row_abs, z$col_ref, z$col_abs)
     }
-
-    ret <- integer()
-    while(div > 0) {
-      remainder <- ((div - 1) %% 26) + 1
-      ret <- c(remainder, ret)
-      div <- (div - remainder) %/% 26
-    }
-    paste(LETTERS[ret], collapse = "")
+    y[not_abs] <- lapply(y[not_abs], f)
   }
-
-  ret <- vapply(y, jfun, character(1))
-
-  ## 0 becomes "", so we set that to NA here
-  ifelse(ret == "", NA, ret)
+  y
 }
 
-#' Convert A1 positioning notation to R1C1 notation
+R1C1_to_ra_ref_ONE <- function(x) {
+  y <- as.list(rematch::re_match(.cr$R1C1_ncg_rx, x)[1, , drop = TRUE])
+  ## example: R[-4]C7 comes back as named list
+  ## row_abs = "[" row_ref = "-4" col_abs = "" col_ref = "7"
+  ## presence of square brackets `[x]` --> relative
+  y$row_abs <- !nzchar(y$row_abs)
+  y$col_abs <- !nzchar(y$col_abs)
+  ## EXCEPT when row or column reference is empty, e.g., RC, RCx, RxC
+  ## which means "this row or column" --> offset is 0 and ref is relative
+  if (y$row_ref == "") {
+    y$row_abs <- FALSE
+    y$row_ref <- 0
+  }
+  if (y$col_ref == "") {
+    y$col_abs <- FALSE
+    y$col_ref <- 0
+  }
+  ra_ref(row_ref = as.integer(y$row_ref), row_abs = y$row_abs,
+         col_ref = as.integer(y$col_ref), col_abs = y$col_abs)
+}
+
+## vectorized over x and always returns list
+R1C1_to_ra_ref <- function(x) lapply(x, R1C1_to_ra_ref_ONE)
+
+#' Convert cell reference strings from A1 to R1C1 format
 #'
-#' Convert "A1" style cell references to "R1C1" style. Dollar signs will be
-#' ignored.
+#' Convert cell reference strings from A1 to R1C1 format. Strictly speaking,
+#' this only makes sense for absolute references, such as \code{"$B$4"}. Why?
+#' Because otherwise, we'd have to know the host cell of the reference. Set
+#' \code{strict = FALSE} to relax and treat pure relative references, like
+#' (\code{"B4"}), as if they are absolute. Mixed references, like
+#' (\code{"B$4"}), will always return \code{NA}, no matter the value of
+#' \code{strict}.
 #'
-#' @param x vector of cell positions in A1 notation
+#' @param x character vector of cell references in A1 format
+#' @template param-strict
 #'
-#' @return vector of cell positions in R1C1 notation
+#' @return character vector of absolute cell references in R1C1 format
 #'
 #' @examples
-#' A1_to_RC("A1")
-#' A1_to_RC("AZ10")
-#' A1_to_RC("AZ$10")
-#' A1_to_RC(c("A1", "AZ10"))
-#' A1_to_RC(c("", NA, "Q0"))
-#'
+#' A1_to_R1C1("$A$1")
+#' A1_to_R1C1("A1")                 ## raises a warning, returns NA
+#' A1_to_R1C1("A1", strict = FALSE) ## unless strict = FALSE
+#' A1_to_R1C1(c("$A$1", "B$4")) ## raises a warning, includes an NA, because
+#' A1_to_R1C1(c("$A$1", "B$4"), strict = FALSE) ## mixed ref always returns NA
 #' @export
-A1_to_RC <- function(x) {
-
-  stopifnot(is.character(x))
-
-  x <- rm_dollar_signs(x)
-
-  m <- regexec("[[:digit:]]*$", x)
-  m <- regmatches(x, m)
-  row_part <- as.integer(vapply(m, char0_to_NA, character(1)))
-  row_part <- ifelse(row_part > 0, row_part, NA)
-
-  m <- regexec("^[[:alpha:]]*", x)
-  m <- regmatches(x, m)
-  col_part <- letter_to_num(vapply(m, char0_to_NA, character(1)))
-
-  ifelse(is.na(row_part) | is.na(col_part), NA,
-         paste0("R", row_part, "C", col_part))
+A1_to_R1C1 <- function(x, strict = TRUE) {
+  stopifnot(is.character(x), all(grepl(.cr$is_A1_rx, x)))
+  y <- A1_to_ra_ref(x, strict = strict)
+  not_abs <- vapply(y, is_not_abs_ref, logical(1))
+  if (any(not_abs)) {
+    warning("Mixed or relative cell references found ... NAs generated",
+            call. = FALSE)
+  }
+  vapply(y, to_string, character(1))
 }
 
 #' Convert R1C1 positioning notation to A1 notation
 #'
-#' @param x vector of cell positions in R1C1 notation
+#' Convert cell reference strings from R1C1 to A1 format. This only makes sense
+#' for absolute references, such as \code{"R4C2"}. Why? Because otherwise, we'd
+#' have to know the host cell of the reference. Relative and mixed references,
+#' like (\code{"R[3]C[-1]"} and \code{"R[1]C5"}), will therefore return
+#' \code{NA}.
 #'
-#' @return vector of cell positions in A1 notation
+#' @param x vector of cell positions in R1C1 notation
+#' @template param-strict
+#'
+#' @return character vector of absolute cell references in A1 notation
 #'
 #' @examples
-#' RC_to_A1("R1C1")
-#' RC_to_A1("R10C52")
-#' RC_to_A1(c("R1C1", "R10C52"))
-#' RC_to_A1(c("", NA, "R0C0"))
-#'
+#' R1C1_to_A1("R1C1")
+#' R1C1_to_A1("R10C52", strict = FALSE)
+#' R1C1_to_A1(c("R1C1", "R10C52", "RC4", "R[-3]C[9]"))
 #' @export
-RC_to_A1 <- function(x) {
-
-  stopifnot(is.character(x))
-
-  col_part <- sub("^R[0-9]+C([0-9]+)$", "\\1", x)
-  col_part <- num_to_letter(as.integer(col_part))
-
-  row_part <- sub("^R([0-9]+)C[0-9]+$", "\\1", x)
-  row_part <- as.integer(row_part)
-  row_part <- ifelse(row_part > 0, row_part, NA)
-
-  ifelse(is.na(row_part) | is.na(col_part), NA,
-         paste0(col_part, row_part))
+R1C1_to_A1 <- function(x, strict = TRUE) {
+  stopifnot(is.character(x), all(grepl(.cr$is_R1C1_rx, x)))
+  y <- R1C1_to_ra_ref(x)
+  abs <- vapply(y, is_abs_ref, logical(1))
+  if (any(!abs)) {
+    warning("Ambiguous cell references ... NAs generated", call. = FALSE)
+    y[!abs] <- lapply(y[!abs], function(x) {
+      ra_ref(row_ref = NA, row_abs = NA, col_ref = NA, col_abs = NA,
+             sheet = x$sheet, file = x$file)
+    })
+  }
+  vapply(y, to_string, character(1), fo = "A1", strict = strict)
 }

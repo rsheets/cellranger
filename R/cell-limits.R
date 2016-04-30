@@ -1,10 +1,5 @@
 #' Create a cell_limits object
 #'
-#' The expectation is that \code{\link{as.cell_limits}} will be called to
-#' process user-provided input specifying the target cell range for read/write
-#' operations on a spreadsheet. Downstream code can be written assuming cell
-#' limits are stored in a valid \code{cell_limits} object.
-#'
 #' A \code{cell_limits} object is a list with three components:
 #'
 #' \itemize{
@@ -12,26 +7,25 @@
 #'   the form \code{c(ROW_MIN, COL_MIN)}
 #'   \item \code{lr} vector specifying lower right cell of target rectangle, of
 #'   the form \code{c(ROW_MAX, COL_MAX)}
-#'   \item \code{wsn} string specifying worksheet name, which may be \code{NA},
-#'   meaning it's unspecified
+#'   \item \code{sheet} string specifying worksheet name, which may be
+#'   \code{NA}, meaning it's unspecified
 #' }
 #'
-#' This follows the spreadsheet convention where a cell range is described as
-#' \code{UPPER_LEFT_CELL:LOWER_RIGHT_CELL}. For rows and columns, the associated
-#' \code{MIN} and \code{MAX} are positive integers, where the minimum should be
-#' less than or equal to the maximum. A value of \code{NA} means the
-#' corresponding limit is left unspecified. Therefore a verbose way to specify
-#' no limits at all would be \code{cell_limits(c(NA, NA), c(NA, NA))}. If the
-#' maximum row or column is specified but the associated minimum is not, then
-#' the minimum it is set to 1.
+#' A value of \code{NA} in \code{ul} or \code{lr} means the corresponding limit
+#' is left unspecified. Therefore a verbose way to specify no limits at all
+#' would be \code{cell_limits(c(NA, NA), c(NA, NA))}. If the maximum row or
+#' column is specified but the associated minimum is not, then the minimum is
+#' set to 1.
 #'
-#' When specified via character, spreadsheet ranges can be given in "A1"
-#' notation or "R1C1" notation and dollar signs will be ignored, i.e.
-#' "A$1:$B$32" is equivalent to "A1:B32".
+#' When specified via character, cell references can be given in A1 or R1C1
+#' notation and must be interpretable as absolute references. For A1, this means
+#' either both row and column are annotated with a dollar sign \code{$} or
+#' neither is. So, no mixed references, like \code{B$4}. For R1C1, this means no
+#' square brackets, like \code{R[-3]C[3]}.
 #'
 #' @param ul vector identifying upper left cell of target rectangle
 #' @param lr vector identifying lower right cell of target rectangle
-#' @param wsn string containing worksheet name, optional
+#' @param sheet string containing worksheet name, optional
 #' @param x input to convert into a \code{cell_limits} object
 #'
 #' @return a \code{cell_limits} object
@@ -50,9 +44,10 @@
 #' @export
 cell_limits <- function(ul = c(NA_integer_, NA_integer_),
                         lr = c(NA_integer_, NA_integer_),
-                        wsn = NA_character_) {
+                        sheet = NA_character_) {
 
-  stopifnot(length(ul) == 2L, length(lr) == 2L, length(wsn) == 1L)
+  stopifnot(length(ul) == 2L, length(lr) == 2L,
+            length(sheet) == 1L, is.character(sheet))
 
   ul <- as.integer(ul)
   lr <- as.integer(lr)
@@ -70,7 +65,7 @@ cell_limits <- function(ul = c(NA_integer_, NA_integer_),
   if (!anyNA(rows)) stopifnot(rows[1] <= rows[2])
   if (!anyNA(cols)) stopifnot(cols[1] <= cols[2])
 
-  structure(list(ul = ul, lr = lr, wsn = wsn),
+  structure(list(ul = ul, lr = lr, sheet = sheet),
             class = c("cell_limits", "list"))
 
 }
@@ -79,10 +74,10 @@ cell_limits <- function(ul = c(NA_integer_, NA_integer_),
 print.cell_limits <- function(x, ...) {
   ul <- ifelse(is.na(x$ul), "-", as.character(x$ul))
   lr <- ifelse(is.na(x$lr), "-", as.character(x$lr))
-  wsn <- if (is.na(x$wsn)) "" else paste0(" in '", x$wsn, "'")
+  sheet <- if (is.na(x$sheet)) "" else paste0(" in '", x$sheet, "'")
 
   cat("<cell_limits (", ul[1], ", ", ul[2], ") x (",
-      lr[1], ", ", lr[2], ")", wsn, ">\n",
+      lr[1], ", ", lr[2], ")", sheet, ">\n",
       sep = "")
 }
 
@@ -91,100 +86,89 @@ print.cell_limits <- function(x, ...) {
 dim.cell_limits <- function(x) c(x$lr[1] - x$ul[1], x$lr[2] - x$ul[2]) + 1
 
 #' @rdname cell_limits
+#' @template param-ddd
 #' @export
-as.cell_limits <- function(x) UseMethod("as.cell_limits")
+as.cell_limits <- function(x, ...) UseMethod("as.cell_limits")
 
 #' @rdname cell_limits
 #' @export
-as.cell_limits.cell_limits <- function(x) x
+as.cell_limits.cell_limits <- function(x, ...) x
 
 #' @rdname cell_limits
 #' @export
-as.cell_limits.NULL <- function(x) cell_limits()
+as.cell_limits.NULL <- function(x, ...) cell_limits()
 
 #' @rdname cell_limits
+#' @template param-fo
 #' @examples
 #' as.cell_limits("A1")
-#' as.cell_limits("Q24")
+#' as.cell_limits("$Q$24")
 #' as.cell_limits("A1:D8")
 #' as.cell_limits("R5C11")
 #' as.cell_limits("R2C3:R6C9")
 #' as.cell_limits("Sheet1!R2C3:R6C9")
 #' as.cell_limits("'Spaces are evil'!R2C3:R6C9")
 #'
+#' \dontrun{
+#' ## explicitly mixed A1 references won't work
+#' as.cell_limits("A$2")
+#' ## mixed or relative R1C1 references won't work
+#' as.cell_limits("RC[4]")
+#' }
 #' @export
-as.cell_limits.character <- function(x) {
-
+as.cell_limits.character <- function(x, fo = NULL, ...) {
   stopifnot(length(x) == 1L)
-  x_orig <- x
-
-  y <- unlist(strsplit(x, "!"))
-  wsn <- if (length(y) > 1) y[[1]] else NA_character_
-  wsn <- remove_single_quotes(wsn)
-  raw_rg <- y[[length(y)]]
-  raw_rg <- rm_dollar_signs(raw_rg)
-
-  rg <- unlist(strsplit(raw_rg, ":"))
-  stopifnot(length(rg) %in% 1:2)
-  rg <- rep_len(rg[!grepl("\\s+", rg)], 2)
-
-  RC_regex <- "^R([0-9]+)C([0-9]+$)"
-  A1_regex <- "^[A-Za-z]{1,3}[0-9]+$"
-
-  if (all(grepl(A1_regex, rg))) {
-    rg <- A1_to_RC(rg)
-  } else if (!all(grepl(RC_regex, rg))) {
-    stop("Trying to set cell limits, but requested range is invalid:\n",
-         x_orig)
+  parsed <- parse_ref_string(x, fo = fo)
+  ## parsed$ref_v has length 1 or 2, depending on whether input was a range
+  if (parsed$fo == "A1") {
+    rar_list <- A1_to_ra_ref(parsed$ref_v, strict = FALSE)
+  } else {
+    rar_list <- R1C1_to_ra_ref(parsed$ref_v)
+  }
+  not_abs <- vapply(rar_list, is_not_abs_ref, logical(1))
+  if (any(not_abs)) {
+    stop("Mixed or relative cell references aren't allowed:\n",
+         parsed$ref, call. = FALSE)
   }
 
-  m <- regexec("^R([0-9]+)C([0-9]+$)", rg)
-  m2 <- regmatches(rg, m)
+  ## if single cell input --> duplicate that thing!
+  rar_list <- rep_len(rar_list, 2)
 
-  jfun <- function(x) as.integer(x[2:3])
   cell_limits(
-    jfun(m2[[1]]),
-    jfun(m2[[2]]),
-    wsn
+    ul = rar_list[[1]][c("row_ref", "col_ref")],
+    lr = rar_list[[2]][c("row_ref", "col_ref")],
+    sheet = if (parsed$sheet == '') NA_character_ else parsed$sheet
   )
 }
-
 
 #' Convert a cell_limits object to a cell range
 #'
 #' @param x a cell_limits object
-#' @param RC logical, requesting "R1C1" positioning notation
-#' @param wsn logical, specifying whether worksheet name should be prepended to
-#'   the range, e.g. \code{Sheet1!A1:D4}
+#' @template param-fo
+#' @template param-strict
+#' @template param-sheet
 #'
-#' @return length one character vector holding a cell range, in either A1 or
-#'   R1C1 positioning notation
+#' @return length one character vector holding a cell range
 #'
 #' @examples
 #' rgCL <- cell_limits(ul = c(1, 2), lr = c(7, 6))
 #' as.range(rgCL)
-#' as.range(rgCL, RC = TRUE)
+#' as.range(rgCL, fo = "A1")
 #'
-#' rgCL_ws <- cell_limits(ul = c(1, 2), lr = c(7, 6), wsn = "A Sheet")
+#' rgCL_ws <- cell_limits(ul = c(1, 2), lr = c(7, 6), sheet = "A Sheet")
 #' as.range(rgCL_ws)
-#' as.range(rgCL_ws, RC = TRUE, wsn = TRUE)
-#'
+#' as.range(rgCL_ws, fo = "A1")
 #' @export
-as.range <- function(x, RC = FALSE, wsn = FALSE) {
-
-  stopifnot(inherits(x, "cell_limits"),
-            isTOGGLE(RC), isTOGGLE(wsn))
-
+as.range <- function(x, fo = c("R1C1", "A1"), strict = FALSE, sheet = NULL) {
+  stopifnot(inherits(x, "cell_limits"), isTOGGLE(strict), isTOGGLE(sheet))
+  fo <- match.arg(fo)
   if (anyNA(unlist(x[c("ul", "lr")]))) return(NA_character_)
-
-  range <- c(row_col_to_RC(x$ul), row_col_to_RC(x$lr))
-  if (!RC) {
-    range <- RC_to_A1(range)
-  }
-  range <- paste(range, collapse = ":")
-
-  if (wsn && !is.na(x$wsn)) {
-    range <- paste(add_single_quotes(x$wsn), range, sep = "!")
+  ca <- cell_addr(c(x$ul[1], x$lr[1]), c(x$ul[2], x$lr[2]))
+  ## right here is where I need to enforce strict when fo = A1
+  range <- paste(to_string(ca, fo = fo, strict = strict), collapse = ":")
+  sheet <- sheet %||% !is.na(x$sheet)
+  if (sheet) {
+    range <- paste(add_single_quotes(x$sheet), range, sep = "!")
   }
   range
 }

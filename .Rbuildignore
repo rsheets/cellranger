@@ -7,3 +7,5 @@
 ^NEWS\.md$
 ^internal$
 ^appveyor\.yml$
+^man-roxygen$
+^scratch\.R$

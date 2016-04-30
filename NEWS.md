@@ -1,4 +1,15 @@
-# cellranger 1.0.0.9000
+# cellranger 1.1.0.9000
+
+Complete reboot. Why? to support parsing of spreadsheet formulas and cell references as they appear in unevaluated expressions. Turns out this is quite different from simply identifying rectangular regions of a sheet.
+
+Package now implements the classes and methods related to cell location and reference from 'Spreadsheet Implementation Technology' by Peter Sestoft, MIT Press, 2014.
+
+New classes:
+
+  * `cell_addr`: one or more absolute cell addresses
+  * `ra_ref`: single absolute, relative, or mixed cell reference
+  * *coming soon* `cell_ref` single cell reference, consisting of a `ra_ref` plus, optionally, the hosting worksheet and file
+  * *coming soon* `cell_area` two objects of class `ra_ref`, corresponding to the upper left and lower right corners of a rectangle) plus, optionally, the common hosting worksheet or file
 
 # cellranger 1.0.0
 

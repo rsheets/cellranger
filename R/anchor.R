@@ -36,7 +36,7 @@
 #'
 #' anchored(anchor = "R4C2", dim = c(8, 2))
 #' as.range(anchored(anchor = "R4C2", dim = c(8, 2)))
-#' as.range(anchored(anchor = "R4C2", dim = c(8, 2)), RC = TRUE)
+#' as.range(anchored(anchor = "R4C2", dim = c(8, 2)), fo = "A1")
 #' dim(anchored(anchor = "R4C2", dim = c(8, 2)))
 #'
 #' (input <- head(iris))
@@ -54,7 +54,7 @@
 #' dim(anchored(input = input))
 #'
 #' anchored(input = input, byrow = TRUE)
-#' as.range(anchored(input = input, byrow = TRUE), RC = TRUE)
+#' as.range(anchored(input = input, byrow = TRUE))
 #' dim(anchored(input = input, byrow = TRUE))
 #'
 #' @export
