@@ -11,8 +11,8 @@ Depends:
     R (>= 3.0.0)
 License: MIT + file LICENSE
 LazyData: true
-URL: https://github.com/jennybc/cellranger
-BugReports: https://github.com/jennybc/cellranger/issues
+URL: https://github.com/rsheets/cellranger
+BugReports: https://github.com/rsheets/cellranger/issues
 Suggests:
     covr,
     testthat (>= 1.0.0),
