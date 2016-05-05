@@ -85,7 +85,7 @@ R1C1_to_ra_ref <- function(x) lapply(x, R1C1_to_ra_ref_ONE)
 #' A1_to_R1C1(c("$A$1", "B$4"), strict = FALSE) ## mixed ref always returns NA
 #' @export
 A1_to_R1C1 <- function(x, strict = TRUE) {
-  stopifnot(is.character(x), all(grepl(.cr$is_A1_rx, x)))
+  stopifnot(is.character(x), all(is_A1(x)))
   y <- A1_to_ra_ref(x, strict = strict)
   not_abs <- vapply(y, is_not_abs_ref, logical(1))
   if (any(not_abs)) {
@@ -114,7 +114,7 @@ A1_to_R1C1 <- function(x, strict = TRUE) {
 #' R1C1_to_A1(c("R1C1", "R10C52", "RC4", "R[-3]C[9]"))
 #' @export
 R1C1_to_A1 <- function(x, strict = TRUE) {
-  stopifnot(is.character(x), all(grepl(.cr$is_R1C1_rx, x)))
+  stopifnot(is.character(x), all(is_R1C1(x)))
   y <- R1C1_to_ra_ref(x)
   abs <- vapply(y, is_abs_ref, logical(1))
   if (any(!abs)) {

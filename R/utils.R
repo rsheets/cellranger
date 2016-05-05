@@ -59,18 +59,3 @@ relativize <- function(x) {
   x
 }
 
-guess_fo <- function(x) {
-  m <- c(R1C1 = grep(.cr$is_R1C1_rx, x), A1 = grep(.cr$is_A1_rx, x))
-  if (length(m) < 1) {
-    stop("Cell reference follows neither the A1 nor R1C1 format:\n",
-         x, call. = FALSE)
-  }
-  if (length(m) > 1) {
-    ## OMFG this can actually happen. Example: RCx
-    warning("Not clear if cell reference is in A1 or R1C1 format:\n",
-            x, "\nSpecify format via `fo` argument.\n",
-            "Putative format is c(\"R1C1\", \"A1\"), which is probably ",
-            "not what you want.", call. = FALSE)
-  }
-  names(m)
-}

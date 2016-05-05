@@ -56,12 +56,12 @@ test_that("Whitespace-containing sheet names gain/lose single quotes", {
 
 test_that("Bad cell ranges throw errors", {
 
-  expect_error(as.cell_limits("eggplant"))
-  expect_error(as.cell_limits("A:B10"))
-  expect_error(as.cell_limits(":B10"))
+  expect_warning(expect_error(as.cell_limits("eggplant")))
+  expect_warning(expect_error(as.cell_limits("A:B10")))
+  expect_warning(expect_error(as.cell_limits(":B10")))
   expect_error(as.cell_limits("A1:R3C3"))
   expect_error(as.cell_limits("A1:B2:C3"))
-  expect_error(as.cell_limits("14:17"))
+  expect_warning(expect_error(as.cell_limits("14:17")))
   expect_error(as.cell_limits(14:17))
   expect_error(as.cell_limits(B2:D9))
   expect_error(cell_limits(ul = c(-1, 1), lr = c(3, 4)))
@@ -182,7 +182,7 @@ test_that("Cell limits can be specified via anchor", {
                    cell_limits(c(5, 2), c(12, 2)))
 
   expect_error(anchored(1))
-  expect_error(anchored("A"))
+  expect_warning(expect_error(anchored("A")))
   expect_error(anchored("A1:B10"))
   expect_error(anchored(dim = "eggplant"))
   expect_error(anchored(dim = 1:3))

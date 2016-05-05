@@ -46,3 +46,4 @@ test_that("garbage alleged to be A1 formatted references is not converted", {
   expect_error(R1C1_to_A1(factor(LETTERS)))
   expect_error(R1C1_to_A1(c("A1", "B2")))
 })
+

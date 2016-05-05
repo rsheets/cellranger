@@ -119,6 +119,10 @@ as.cell_limits.NULL <- function(x, ...) cell_limits()
 as.cell_limits.character <- function(x, fo = NULL, ...) {
   stopifnot(length(x) == 1L)
   parsed <- parse_ref_string(x, fo = fo)
+  if (is.na(parsed$fo)) {
+    stop("Can't guess format of this cell reference:\n", parsed$ref,
+         call. = FALSE)
+  }
   ## parsed$ref_v has length 1 or 2, depending on whether input was a range
   if (parsed$fo == "A1") {
     rar_list <- A1_to_ra_ref(parsed$ref_v, strict = FALSE)
