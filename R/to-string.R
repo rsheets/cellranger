@@ -111,7 +111,7 @@ to_string_v.list <- function(x, fo = c("R1C1", "A1"),
 to_string.cell_addr <- function(x, fo = c("R1C1", "A1"),
                                 strict = TRUE, sheet = FALSE, ...) {
   fo <- match.arg(fo)
-  ra_ref_list <- mapply(ra_ref, row_ref = cell_row(x), col_ref = cell_col(x),
+  ra_ref_list <- mapply(ra_ref, row_ref = addr_row(x), col_ref = addr_col(x),
                         SIMPLIFY = FALSE)
   vapply(ra_ref_list, to_string, character(1), fo = fo,
          strict = strict, sheet = sheet)

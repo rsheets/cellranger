@@ -168,7 +168,6 @@ as.range <- function(x, fo = c("R1C1", "A1"), strict = FALSE, sheet = NULL) {
   fo <- match.arg(fo)
   if (anyNA(unlist(x[c("ul", "lr")]))) return(NA_character_)
   ca <- cell_addr(c(x$ul[1], x$lr[1]), c(x$ul[2], x$lr[2]))
-  ## right here is where I need to enforce strict when fo = A1
   range <- paste(to_string(ca, fo = fo, strict = strict), collapse = ":")
   sheet <- sheet %||% !is.na(x$sheet)
   if (sheet) {

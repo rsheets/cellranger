@@ -103,4 +103,3 @@ parse_ref_string <- function(x, fo = NULL) {
   }
   parsed
 }
-

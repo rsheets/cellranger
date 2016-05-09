@@ -55,14 +55,14 @@ print.cell_addr <- function(x, ...) {
 
 #' @export
 `[.cell_addr` <-
-  function(x, i) cell_addr(row = cell_row(x)[i], col = cell_col(x)[i])
+  function(x, i) cell_addr(row = addr_row(x)[i], col = addr_col(x)[i])
 
 #' @export
 `[[.cell_addr` <-
-  function(x, i) cell_addr(row = cell_row(x)[[i]], col = cell_col(x)[[i]])
+  function(x, i) cell_addr(row = addr_row(x)[[i]], col = addr_col(x)[[i]])
 
 #' @export
-length.cell_addr <- function(x) length(cell_row(x))
+length.cell_addr <- function(x) length(addr_row(x))
 
 #' Get row from cell location or reference
 #'
@@ -71,7 +71,7 @@ length.cell_addr <- function(x) length(cell_row(x))
 #'
 #' @return integer vector
 #' @export
-cell_row <- function(x, ...) UseMethod("cell_row")
+addr_row <- function(x, ...) UseMethod("addr_row")
 
 #' Get column from cell location or reference
 #'
@@ -80,19 +80,19 @@ cell_row <- function(x, ...) UseMethod("cell_row")
 #'
 #' @return integer vector
 #' @export
-cell_col <- function(x, ...) UseMethod("cell_col")
+addr_col <- function(x, ...) UseMethod("addr_col")
 
-#' @describeIn cell_row Method for \code{\link{cell_addr}} objects
+#' @describeIn addr_row Method for \code{\link{cell_addr}} objects
 #' (ca <- cell_addr(1:4, 3))
-#' cell_row(ca)
+#' addr_row(ca)
 #' @export
-cell_row.cell_addr <- function(x, ...) x$row
+addr_row.cell_addr <- function(x, ...) x$row
 
-#' @describeIn cell_col Method for \code{\link{cell_addr}} objects
+#' @describeIn addr_col Method for \code{\link{cell_addr}} objects
 #' (ca <- cell_addr(1:4, 3))
-#' cell_col(ca)
+#' addr_col(ca)
 #' @export
-cell_col.cell_addr <- function(x, ...) x$col
+addr_col.cell_addr <- function(x, ...) x$col
 
 #' Convert to a cell_addr object
 #'
@@ -148,8 +148,8 @@ as.cell_addr.ra_ref <- function(x, ...) {
 as.cell_addr_v.list <- function(x, ...) {
   stopifnot(all(vapply(x, inherits, logical(1), what = "ra_ref")))
   ca_list <- lapply(x, as.cell_addr)
-  cell_addr(row = vapply(ca_list, cell_row, integer(1)),
-            col = vapply(ca_list, cell_col, integer(1)))
+  cell_addr(row = vapply(ca_list, addr_row, integer(1)),
+            col = vapply(ca_list, addr_col, integer(1)))
 }
 
 #' @rdname as.cell_addr

@@ -184,8 +184,8 @@ as.ra_ref_v.character <- function(x, fo = NULL, strict = TRUE, ...) {
 #' as.ra_ref(ca)
 as.ra_ref.cell_addr <- function(x, ...) {
   stopifnot(length(x) == 1L)
-  ra_ref(row_ref = cell_row(x), row_abs = if (is.na(cell_row(x))) NA else TRUE,
-         col_ref = cell_col(x), col_abs = if (is.na(cell_row(x))) NA else TRUE)
+  ra_ref(row_ref = addr_row(x), row_abs = if (is.na(addr_row(x))) NA else TRUE,
+         col_ref = addr_col(x), col_abs = if (is.na(addr_row(x))) NA else TRUE)
 }
 
 #' @rdname as.ra_ref
@@ -201,5 +201,5 @@ as.ra_ref.cell_addr <- function(x, ...) {
 #' ## use as.ra_ref_v instead
 #' as.ra_ref_v(ca)
 as.ra_ref_v.cell_addr <- function(x, ...) {
-  mapply(ra_ref, row_ref = cell_row(x), col_ref = cell_col(x), SIMPLIFY = FALSE)
+  mapply(ra_ref, row_ref = addr_row(x), col_ref = addr_col(x), SIMPLIFY = FALSE)
 }

@@ -58,8 +58,8 @@ test_that("cell_addr length method works", {
 
 test_that("row and column extraction work for cell_addr objects", {
   ca <- cell_addr(1:3, 6)
-  expect_identical(cell_row(ca), 1:3)
-  expect_identical(cell_col(ca), rep_len(6L, 3))
+  expect_identical(addr_row(ca), 1:3)
+  expect_identical(addr_col(ca), rep_len(6L, 3))
 })
 
 test_that("cell_addr objects can be converted to ra_ref", {
