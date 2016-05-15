@@ -20,4 +20,5 @@ Suggests:
     rmarkdown
 RoxygenNote: 5.0.1.9000
 VignetteBuilder: knitr
-Imports: rematch
+Imports: rematch,
+    tibble

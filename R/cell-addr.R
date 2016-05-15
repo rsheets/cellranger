@@ -37,7 +37,7 @@ cell_addr <- function(row, col) {
   }
   neg <- isTRUE_v(row < 1) | isTRUE_v(col < 1)
   if (any(neg)) {
-    ## data.frame's insistence on row names is actually nice here
+    ## data.frame > tibble here because want original row names (number, here)
     out <- data.frame(row, col)[neg, ,drop = FALSE]
     printed_x <- capture.output(print(out))
     stop("cell_addr objects require absolute row and column, must be >= 1:\n",
@@ -47,10 +47,11 @@ cell_addr <- function(row, col) {
 }
 
 #' @export
-print.cell_addr <- function(x, ...) {
-  cat("<cell_addr>\n")
-  ## data.frame is decidedly less charming here but will do for now
-  print(as.data.frame(unclass(x)), ...)
+print.cell_addr <- function(x, ..., n = NULL) {
+  cat("<cell_addr:", length(x), "cells>\n")
+  print(tibble::trunc_mat(tibble::as_data_frame(unclass(x)), n = n))
+  cat("\n")
+  invisible(x)
 }
 
 #' @export
