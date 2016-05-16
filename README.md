@@ -25,7 +25,7 @@ devtools::install_github("jennybc/cellranger")
 
 **Describe a rectangle of cells**. For example, what you've got is the string "D12:F15" and what you want is an R object that holds the row and column for the upper left and lower right corners of this rectangle. Read below about the `cell_limits` class. The [`googlesheets`](https://github.com/jennybc/googlesheets) and [`readODS`](https://github.com/chainsawriot/readODS) packages use `cellranger` to translate user-supplied cell range info into something more programmatically useful.
 
-**Handle cell references found in spreadsheet formulas**. If you're parsing unevaluated spreadsheet formulas, use the `ra_ref` and `cell_addr` classes for handling absolute, relative, and mixed cell references. Classes inspired by [Spreadsheet Implementation Technology](https://mitpress.mit.edu/books/spreadsheet-implementation-technology) from Testoft (MIT Press, 2014).
+**Handle cell references found in spreadsheet formulas**. If you're parsing unevaluated spreadsheet formulas, use the `ra_ref` and `cell_addr` classes for handling absolute, relative, and mixed cell references. Classes inspired by [Spreadsheet Implementation Technology](https://mitpress.mit.edu/books/spreadsheet-implementation-technology) from Sestoft (MIT Press, 2014).
 
 **Convert between annoying spreadsheet reference formats**. Some utility functions are exposed, such as `A1_to_R1C1()`, which converts from A1 formatted strings to R1C1, and `letter_to_num()`, which converts a Excel column ID to a number, e.g. column AQZ is more usefully known as column 1144.
 
@@ -119,4 +119,32 @@ R1C1_to_A1(c("R1C1", "R10C52"))
 #> [1] "$A$1"   "$AZ$10"
 R1C1_to_A1(c("R1C1", "R10C52"), strict = FALSE)
 #> [1] "A1"   "AZ10"
+
+## detect cell reference formats with
+## is_A1() and is_R1C1()
+x <- c("A1", "$A4", "$b$12", "RC1", "R[-4]C9", "R5C3")
+data.frame(x, A1 = is_A1(x), R1C1 = is_R1C1(x))
+#>         x    A1  R1C1
+#> 1      A1  TRUE FALSE
+#> 2     $A4  TRUE FALSE
+#> 3   $b$12  TRUE FALSE
+#> 4     RC1  TRUE  TRUE
+#> 5 R[-4]C9 FALSE  TRUE
+#> 6    R5C3 FALSE  TRUE
+
+## guess format with
+## guess_fo()
+refs <- c("A1", "$A1", "A$1", "$A$1", "a1",
+          "R1C1", "R1C[-1]", "R[-1]C1", "R[-1]C[9]")
+data.frame(refs, guessed = guess_fo(refs))
+#>        refs guessed
+#> 1        A1      A1
+#> 2       $A1      A1
+#> 3       A$1      A1
+#> 4      $A$1      A1
+#> 5        a1      A1
+#> 6      R1C1    R1C1
+#> 7   R1C[-1]    R1C1
+#> 8   R[-1]C1    R1C1
+#> 9 R[-1]C[9]    R1C1
 ```
