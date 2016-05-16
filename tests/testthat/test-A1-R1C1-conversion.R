@@ -22,12 +22,6 @@ test_that("strict = FALSE treats relative and mixed A1 references as absolute", 
   )
 })
 
-test_that("garbage alleged to be A1 formatted references is not converted", {
-  expect_error(A1_to_R1C1(1:5))
-  expect_error(A1_to_R1C1(factor(LETTERS)))
-  expect_error(A1_to_R1C1("$Q$0"))
-})
-
 test_that("R1C1 notation converts to A1 notation", {
   expect_identical(R1C1_to_A1("R10C28"), "$AB$10")
   expect_identical(R1C1_to_A1("R10C28", strict = FALSE), "AB10")
@@ -41,9 +35,14 @@ test_that("R1C1 relative and mixed references do not get converted", {
   expect_identical(x, rep_len(NA_character_, 3))
 })
 
-test_that("garbage alleged to be A1 formatted references is not converted", {
+test_that("invalid input is not converted A1 to R1C1", {
+  expect_error(A1_to_R1C1(1:5))
+  expect_error(A1_to_R1C1(factor(LETTERS)))
+})
+
+test_that("invalid input is not converted R1C1 to A1", {
   expect_error(R1C1_to_A1(1:5))
   expect_error(R1C1_to_A1(factor(LETTERS)))
-  expect_error(R1C1_to_A1(c("A1", "B2")))
 })
+
 

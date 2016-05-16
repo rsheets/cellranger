@@ -41,6 +41,7 @@ test_that("ra_ref is converted to string", {
 test_that("invalid single cell ref strings raise error", {
   expect_error(as.ra_ref("wtf huh?"))
   expect_error(as.ra_ref("A1:D4"))
+  expect_error(as.ra_ref("$Q$0"))
 })
 
 test_that("file and sheet qualified cell ref strings work", {
