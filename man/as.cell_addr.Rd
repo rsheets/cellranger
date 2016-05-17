@@ -60,7 +60,7 @@ ra_ref_list <-
 as.cell_addr_v(ra_ref_list)
 as.cell_addr("$D$12")
 as.cell_addr("R4C3")
-as.cell_addr(c("R4C3", "$C$4", "$D$12"))
+as.cell_addr(c("$C$4", "$D$12"))
 as.cell_addr("$F2")
 as.cell_addr("R[-4]C3")
 as.cell_addr("F2", strict = FALSE)

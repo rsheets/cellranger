@@ -38,12 +38,6 @@ test_that("ra_ref is converted to string", {
   expect_identical(to_string(ra_ref(0, FALSE, 0, FALSE)), "RC")
 })
 
-test_that("invalid single cell ref strings raise error", {
-  expect_error(as.ra_ref("wtf huh?"))
-  expect_error(as.ra_ref("A1:D4"))
-  expect_error(as.ra_ref("$Q$0"))
-})
-
 test_that("file and sheet qualified cell ref strings work", {
   expect_identical(as.ra_ref("Sheet1!$D$4"),
                    ra_ref(4, TRUE, 4, TRUE, "Sheet1"))
@@ -72,7 +66,7 @@ test_that("list of ra_ref's is converted to character", {
   )
 })
 
-test_that("convert an A1 formatted rel ref string to a ra_ref --> get NA", {
+test_that("rel refs in A1 formatted refs give NA in ra_ref", {
   expect_warning(expect_identical(as.ra_ref("A$4"),
                                   ra_ref(4, TRUE, NA, FALSE)))
   expect_warning(expect_identical(as.ra_ref("$A4"),
@@ -83,6 +77,10 @@ test_that("convert an A1 formatted rel ref string to a ra_ref --> get NA", {
 
 test_that("A1 formatted rel ref string --> absolutized ra_ref if strict = FALSE", {
   expect_identical(as.ra_ref("A4", strict = FALSE), ra_ref(4, TRUE, 1, TRUE))
+})
+
+test_that("strings that give cell range are not converted to ra_ref", {
+  expect_error(as.ra_ref("A4:B9"))
 })
 
 test_that("valid cell ref string is converted to an ra_ref object", {
@@ -111,6 +109,7 @@ test_that("vectorized version of as.ra_ref.character works", {
   output <- list(ra_ref(), ra_ref(row_ref = 14, col_ref = 6),
                  ra_ref(4, col_ref = NA, col_abs = FALSE),
                  ra_ref(row_ref = 9, col_ref = 4))
+  output <- setNames(output, input)
   expect_warning(
     expect_identical(as.ra_ref_v(input, strict = FALSE), output)
   )

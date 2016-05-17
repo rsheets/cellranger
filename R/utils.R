@@ -58,4 +58,3 @@ relativize <- function(x) {
   x$row_abs <- x$col_abs <- FALSE
   x
 }
-

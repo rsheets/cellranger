@@ -137,28 +137,11 @@ as.ra_ref_v <- function(x, ...) UseMethod("as.ra_ref_v")
 #'
 #' @export
 as.ra_ref.character <- function(x, fo = NULL, strict = TRUE, ...) {
-  stopifnot(length(x) == 1L)
-  parsed <- parse_ref_string(x, fo = fo)
-  if (length(parsed$ref_v) > 1) {
-    stop("This appears to be a cell range, which is not allowed here.\n",
-         parsed$ref, call. = FALSE)
+  stopifnot(is.character(x))
+  if (length(x) > 1) {
+    stop("Input must have length 1. Maybe you want the vectorized as.ra_ref_v()?")
   }
-  if (parsed$fo == "A1") {
-    rar <- A1_to_ra_ref(parsed$ref_v, strict = strict)[[1]]
-    if (is_not_abs_ref(rar)) {
-      warning("Non-absolute reference ... NAs generated:\n",
-              parsed$ref, call. = FALSE)
-    }
-  } else {
-    rar <- R1C1_to_ra_ref(parsed$ref_v)[[1]]
-  }
-  if (!identical(parsed$sheet, "")) {
-    rar$sheet <- parsed$sheet
-  }
-  if (!identical(parsed$file, "")) {
-    rar$file <- parsed$file
-  }
-  rar
+  as.ra_ref_v(x, fo = fo, strict = strict)[[1]]
 }
 
 #' @rdname as.ra_ref
@@ -167,13 +150,49 @@ as.ra_ref.character <- function(x, fo = NULL, strict = TRUE, ...) {
 #' ## as.ra_ref_v.character()
 #' cs <- c("$A$1", "Sheet1!$F$14", "Sheet2!B$4", "D9")
 #' \dontrun{
-#' ## won't work because as.ra_ref methods not natively vectorized
+#' ## won't work because as.ra_ref requires length one input
 #' as.ra_ref(cs)
 #' }
 #' ## use as.ra_ref_v instead
 #' as.ra_ref_v(cs, strict = FALSE)
 as.ra_ref_v.character <- function(x, fo = NULL, strict = TRUE, ...) {
-  lapply(x, as.ra_ref, fo = fo, strict = strict)
+  parsed <- rematch::re_match(.cr$string_rx, x)
+  colnames(parsed) <- c("input", "file", "sheet", "ref", "invalid")
+  is_range <- grepl(":", parsed[ , "ref"])
+  if (any(is_range)) {
+    stop("Cell ranges not allowed here.\n", call. = FALSE)
+  }
+  if (is.null(fo)) {
+    fo <- unique(guess_fo(parsed[ , "ref"]))
+    if ("R1C1" %in% fo && "A1" %in% fo) {
+      ## TODO? be willing to handle a mix of A1 and R1C1 refs
+      stop("Cell references aren't uniformly A1 or R1C1 format:\n",
+           call. = FALSE)
+    }
+    if (anyNA(fo) && length(fo) > 1) {
+      ## (A1, NA) --> A1, (R1C1, NA) --> R1C1, NA --> NA
+      fo <- fo[!is.na(fo)]
+    }
+  }
+  if (identical(fo, "A1")) {
+    rar <- A1_to_ra_ref(parsed[ , "ref"], strict = strict)
+    if (anyNA(vapply(rar, `[[`, integer(1), "row_ref")) ||
+        anyNA(vapply(rar, `[[`, integer(1), "col_ref"))) {
+      warning("Non-absolute A1-formatted reference ... NAs generated",
+              call. = FALSE)
+    }
+  } else { ## catches fo = "R1C1" and fo = NA
+    rar <- R1C1_to_ra_ref(parsed[ , "ref"])
+  }
+  has_sheet <- nzchar(parsed[ , "sheet"])
+  rar[has_sheet] <- mapply(function(x, sheet) {x$sheet <- sheet; x},
+                           rar[has_sheet], parsed[has_sheet, "sheet"],
+                           SIMPLIFY = FALSE)
+  has_file <- nzchar(parsed[ , "file"])
+  rar[has_file] <- mapply(function(x, file) {x$file <- file; x},
+                           rar[has_file], parsed[has_file, "file"],
+                           SIMPLIFY = FALSE)
+  rar
 }
 
 #' @rdname as.ra_ref

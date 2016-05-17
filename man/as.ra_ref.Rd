@@ -70,7 +70,7 @@ as.ra_ref("RC2", fo = "A1", strict = FALSE)
 ## as.ra_ref_v.character()
 cs <- c("$A$1", "Sheet1!$F$14", "Sheet2!B$4", "D9")
 \dontrun{
-## won't work because as.ra_ref methods not natively vectorized
+## won't work because as.ra_ref requires length one input
 as.ra_ref(cs)
 }
 ## use as.ra_ref_v instead
