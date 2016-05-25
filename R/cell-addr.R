@@ -39,7 +39,7 @@ cell_addr <- function(row, col) {
   if (any(neg)) {
     ## data.frame > tibble here because want original row names (number, here)
     out <- data.frame(row, col)[neg, ,drop = FALSE]
-    printed_x <- capture.output(print(out))
+    printed_x <- utils::capture.output(print(out))
     stop("cell_addr objects require absolute row and column, must be >= 1:\n",
          paste(printed_x, collapse = "\n"), call. = FALSE)
   }

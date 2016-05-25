@@ -16,7 +16,7 @@ A1_to_ra_ref <- function(x, strict = TRUE) {
   col_not_abs <- y[ , "col_abs"] != "$"
   y[col_not_abs, "col_ref"] <- NA
   mapply(ra_ref,
-              setNames(y[ , "row_ref"], y[ , ".match"]), y[ , "row_abs"] == "$",
+         stats::setNames(y[ , "row_ref"], y[ , ".match"]), y[ , "row_abs"] == "$",
          letter_to_num(y[ , "col_ref"]),                 y[ , "col_abs"] == "$",
          SIMPLIFY = FALSE)
 }
@@ -37,10 +37,10 @@ R1C1_to_ra_ref <- function(x) {
   y[col_ref_missing, "col_abs"] <- "["
   y[col_ref_missing, "col_ref"] <- "0"
   mapply(ra_ref,
-         setNames(y[ , "row_ref"], y[ , ".match"]), y[ , "row_abs"] == "",
-                  y[ , "col_ref"],                  y[ , "col_abs"] == "",
+         stats::setNames(y[ , "row_ref"], y[ , ".match"]), y[ , "row_abs"] == "",
+         y[ , "col_ref"],                  y[ , "col_abs"] == "",
          SIMPLIFY = FALSE)
-  }
+}
 
 #' Convert cell reference strings from A1 to R1C1 format
 #'
