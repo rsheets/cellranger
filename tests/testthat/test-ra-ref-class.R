@@ -43,6 +43,9 @@ test_that("file and sheet qualified cell ref strings work", {
                    ra_ref(4, TRUE, 4, TRUE, "Sheet1"))
   expect_identical(as.ra_ref("[filename.xlsx]'a sheet'!R1C1"),
                    ra_ref(sheet = "a sheet", file = "filename.xlsx"))
+  ## worksheet name contains exclamation marks
+  expect_identical(as.ra_ref("'Gabe!!'!$D$4"),
+                   ra_ref(4, TRUE, 4, TRUE, "Gabe!!"))
 })
 
 test_that("relative ra_refs become NA when converted to A1 formatted string", {

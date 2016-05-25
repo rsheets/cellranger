@@ -81,7 +81,7 @@ guess_fo <- function(x, fo = c("R1C1", "A1")) {
 ## for parsing cell (area) references that are possibly qualified by
 ## file and/or worksheet name
 .cr$filename_rx = "(?:^\\[([^\\]]+)\\])?"
-.cr$worksheetname_rx <- "(?:'?([^'!]+)'?!)?"
+.cr$worksheetname_rx <- "(?:'?([^']+)'?!)?"
 .cr$ref_rx <- "([a-zA-Z0-9:\\-$\\[\\]]+)"
 .cr$string_rx <- sprintf("^(?:%s%s%s|(.*))$", .cr$filename_rx,
                          .cr$worksheetname_rx, .cr$ref_rx)
