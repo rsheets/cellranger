@@ -9,3 +9,4 @@
 ^appveyor\.yml$
 ^man-roxygen$
 ^scratch\.R$
+^codecov\.yml$
