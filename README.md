@@ -8,7 +8,7 @@ Helper package to support R scripts or packages that interact with spreadsheets.
 
 ### Installation
 
-Option 1: Install from CRAN *(2016-04-24: I'm about to submit a big update ... consider using dev version from GitHub)*:
+Option 1: Install from CRAN:
 
 ``` r
 install.packages("cellranger")
