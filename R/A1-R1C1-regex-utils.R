@@ -1,7 +1,7 @@
 .cr <- new.env(parent = emptyenv())
 
 ## for validating single cell references
-.cr$A1_rx <- "^\\$?[A-Za-z]{1,3}\\$?[0-9]{1,5}$"
+.cr$A1_rx <- "^\\$?[A-Za-z]{1,3}\\$?[0-9]{1,7}$"
 .cr$R1C1_rx <- "^R\\[?\\-?[0-9]*\\]?C\\[?\\-?[0-9]*\\]?$"
 
 #' Test cell reference strings

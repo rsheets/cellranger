@@ -1,6 +1,6 @@
 context("A1, R1C1 detection and parsing")
 
-A1 <- c("A1", "$A1", "A$1", "$A$1", "a1")
+A1 <- c("A1", "$A1", "A$1", "$A$1", "a1", "A1048576")
 R1C1 <- c("R1C1", "R1C[-1]", "R[-1]C1", "R[-1]C[9]")
 
 test_that("A1 refs are detected as such and R1C1 are not", {
