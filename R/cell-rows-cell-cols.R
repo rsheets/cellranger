@@ -22,8 +22,7 @@
 #'
 #' @export
 cell_rows <- function(x) {
-
-  if(all(is.na(x))) {
+  if (all(is.na(x))) {
     return(cell_limits())
   }
 
@@ -63,16 +62,14 @@ cell_rows <- function(x) {
 #'
 #' @export
 cell_cols <- function(x) {
-
-  if(all(is.na(x))) {
+  if (all(is.na(x))) {
     return(cell_limits())
   }
 
   stopifnot(is.numeric(x) || is.character(x))
 
-  if(is.character(x)) {
-
-    if(length(x) == 1L) {
+  if (is.character(x)) {
+    if (length(x) == 1L) {
       x <- strsplit(x, ":")[[1]]
     }
 

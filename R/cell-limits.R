@@ -45,9 +45,10 @@
 cell_limits <- function(ul = c(NA_integer_, NA_integer_),
                         lr = c(NA_integer_, NA_integer_),
                         sheet = NA_character_) {
-
-  stopifnot(length(ul) == 2L, length(lr) == 2L,
-            length(sheet) == 1L, is.character(sheet))
+  stopifnot(
+    length(ul) == 2L, length(lr) == 2L,
+    length(sheet) == 1L, is.character(sheet)
+  )
 
   ul <- as.integer(ul)
   lr <- as.integer(lr)
@@ -65,9 +66,10 @@ cell_limits <- function(ul = c(NA_integer_, NA_integer_),
   if (!anyNA(rows)) stopifnot(rows[1] <= rows[2])
   if (!anyNA(cols)) stopifnot(cols[1] <= cols[2])
 
-  structure(list(ul = ul, lr = lr, sheet = sheet),
-            class = c("cell_limits", "list"))
-
+  structure(
+    list(ul = ul, lr = lr, sheet = sheet),
+    class = c("cell_limits", "list")
+  )
 }
 
 #' @export
@@ -76,9 +78,11 @@ print.cell_limits <- function(x, ...) {
   lr <- ifelse(is.na(x$lr), "-", as.character(x$lr))
   sheet <- if (is.na(x$sheet)) "" else paste0(" in '", x$sheet, "'")
 
-  cat("<cell_limits (", ul[1], ", ", ul[2], ") x (",
-      lr[1], ", ", lr[2], ")", sheet, ">\n",
-      sep = "")
+  cat(
+    "<cell_limits (", ul[1], ", ", ul[2], ") x (",
+    lr[1], ", ", lr[2], ")", sheet, ">\n",
+    sep = ""
+  )
 }
 
 #' @rdname cell_limits
@@ -120,8 +124,10 @@ as.cell_limits.character <- function(x, fo = NULL, ...) {
   stopifnot(length(x) == 1L)
   parsed <- parse_ref_string(x, fo = fo)
   if (is.na(parsed$fo)) {
-    stop("Can't guess format of this cell reference:\n", parsed$ref,
-         call. = FALSE)
+    stop(
+      "Can't guess format of this cell reference:\n", parsed$ref,
+      call. = FALSE
+    )
   }
   ## parsed$ref_v has length 1 or 2, depending on whether input was a range
   if (parsed$fo == "A1") {
@@ -131,8 +137,10 @@ as.cell_limits.character <- function(x, fo = NULL, ...) {
   }
   not_abs <- vapply(rar_list, is_not_abs_ref, logical(1))
   if (any(not_abs)) {
-    stop("Mixed or relative cell references aren't allowed:\n",
-         parsed$ref, call. = FALSE)
+    stop(
+      "Mixed or relative cell references aren't allowed:\n",
+      parsed$ref, call. = FALSE
+    )
   }
 
   ## if single cell input --> duplicate that thing!
@@ -141,7 +149,7 @@ as.cell_limits.character <- function(x, fo = NULL, ...) {
   cell_limits(
     ul = rar_list[[1]][c("row_ref", "col_ref")],
     lr = rar_list[[2]][c("row_ref", "col_ref")],
-    sheet = if (parsed$sheet == '') NA_character_ else parsed$sheet
+    sheet = if (parsed$sheet == "") NA_character_ else parsed$sheet
   )
 }
 

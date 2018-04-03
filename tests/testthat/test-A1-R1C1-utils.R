@@ -17,4 +17,3 @@ test_that("ambiguous refs are detected as both A1 and R1C1", {
   expect_true(is_A1("RC3"))
   expect_true(is_R1C1("RC3"))
 })
-

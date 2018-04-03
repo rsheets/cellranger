@@ -43,22 +43,30 @@ ra_ref <- function(row_ref = 1L,
                    file = NA_character_) {
   row_ref <- as.integer(row_ref)
   col_ref <- as.integer(col_ref)
-  stopifnot(length(row_ref) == 1L, length(row_abs) == 1L,
-            length(col_ref) == 1L, length(col_abs) == 1L,
-            is.logical(row_abs), is.logical(col_abs),
-            is.character(sheet), is.character(file),
-            length(sheet) == 1, length(file) == 1)
-  if ( (isTRUE(row_abs) && isTRUE(row_ref < 1)) ||
-       (isTRUE(col_abs) && isTRUE(col_ref < 1)) ) {
-    stop("Absolute row or column references must be >= 1:\n",
-         " row_abs = ", row_abs, ", row_ref = ", row_ref, "\n",
-         " col_abs = ", col_abs, ", col_ref = ", col_ref, "\n",
-         call. = FALSE)
+  stopifnot(
+    length(row_ref) == 1L, length(row_abs) == 1L,
+    length(col_ref) == 1L, length(col_abs) == 1L,
+    is.logical(row_abs), is.logical(col_abs),
+    is.character(sheet), is.character(file),
+    length(sheet) == 1, length(file) == 1
+  )
+  if ((isTRUE(row_abs) && isTRUE(row_ref < 1)) ||
+    (isTRUE(col_abs) && isTRUE(col_ref < 1))) {
+    stop(
+      "Absolute row or column references must be >= 1:\n",
+      " row_abs = ", row_abs, ", row_ref = ", row_ref, "\n",
+      " col_abs = ", col_abs, ", col_ref = ", col_ref, "\n",
+      call. = FALSE
+    )
   }
-  structure(list(row_ref = row_ref, row_abs = row_abs,
-                 col_ref = col_ref, col_abs = col_abs,
-                 sheet = sheet, file = file),
-            class = c("ra_ref", "list"))
+  structure(
+    list(
+      row_ref = row_ref, row_abs = row_abs,
+      col_ref = col_ref, col_abs = col_abs,
+      sheet = sheet, file = file
+    ),
+    class = c("ra_ref", "list")
+  )
 }
 
 #' Print ra_ref object
@@ -82,9 +90,11 @@ print.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
   sheet_part <- if (is.na(x$sheet)) "" else sheet_part
 
   cat("<ra_ref>\n")
-  cat("   row: ", x$row_ref, " (", row_ra, ")\n",
-      "   col: ", x$col_ref, " (", col_ra, ")\n",
-      sheet_part, sep = "")
+  cat(
+    "   row: ", x$row_ref, " (", row_ra, ")\n",
+    "   col: ", x$col_ref, " (", col_ra, ")\n",
+    sheet_part, sep = ""
+  )
   ## no printing of file name ... wait til I see it needed IRL
   cat(" ", to_string(x, fo = fo), "\n", sep = "")
 }
@@ -158,16 +168,18 @@ as.ra_ref.character <- function(x, fo = NULL, strict = TRUE, ...) {
 as.ra_ref_v.character <- function(x, fo = NULL, strict = TRUE, ...) {
   parsed <- rematch::re_match(.cr$string_rx, x)
   colnames(parsed) <- c("input", "file", "sheet", "ref", "invalid")
-  is_range <- grepl(":", parsed[ , "ref"])
+  is_range <- grepl(":", parsed[, "ref"])
   if (any(is_range)) {
     stop("Cell ranges not allowed here.\n", call. = FALSE)
   }
   if (is.null(fo)) {
-    fo <- unique(guess_fo(parsed[ , "ref"]))
+    fo <- unique(guess_fo(parsed[, "ref"]))
     if ("R1C1" %in% fo && "A1" %in% fo) {
       ## TODO? be willing to handle a mix of A1 and R1C1 refs
-      stop("Cell references aren't uniformly A1 or R1C1 format:\n",
-           call. = FALSE)
+      stop(
+        "Cell references aren't uniformly A1 or R1C1 format:\n",
+        call. = FALSE
+      )
     }
     if (anyNA(fo) && length(fo) > 1) {
       ## (A1, NA) --> A1, (R1C1, NA) --> R1C1, NA --> NA
@@ -175,23 +187,35 @@ as.ra_ref_v.character <- function(x, fo = NULL, strict = TRUE, ...) {
     }
   }
   if (identical(fo, "A1")) {
-    rar <- A1_to_ra_ref(parsed[ , "ref"], strict = strict)
+    rar <- A1_to_ra_ref(parsed[, "ref"], strict = strict)
     if (anyNA(vapply(rar, `[[`, integer(1), "row_ref")) ||
-        anyNA(vapply(rar, `[[`, integer(1), "col_ref"))) {
-      warning("Non-absolute A1-formatted reference ... NAs generated",
-              call. = FALSE)
+      anyNA(vapply(rar, `[[`, integer(1), "col_ref"))) {
+      warning(
+        "Non-absolute A1-formatted reference ... NAs generated",
+        call. = FALSE
+      )
     }
   } else { ## catches fo = "R1C1" and fo = NA
-    rar <- R1C1_to_ra_ref(parsed[ , "ref"])
+    rar <- R1C1_to_ra_ref(parsed[, "ref"])
   }
-  has_sheet <- nzchar(parsed[ , "sheet"])
-  rar[has_sheet] <- mapply(function(x, sheet) {x$sheet <- sheet; x},
-                           rar[has_sheet], parsed[has_sheet, "sheet"],
-                           SIMPLIFY = FALSE)
-  has_file <- nzchar(parsed[ , "file"])
-  rar[has_file] <- mapply(function(x, file) {x$file <- file; x},
-                           rar[has_file], parsed[has_file, "file"],
-                           SIMPLIFY = FALSE)
+  has_sheet <- nzchar(parsed[, "sheet"])
+  rar[has_sheet] <- mapply(
+    function(x, sheet) {
+      x$sheet <- sheet
+      x
+    },
+    rar[has_sheet], parsed[has_sheet, "sheet"],
+    SIMPLIFY = FALSE
+  )
+  has_file <- nzchar(parsed[, "file"])
+  rar[has_file] <- mapply(
+    function(x, file) {
+      x$file <- file
+      x
+    },
+    rar[has_file], parsed[has_file, "file"],
+    SIMPLIFY = FALSE
+  )
   rar
 }
 
@@ -203,8 +227,10 @@ as.ra_ref_v.character <- function(x, fo = NULL, strict = TRUE, ...) {
 #' as.ra_ref(ca)
 as.ra_ref.cell_addr <- function(x, ...) {
   stopifnot(length(x) == 1L)
-  ra_ref(row_ref = addr_row(x), row_abs = if (is.na(addr_row(x))) NA else TRUE,
-         col_ref = addr_col(x), col_abs = if (is.na(addr_row(x))) NA else TRUE)
+  ra_ref(
+    row_ref = addr_row(x), row_abs = if (is.na(addr_row(x))) NA else TRUE,
+    col_ref = addr_col(x), col_abs = if (is.na(addr_row(x))) NA else TRUE
+  )
 }
 
 #' @rdname as.ra_ref

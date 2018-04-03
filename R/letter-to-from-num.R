@@ -23,15 +23,13 @@ NULL
 #' letter_to_num(c(NA, ''))
 #' @export
 letter_to_num <- function(x) {
-
   stopifnot(is.character(x))
 
-  x <- strsplit(toupper(x), '')
+  x <- strsplit(toupper(x), "")
   x <- lapply(x, char0_to_NA)
   x <- lapply(x, match, table = LETTERS)
   x <- lapply(x, function(z) sum((26 ^ rev(seq_along(z) - 1)) * z))
   as.integer(x)
-
 }
 
 #' @rdname letter-num-conversion
@@ -43,7 +41,6 @@ letter_to_num <- function(x) {
 #' num_to_letter(c(NA, 0, 4.8, -4))
 #' @export
 num_to_letter <- function(y) {
-
   stopifnot(is.numeric(y))
 
   # fcn to express column number in this weird form of base 26

@@ -8,17 +8,19 @@ A1_to_ra_ref <- function(x, strict = TRUE) {
   ## row_abs = "$" row_ref = "56" col_abs = "" col_ref = "D"
   ## presence of "$" decoration in original row or col ref --> absolute
   if (!strict) { # absolutize pure relative refs; mixed refs not changed
-    rel <- y[ , "col_abs"] == "" & y[ , "row_abs"] == ""
+    rel <- y[, "col_abs"] == "" & y[, "row_abs"] == ""
     y[rel, c("col_abs", "row_abs")] <- "$"
   }
-  row_not_abs <- y[ , "row_abs"] != "$"
+  row_not_abs <- y[, "row_abs"] != "$"
   y[row_not_abs, "row_ref"] <- NA
-  col_not_abs <- y[ , "col_abs"] != "$"
+  col_not_abs <- y[, "col_abs"] != "$"
   y[col_not_abs, "col_ref"] <- NA
-  mapply(ra_ref,
-         stats::setNames(y[ , "row_ref"], y[ , ".match"]), y[ , "row_abs"] == "$",
-         letter_to_num(y[ , "col_ref"]),                 y[ , "col_abs"] == "$",
-         SIMPLIFY = FALSE)
+  mapply(
+    ra_ref,
+    stats::setNames(y[, "row_ref"], y[, ".match"]), y[, "row_abs"] == "$",
+    letter_to_num(y[, "col_ref"]), y[, "col_abs"] == "$",
+    SIMPLIFY = FALSE
+  )
 }
 
 ## vectorized over x and always returns list
@@ -30,16 +32,18 @@ R1C1_to_ra_ref <- function(x) {
   ## presence of square brackets `[x]` --> relative
   ## EXCEPT when row or column reference is empty, e.g., RC, RCx, RxC
   ## which means "this row or column" --> offset is 0 and ref is relative
-  row_ref_missing <- y[ , "row_ref"] == ""
+  row_ref_missing <- y[, "row_ref"] == ""
   y[row_ref_missing, "row_abs"] <- "["
   y[row_ref_missing, "row_ref"] <- "0"
-  col_ref_missing <- y[ , "col_ref"] == ""
+  col_ref_missing <- y[, "col_ref"] == ""
   y[col_ref_missing, "col_abs"] <- "["
   y[col_ref_missing, "col_ref"] <- "0"
-  mapply(ra_ref,
-         stats::setNames(y[ , "row_ref"], y[ , ".match"]), y[ , "row_abs"] == "",
-         y[ , "col_ref"],                  y[ , "col_abs"] == "",
-         SIMPLIFY = FALSE)
+  mapply(
+    ra_ref,
+    stats::setNames(y[, "row_ref"], y[, ".match"]), y[, "row_abs"] == "",
+    y[, "col_ref"], y[, "col_abs"] == "",
+    SIMPLIFY = FALSE
+  )
 }
 
 #' Convert cell reference strings from A1 to R1C1 format
@@ -69,8 +73,10 @@ A1_to_R1C1 <- function(x, strict = TRUE) {
   y <- unname(A1_to_ra_ref(x, strict = strict))
   not_abs <- vapply(y, is_not_abs_ref, logical(1))
   if (any(not_abs)) {
-    warning("Mixed or relative cell references found ... NAs generated",
-            call. = FALSE)
+    warning(
+      "Mixed or relative cell references found ... NAs generated",
+      call. = FALSE
+    )
   }
   vapply(y, to_string, character(1))
 }
@@ -100,8 +106,10 @@ R1C1_to_A1 <- function(x, strict = TRUE) {
   if (any(!abs)) {
     warning("Ambiguous cell references ... NAs generated", call. = FALSE)
     y[!abs] <- lapply(y[!abs], function(x) {
-      ra_ref(row_ref = NA, row_abs = NA, col_ref = NA, col_abs = NA,
-             sheet = x$sheet, file = x$file)
+      ra_ref(
+        row_ref = NA, row_abs = NA, col_ref = NA, col_abs = NA,
+        sheet = x$sheet, file = x$file
+      )
     })
   }
   vapply(y, to_string, character(1), fo = "A1", strict = strict)

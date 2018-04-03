@@ -38,10 +38,12 @@ cell_addr <- function(row, col) {
   neg <- isTRUE_v(row < 1) | isTRUE_v(col < 1)
   if (any(neg)) {
     ## data.frame > tibble here because want original row names (number, here)
-    out <- data.frame(row, col)[neg, ,drop = FALSE]
+    out <- data.frame(row, col)[neg, , drop = FALSE]
     printed_x <- utils::capture.output(print(out))
-    stop("cell_addr objects require absolute row and column, must be >= 1:\n",
-         paste(printed_x, collapse = "\n"), call. = FALSE)
+    stop(
+      "cell_addr objects require absolute row and column, must be >= 1:\n",
+      paste(printed_x, collapse = "\n"), call. = FALSE
+    )
   }
   structure(list(row = row, col = col), class = "cell_addr")
 }
@@ -149,8 +151,10 @@ as.cell_addr.ra_ref <- function(x, ...) {
 as.cell_addr_v.list <- function(x, ...) {
   stopifnot(all(vapply(x, inherits, logical(1), what = "ra_ref")))
   ca_list <- lapply(x, as.cell_addr)
-  cell_addr(row = vapply(ca_list, addr_row, integer(1)),
-            col = vapply(ca_list, addr_col, integer(1)))
+  cell_addr(
+    row = vapply(ca_list, addr_row, integer(1)),
+    col = vapply(ca_list, addr_col, integer(1))
+  )
 }
 
 #' @rdname as.cell_addr

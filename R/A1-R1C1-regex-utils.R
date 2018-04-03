@@ -58,33 +58,43 @@ guess_fo <- function(x, fo = c("R1C1", "A1")) {
   if (any(both)) {
     out[both] <- fo
     ## OMFG this can actually happen. Example: RCx
-    warning("Not clear if cell reference is in A1 or R1C1 format. Example:\n",
-            x[both][1], "\nDefaulting to ", fo,
-            call. = FALSE)
+    warning(
+      "Not clear if cell reference is in A1 or R1C1 format. Example:\n",
+      x[both][1], "\nDefaulting to ", fo,
+      call. = FALSE
+    )
   }
   if (any(neither)) {
-    warning("Cell reference follows neither the A1 nor R1C1 format. Example:\n",
-            x[neither][1], "\nNAs generated.",
-            call. = FALSE)
+    warning(
+      "Cell reference follows neither the A1 nor R1C1 format. Example:\n",
+      x[neither][1], "\nNAs generated.",
+      call. = FALSE
+    )
   }
   out
 }
 
 ## for parsing single cell references
 .cr$A1_ncg_rx <-
-  paste0("(?P<col_abs>\\$?)(?P<col_ref>[A-Za-z]{1,3})",
-         "(?P<row_abs>\\$?)(?P<row_ref>[0-9]+)")
+  paste0(
+    "(?P<col_abs>\\$?)(?P<col_ref>[A-Za-z]{1,3})",
+    "(?P<row_abs>\\$?)(?P<row_ref>[0-9]+)"
+  )
 .cr$R1C1_ncg_rx <-
-  paste0("^R(?P<row_abs>\\[?)(?P<row_ref>[0-9\\-]*)(?:\\]?)",
-         "C(?P<col_abs>\\[?)(?P<col_ref>[0-9\\-]*)(?:\\]?)$")
+  paste0(
+    "^R(?P<row_abs>\\[?)(?P<row_ref>[0-9\\-]*)(?:\\]?)",
+    "C(?P<col_abs>\\[?)(?P<col_ref>[0-9\\-]*)(?:\\]?)$"
+  )
 
 ## for parsing cell (area) references that are possibly qualified by
 ## file and/or worksheet name
-.cr$filename_rx = "(?:^\\[([^\\]]+)\\])?"
+.cr$filename_rx <- "(?:^\\[([^\\]]+)\\])?"
 .cr$worksheetname_rx <- "(?:'?([^']+)'?!)?"
 .cr$ref_rx <- "([a-zA-Z0-9:\\-$\\[\\]]+)"
-.cr$string_rx <- sprintf("^(?:%s%s%s|(.*))$", .cr$filename_rx,
-                         .cr$worksheetname_rx, .cr$ref_rx)
+.cr$string_rx <- sprintf(
+  "^(?:%s%s%s|(.*))$", .cr$filename_rx,
+  .cr$worksheetname_rx, .cr$ref_rx
+)
 
 parse_ref_string <- function(x, fo = NULL) {
   parsed <- as.list(rematch::re_match(.cr$string_rx, x)[1, , drop = TRUE])
@@ -95,8 +105,10 @@ parse_ref_string <- function(x, fo = NULL) {
     fo_v <- guess_fo(parsed$ref_v)
     parsed$fo <- unique(fo_v)
     if (length(parsed$fo) > 1) {
-      stop("Cell references aren't uniformly A1 or R1C1 format:\n",
-           parsed$ref, call. = FALSE)
+      stop(
+        "Cell references aren't uniformly A1 or R1C1 format:\n",
+        parsed$ref, call. = FALSE
+      )
     }
   } else {
     parsed$fo <- match.arg(fo, c("R1C1", "A1"))

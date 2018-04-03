@@ -56,25 +56,35 @@ to_string_v <-
 #' @export
 to_string.ra_ref <- function(x, fo = c("R1C1", "A1"),
                              strict = TRUE, sheet = NULL, ...) {
-  if (any(vapply(x[c("row_ref", "row_abs", "col_ref", "col_abs")],
-                 is.na, logical(1)))) return(NA_character_)
+  if (any(vapply(
+    x[c("row_ref", "row_abs", "col_ref", "col_abs")],
+    is.na, logical(1)
+  ))) {
+    return(NA_character_)
+  }
   fo <- match.arg(fo)
   sheet <- sheet %||% !is.na(x$sheet)
   if (fo == "A1") {
     if (!isTRUE(x$row_abs) || !isTRUE(x$col_abs)) {
-      warning("Only absolute references can be converted to an A1 formatted ",
-              "string ... NAs generated", call. = FALSE)
+      warning(
+        "Only absolute references can be converted to an A1 formatted ",
+        "string ... NAs generated", call. = FALSE
+      )
       return(NA_character_)
     }
     if (!strict) {
       x <- relativize(x)
     }
     ref_string <-
-      paste0(rel_abs_format(x$col_abs, fo = "A1"), num_to_letter(x$col_ref),
-             rel_abs_format(x$row_abs, fo = "A1"), x$row_ref)
+      paste0(
+        rel_abs_format(x$col_abs, fo = "A1"), num_to_letter(x$col_ref),
+        rel_abs_format(x$row_abs, fo = "A1"), x$row_ref
+      )
   } else {
-    ref_string <- paste0("R", rel_abs_format(x$row_abs, x$row_ref),
-                         "C", rel_abs_format(x$col_abs, x$col_ref))
+    ref_string <- paste0(
+      "R", rel_abs_format(x$row_abs, x$row_ref),
+      "C", rel_abs_format(x$col_abs, x$col_ref)
+    )
   }
   if (sheet) {
     ref_string <- paste(add_single_quotes(x$sheet), ref_string, sep = "!")
@@ -111,10 +121,14 @@ to_string_v.list <- function(x, fo = c("R1C1", "A1"),
 to_string.cell_addr <- function(x, fo = c("R1C1", "A1"),
                                 strict = TRUE, sheet = FALSE, ...) {
   fo <- match.arg(fo)
-  ra_ref_list <- mapply(ra_ref, row_ref = addr_row(x), col_ref = addr_col(x),
-                        SIMPLIFY = FALSE)
-  vapply(ra_ref_list, to_string, character(1), fo = fo,
-         strict = strict, sheet = sheet)
+  ra_ref_list <- mapply(
+    ra_ref, row_ref = addr_row(x), col_ref = addr_col(x),
+    SIMPLIFY = FALSE
+  )
+  vapply(
+    ra_ref_list, to_string, character(1), fo = fo,
+    strict = strict, sheet = sheet
+  )
 }
 
 #' @rdname to_string

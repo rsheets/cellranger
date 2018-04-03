@@ -63,8 +63,10 @@ test_that("row and column extraction work for cell_addr objects", {
 })
 
 test_that("cell_addr objects can be converted to ra_ref", {
-  expect_identical(as.ra_ref(cell_addr(2, 5)),
-                   ra_ref(row_ref = 2, col_ref = 5))
+  expect_identical(
+    as.ra_ref(cell_addr(2, 5)),
+    ra_ref(row_ref = 2, col_ref = 5)
+  )
 })
 
 test_that("cell_addr objects can be converted to string", {
@@ -79,12 +81,18 @@ test_that("valid ra_ref objects can be converted to cell_addr", {
 })
 
 test_that("ra_ref objects w/ NAs become cell_addr objects with NAs", {
-  expect_warning(expect_identical(as.cell_addr(ra_ref(2, FALSE, 5, FALSE)),
-                                  cell_addr(NA, NA)))
-  expect_warning(expect_identical(as.cell_addr(ra_ref(2, TRUE, 5, FALSE)),
-                                  cell_addr(2, NA)))
-  expect_warning(expect_identical(as.cell_addr(ra_ref(2, FALSE, 5, TRUE)),
-                                  cell_addr(NA, 5)))
+  expect_warning(expect_identical(
+    as.cell_addr(ra_ref(2, FALSE, 5, FALSE)),
+    cell_addr(NA, NA)
+  ))
+  expect_warning(expect_identical(
+    as.cell_addr(ra_ref(2, TRUE, 5, FALSE)),
+    cell_addr(2, NA)
+  ))
+  expect_warning(expect_identical(
+    as.cell_addr(ra_ref(2, FALSE, 5, TRUE)),
+    cell_addr(NA, 5)
+  ))
 })
 
 test_that("valid cell ref strings can be converted to cell_addr", {
