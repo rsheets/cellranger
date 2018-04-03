@@ -72,4 +72,3 @@ as.range(anchored(input = input, byrow = TRUE))
 dim(anchored(input = input, byrow = TRUE))
 
 }
-

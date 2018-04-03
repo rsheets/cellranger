@@ -22,4 +22,3 @@ Print ra_ref object
 print(ra_ref(), fo = "A1")
 
 }
-

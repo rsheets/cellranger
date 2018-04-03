@@ -30,4 +30,3 @@ cell_rows(c(3, NA, 10))
 dim(cell_rows(1:5))
 
 }
-

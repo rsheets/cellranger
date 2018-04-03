@@ -33,4 +33,3 @@ cell_cols(c("B", NA))
 cell_cols(LETTERS)
 
 }
-

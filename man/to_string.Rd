@@ -2,11 +2,11 @@
 % Please edit documentation in R/to-string.R
 \name{to_string}
 \alias{to_string}
-\alias{to_string.cell_addr}
-\alias{to_string.ra_ref}
 \alias{to_string_v}
-\alias{to_string_v.cell_addr}
+\alias{to_string.ra_ref}
 \alias{to_string_v.list}
+\alias{to_string.cell_addr}
+\alias{to_string_v.cell_addr}
 \title{Get string representation of cell references}
 \usage{
 to_string(x, fo = c("R1C1", "A1"), strict = TRUE, sheet = NULL, ...)
@@ -97,4 +97,3 @@ to_string(ca, fo = "A1")
 to_string_v(ca)
 to_string_v(ca, fo = "A1")
 }
-

@@ -2,11 +2,11 @@
 % Please edit documentation in R/cell-addr.R
 \name{as.cell_addr}
 \alias{as.cell_addr}
-\alias{as.cell_addr.character}
-\alias{as.cell_addr.ra_ref}
 \alias{as.cell_addr_v}
-\alias{as.cell_addr_v.character}
+\alias{as.cell_addr.ra_ref}
 \alias{as.cell_addr_v.list}
+\alias{as.cell_addr.character}
+\alias{as.cell_addr_v.character}
 \title{Convert to a cell_addr object}
 \usage{
 as.cell_addr(x, ...)
@@ -65,4 +65,3 @@ as.cell_addr("$F2")
 as.cell_addr("R[-4]C3")
 as.cell_addr("F2", strict = FALSE)
 }
-

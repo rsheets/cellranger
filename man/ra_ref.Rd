@@ -50,10 +50,10 @@ Spreadsheet Implementation Technology: Basics and Extensions
 Peter Sestoft
 MIT Press 2014
 }
+
 \examples{
 ra_ref()
 ra_ref(row_ref = 3, col_ref = 2)
 ra_ref(row_ref = 10, row_abs = FALSE, col_ref = 3, col_abs = TRUE)
 ra_ref(sheet = "a sheet")
 }
-

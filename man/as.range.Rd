@@ -39,4 +39,3 @@ rgCL_ws <- cell_limits(ul = c(1, 2), lr = c(7, 6), sheet = "A Sheet")
 as.range(rgCL_ws)
 as.range(rgCL_ws, fo = "A1")
 }
-

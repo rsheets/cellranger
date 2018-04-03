@@ -2,11 +2,11 @@
 % Please edit documentation in R/ra-ref.R
 \name{as.ra_ref}
 \alias{as.ra_ref}
-\alias{as.ra_ref.cell_addr}
-\alias{as.ra_ref.character}
 \alias{as.ra_ref_v}
-\alias{as.ra_ref_v.cell_addr}
+\alias{as.ra_ref.character}
 \alias{as.ra_ref_v.character}
+\alias{as.ra_ref.cell_addr}
+\alias{as.ra_ref_v.cell_addr}
 \title{Convert to a ra_ref object}
 \usage{
 as.ra_ref(x, ...)
@@ -88,4 +88,3 @@ as.ra_ref(ca)
 ## use as.ra_ref_v instead
 as.ra_ref_v(ca)
 }
-

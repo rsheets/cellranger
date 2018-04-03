@@ -1,10 +1,20 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![TravisCI Build Status](https://travis-ci.org/rsheets/cellranger.svg?branch=master)](https://travis-ci.org/rsheets/cellranger) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/rsheets/cellranger?branch=master&svg=true)](https://ci.appveyor.com/project/rsheets/cellranger) [![codecov.io](https://codecov.io/github/rsheets/cellranger/coverage.svg?branch=master)](https://codecov.io/github/rsheets/cellranger?branch=master) [![DOI](https://zenodo.org/badge/16122/jennybc/cellranger.svg)](http://dx.doi.org/10.5281/zenodo.21970) [![CRAN version](http://www.r-pkg.org/badges/version/cellranger)](https://cran.r-project.org/package=cellranger) ![](http://cranlogs.r-pkg.org/badges/grand-total/cellranger)
+
+[![TravisCI Build
+Status](https://travis-ci.org/rsheets/cellranger.svg?branch=master)](https://travis-ci.org/rsheets/cellranger)
+[![AppVeyor Build
+Status](https://ci.appveyor.com/api/projects/status/github/rsheets/cellranger?branch=master&svg=true)](https://ci.appveyor.com/project/rsheets/cellranger)
+[![codecov.io](https://codecov.io/github/rsheets/cellranger/coverage.svg?branch=master)](https://codecov.io/github/rsheets/cellranger?branch=master)
+[![DOI](https://zenodo.org/badge/16122/jennybc/cellranger.svg)](http://dx.doi.org/10.5281/zenodo.21970)
+[![CRAN
+version](http://www.r-pkg.org/badges/version/cellranger)](https://cran.r-project.org/package=cellranger)
+![](http://cranlogs.r-pkg.org/badges/grand-total/cellranger)
 
 <img src="http://i.imgur.com/RJJy15I.jpg" width="270" align="right" />
 
-Helper package to support R scripts or packages that interact with spreadsheets.
+Helper package to support R scripts or packages that interact with
+spreadsheets.
 
 ### Installation
 
@@ -23,15 +33,35 @@ devtools::install_github("jennybc/cellranger")
 
 ### What is `cellranger` for?
 
-**Describe a rectangle of cells**. For example, what you've got is the string "D12:F15" and what you want is an R object that holds the row and column for the upper left and lower right corners of this rectangle. Read below about the `cell_limits` class. The [`googlesheets`](https://github.com/jennybc/googlesheets) and [`readODS`](https://github.com/chainsawriot/readODS) packages use `cellranger` to translate user-supplied cell range info into something more programmatically useful.
+**Describe a rectangle of cells**. For example, what you’ve got is the
+string “D12:F15” and what you want is an R object that holds the row and
+column for the upper left and lower right corners of this rectangle.
+Read below about the `cell_limits` class. The
+[`googlesheets`](https://github.com/jennybc/googlesheets) and
+[`readODS`](https://github.com/chainsawriot/readODS) packages use
+`cellranger` to translate user-supplied cell range info into something
+more programmatically useful.
 
-**Handle cell references found in spreadsheet formulas**. If you're parsing unevaluated spreadsheet formulas, use the `ra_ref` and `cell_addr` classes for handling absolute, relative, and mixed cell references. Classes inspired by [Spreadsheet Implementation Technology](https://mitpress.mit.edu/books/spreadsheet-implementation-technology) from Sestoft (MIT Press, 2014).
+**Handle cell references found in spreadsheet formulas**. If you’re
+parsing unevaluated spreadsheet formulas, use the `ra_ref` and
+`cell_addr` classes for handling absolute, relative, and mixed cell
+references. Classes inspired by [Spreadsheet Implementation
+Technology](https://mitpress.mit.edu/books/spreadsheet-implementation-technology)
+from Sestoft (MIT Press, 2014).
 
-**Convert between annoying spreadsheet reference formats**. Some utility functions are exposed, such as `A1_to_R1C1()`, which converts from A1 formatted strings to R1C1, and `letter_to_num()`, which converts a Excel column ID to a number, e.g. column AQZ is more usefully known as column 1144.
+**Convert between annoying spreadsheet reference formats**. Some utility
+functions are exposed, such as `A1_to_R1C1()`, which converts from A1
+formatted strings to R1C1, and `letter_to_num()`, which converts a Excel
+column ID to a number, e.g. column AQZ is more usefully known as column
+1144.
 
 ### Describing rectangles via `cell_limits`
 
-`cellranger` provides an S3 class, `cell_limits`, as the standard way to store a cell range. You can explicitly construct a `cell_limits` object by specifying the upper left and lower right cells and, optionally, the hosting worksheet:
+`cellranger` provides an S3 class, `cell_limits`, as the standard way to
+store a cell range. You can explicitly construct a `cell_limits` object
+by specifying the upper left and lower right cells and, optionally, the
+hosting
+worksheet:
 
 ``` r
 cell_limits(ul = c(ROW_MIN, COL_MIN), lr = c(ROW_MAX, COL_MAX), sheet = "SHEET")
@@ -39,7 +69,9 @@ cell_limits(ul = c(ROW_MIN, COL_MIN), lr = c(ROW_MAX, COL_MAX), sheet = "SHEET")
 
 Think of it like `R3C1:R7C4` notation, but with the `R` and `C` removed.
 
-More often you'll get a `cell_limits` object by sending diverse user input through `as.cell_limits()`. That's what's going on in calls like these from [`googlesheets`](https://github.com/jennybc/googlesheets):
+More often you’ll get a `cell_limits` object by sending diverse user
+input through `as.cell_limits()`. That’s what’s going on in calls like
+these from [`googlesheets`](https://github.com/jennybc/googlesheets):
 
 ``` r
 library(googlesheets)
@@ -61,8 +93,11 @@ anchored(input = head(LETTERS), byrow = TRUE)
 
 Read the docs for more information on some specialized helpers:
 
--   Row- or column-only specification: `cell_rows()`, `cell_cols()`.
--   Specification via an object you want to write and, optionally, an anchor cell: `anchored()`
+  - Row- or column-only specification: `cell_rows()`, `cell_cols()`.
+  - Specification via an object you want to write and, optionally, an
+    anchor cell: `anchored()`
+
+<!-- end list -->
 
 ``` r
 library("cellranger")
@@ -70,7 +105,8 @@ library("cellranger")
 #> <cell_limits (1, 12) x (6, 15) in 'raw_data'>
 ```
 
-The `dim` method reports dimensions of the targetted cell rectangle. `as.range()` converts a `cell_limits` object back into an Excel range.
+The `dim` method reports dimensions of the targetted cell rectangle.
+`as.range()` converts a `cell_limits` object back into an Excel range.
 
 ``` r
 dim(cl)
@@ -83,14 +119,16 @@ as.range(cl, fo = "A1", sheet = FALSE, strict = TRUE)
 #> [1] "$L$1:$O$6"
 ```
 
-Use `NA` to leave a limit unspecified, i.e. describe a degenerate rectangle
+Use `NA` to leave a limit unspecified, i.e. describe a degenerate
+rectangle
 
 ``` r
 cell_limits(c(3, 2), c(7, NA))
 #> <cell_limits (3, 2) x (7, -)>
 ```
 
-If the maximum row or column is specified but the associated minimum is not, then it is set to 1.
+If the maximum row or column is specified but the associated minimum is
+not, then it is set to 1.
 
 ``` r
 cell_limits(c(NA, NA), c(3, 5))
@@ -99,7 +137,8 @@ cell_limits(c(NA, NA), c(3, 5))
 
 ### Utilities for spreadsheet annoyances
 
-We've exposed utility functions which could be useful to anyone manipulating Excel-like references.
+We’ve exposed utility functions which could be useful to anyone
+manipulating Excel-like references.
 
 ``` r
 ## convert character column IDs to numbers ... and vice versa

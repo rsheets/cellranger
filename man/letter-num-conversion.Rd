@@ -40,4 +40,3 @@ num_to_letter(18278)
 num_to_letter(c(25, 52, 900, 18278))
 num_to_letter(c(NA, 0, 4.8, -4))
 }
-

@@ -27,4 +27,3 @@ guess_fo("RC2")
 guess_fo("12")
 guess_fo(12)
 }
-
