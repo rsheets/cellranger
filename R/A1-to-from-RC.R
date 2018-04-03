@@ -45,12 +45,12 @@ R1C1_to_ra_ref <- function(x) {
 #' Convert cell reference strings from A1 to R1C1 format
 #'
 #' Convert cell reference strings from A1 to R1C1 format. Strictly speaking,
-#' this only makes sense for absolute references, such as \code{"$B$4"}. Why?
+#' this only makes sense for absolute references, such as `"$B$4"`. Why?
 #' Because otherwise, we'd have to know the host cell of the reference. Set
-#' \code{strict = FALSE} to relax and treat pure relative references, like
-#' (\code{"B4"}), as if they are absolute. Mixed references, like
-#' (\code{"B$4"}), will always return \code{NA}, no matter the value of
-#' \code{strict}.
+#' `strict = FALSE` to relax and treat pure relative references, like
+#' (`"B4"`), as if they are absolute. Mixed references, like
+#' (`"B$4"`), will always return `NA`, no matter the value of
+#' `strict`.
 #'
 #' @param x character vector of cell references in A1 format
 #' @template param-strict
@@ -78,10 +78,10 @@ A1_to_R1C1 <- function(x, strict = TRUE) {
 #' Convert R1C1 positioning notation to A1 notation
 #'
 #' Convert cell reference strings from R1C1 to A1 format. This only makes sense
-#' for absolute references, such as \code{"R4C2"}. Why? Because otherwise, we'd
+#' for absolute references, such as `"R4C2"`. Why? Because otherwise, we'd
 #' have to know the host cell of the reference. Relative and mixed references,
-#' like (\code{"R[3]C[-1]"} and \code{"R[1]C5"}), will therefore return
-#' \code{NA}.
+#' like (`"R[3]C[-1]"` and `"R[1]C5"`), will therefore return
+#' `NA`.
 #'
 #' @param x vector of cell positions in R1C1 notation
 #' @template param-strict

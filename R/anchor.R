@@ -2,28 +2,28 @@
 #'
 #' Specify the targetted cell rectangle via an upper left anchor cell and the
 #' rectangle's row and column extent. The extent can be specified directly via
-#' \code{dims} or indirectly via the \code{input} object. Specification via
-#' \code{input} anticipates a write operation into the spreadsheet. If
-#' \code{input} is one-dimensional, the \code{byrow} argument controls whether
+#' `dims` or indirectly via the `input` object. Specification via
+#' `input` anticipates a write operation into the spreadsheet. If
+#' `input` is one-dimensional, the `byrow` argument controls whether
 #' the rectangle will extend down from the anchor or to the right. If
-#' \code{input} is two-dimensional, the \code{col_names} argument controls
+#' `input` is two-dimensional, the `col_names` argument controls
 #' whether cells will be reserved for column or variable names. If
-#' \code{col_names} is unspecified, default behavior is to set it to \code{TRUE}
-#' if \code{input} has columns names and \code{FALSE} otherwise.
+#' `col_names` is unspecified, default behavior is to set it to `TRUE`
+#' if `input` has columns names and `FALSE` otherwise.
 #'
 #' @param anchor character, specifying the upper left cell in "A1" or "R1C1"
 #'   notation
 #' @param dim integer vector, of length two, holding the number of rows and
-#'   columns of the targetted rectangle; ignored if \code{input} is provided
+#'   columns of the targetted rectangle; ignored if `input` is provided
 #' @param input a one- or two-dimensioanl input object, used to determine the
 #'   extent of the targetted rectangle
 #' @param col_names logical, indicating whether a row should be reserved for the
 #'   column or variable names of a two-dimensional input; if omitted, will be
-#'   determined by checking whether \code{input} has column names
+#'   determined by checking whether `input` has column names
 #' @param byrow logical, indicating whether a one-dimensional input should run
 #'   down or to the right
 #'
-#' @return a \code{\link{cell_limits}} object
+#' @return a [`cell_limits`] object
 #'
 #' @examples
 #' anchored()

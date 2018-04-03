@@ -1,31 +1,31 @@
 #' ra_ref class
 #'
-#' The \code{ra_ref} class is used to represent a single relative, absolute, or
-#' mixed cell reference, presumably found in a formula. When \code{row_abs} is
-#' \code{TRUE}, it means that \code{row_ref} identifies a specific row in an
-#' absolute sense. When \code{row_abs} is \code{FALSE}, it means that
-#' \code{row_ref} holds a positive, zero, or negative offset relative to the
+#' The `ra_ref` class is used to represent a single relative, absolute, or
+#' mixed cell reference, presumably found in a formula. When `row_abs` is
+#' `TRUE`, it means that `row_ref` identifies a specific row in an
+#' absolute sense. When `row_abs` is `FALSE`, it means that
+#' `row_ref` holds a positive, zero, or negative offset relative to the
 #' address of the cell containing the formula that contains the associated cell
-#' reference. Ditto for \code{col_abs} and \code{col_ref}.
+#' reference. Ditto for `col_abs` and `col_ref`.
 #'
-#' A \code{ra_ref} object can also store the name of a sheet and a file, though
-#' these will often be \code{NA}. A cell reference in a formula can potentially
-#' be qualified like this: \code{[my_workbook.xlxs]Sheet1!R2C3}. In Testoft
-#' (2014), he creates an entirely separate class for this, a \code{cell_ref},
-#' which consists of a sheet- and file-ignorant \code{ra_ref} object and a sheet
+#' A `ra_ref` object can also store the name of a sheet and a file, though
+#' these will often be `NA`. A cell reference in a formula can potentially
+#' be qualified like this: `[my_workbook.xlxs]Sheet1!R2C3`. In Testoft
+#' (2014), he creates an entirely separate class for this, a `cell_ref`,
+#' which consists of a sheet- and file-ignorant `ra_ref` object and a sheet
 #' reference (he doesn't allow formulas to refer to other files). I hope I
 #' don't regret choosing a different path.
 #'
 #' @param row_ref integer, row or row offset
-#' @param row_abs logical indicating whether \code{row_ref} is absolute or
+#' @param row_abs logical indicating whether `row_ref` is absolute or
 #'   relative
 #' @param col_ref integer, column or column offset
-#' @param col_abs logical indicating whether \code{col_ref} is absolute or
+#' @param col_abs logical indicating whether `col_ref` is absolute or
 #'   relative
 #' @param sheet the name of a sheet (a.k.a. worksheet or tab)
 #' @param file the name of a file (a.k.a. workbook)
 #'
-#' @return a \code{ra_ref} object
+#' @return a `ra_ref` object
 #' @export
 #'
 #' @template reference-sestoft
@@ -63,7 +63,7 @@ ra_ref <- function(row_ref = 1L,
 
 #' Print ra_ref object
 #'
-#' @param x an object of class \code{\link{ra_ref}}
+#' @param x an object of class [`ra_ref`]
 #'
 #' @template param-fo
 #' @template param-ddd
@@ -92,20 +92,20 @@ print.ra_ref <- function(x, fo = c("R1C1", "A1"), ...) {
 #' Convert to a ra_ref object
 #'
 #' Convert various representations of a cell reference into an object of class
-#' \code{\link{ra_ref}}.
+#' [`ra_ref`].
 #' \itemize{
-#' \item \code{as.ra_ref} is NOT vectorized and therefore requires the input to
+#' \item `as.ra_ref` is NOT vectorized and therefore requires the input to
 #' represent exactly one cell, i.e. be of length 1.
-#' \item \code{as.ra_ref_v} accepts input of length >= 1 and returns a list of
-#' \code{\link{ra_ref}} objects.
+#' \item `as.ra_ref_v` accepts input of length >= 1 and returns a list of
+#' [ra_ref()] objects.
 #' }
 #'
 #' @param x one or more cell references, as a character vector or
-#' \code{\link{cell_addr}} object
+#' [`cell_addr`] object
 #' @template param-ddd
 #'
-#' @return a \code{\link{ra_ref}} object, in the case of \code{as.ra_ref}, or a
-#'   list of them, in the case of \code{as.ra_ref_v}
+#' @return a [`ra_ref`] object, in the case of `as.ra_ref`, or a
+#'   list of them, in the case of `as.ra_ref_v`
 #' @name as.ra_ref
 NULL
 

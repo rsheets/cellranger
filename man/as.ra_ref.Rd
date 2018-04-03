@@ -41,7 +41,7 @@ to be omitted in the reference string.}
 }
 \value{
 a \code{\link{ra_ref}} object, in the case of \code{as.ra_ref}, or a
-  list of them, in the case of \code{as.ra_ref_v}
+list of them, in the case of \code{as.ra_ref_v}
 }
 \description{
 Convert various representations of a cell reference into an object of class
@@ -50,7 +50,7 @@ Convert various representations of a cell reference into an object of class
 \item \code{as.ra_ref} is NOT vectorized and therefore requires the input to
 represent exactly one cell, i.e. be of length 1.
 \item \code{as.ra_ref_v} accepts input of length >= 1 and returns a list of
-\code{\link{ra_ref}} objects.
+\code{\link[=ra_ref]{ra_ref()}} objects.
 }
 }
 \examples{

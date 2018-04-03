@@ -2,20 +2,20 @@
 #'
 #' Convert various representations of a cell reference to character
 #' \itemize{
-#' \item \code{to_string} is not necessarily vectorized. For example, when the
-#' the input is of class \code{\link{ra_ref}}, it must of be of length one.
-#' However, to be honest, this will actually work for \code{\link{cell_addr}},
+#' \item `to_string` is not necessarily vectorized. For example, when the
+#' the input is of class [`ra_ref`], it must of be of length one.
+#' However, to be honest, this will actually work for [`cell_addr`],
 #' even when length > 1.
-#' \item \code{to_string_v} is guaranteed to be vectorized. In particular, input
-#' can be a \code{\link{cell_addr}} of length >= 1 or a list of
-#' \code{\link{ra_ref}} objects.
+#' \item `to_string_v` is guaranteed to be vectorized. In particular, input
+#' can be a [`cell_addr`] of length >= 1 or a list of
+#' [`ra_ref`] objects.
 #' }
 #' If either the row or column reference is relative, note that, in general,
 #' it's impossible to convert to an "A1" formatted string. We would have to know
 #' "relative to what?".
 #'
 #' @param x a suitable representation of a cell or cell area reference: a single
-#'   \code{\link{ra_ref}} object or a list of them or a \code{\link{cell_addr}}
+#'   [`ra_ref`] object or a list of them or a [`cell_addr`]
 #'   object
 #' @template param-fo
 #' @template param-strict

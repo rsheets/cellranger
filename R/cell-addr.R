@@ -1,17 +1,17 @@
 #' cell_addr class
 #'
-#' The \code{cell_addr} class is used to hold the absolute row and column
-#' location for one or more cells. An object of class \code{cell_addr} is a list
-#' with two components of equal length, named \code{row} and \code{col},
-#' consisting of integers greater than or equal to one or \code{NA}. This is in
-#' contrast to the \code{\link{ra_ref}} class, which holds a representation of a
+#' The `cell_addr` class is used to hold the absolute row and column
+#' location for one or more cells. An object of class `cell_addr` is a list
+#' with two components of equal length, named `row` and `col`,
+#' consisting of integers greater than or equal to one or `NA`. This is in
+#' contrast to the [`ra_ref`] class, which holds a representation of a
 #' single absolute, relative, or mixed cell reference from, e.g., a formula.
 #'
-#' @param row integer. Must be the same length as \code{col} or of length one,
-#'   which will be recycled to the length of \code{col}.
-#' @param col integer. Same deal as for \code{row}.
+#' @param row integer. Must be the same length as `col` or of length one,
+#'   which will be recycled to the length of `col`.
+#' @param col integer. Same deal as for `row`.
 #'
-#' @return a \code{cell_addr} object
+#' @return a `cell_addr` object
 #' @export
 #'
 #' @template reference-sestoft
@@ -83,13 +83,13 @@ addr_row <- function(x, ...) UseMethod("addr_row")
 #' @export
 addr_col <- function(x, ...) UseMethod("addr_col")
 
-#' @describeIn addr_row Method for \code{\link{cell_addr}} objects
+#' @describeIn addr_row Method for [`cell_addr`] objects
 #' (ca <- cell_addr(1:4, 3))
 #' addr_row(ca)
 #' @export
 addr_row.cell_addr <- function(x, ...) x$row
 
-#' @describeIn addr_col Method for \code{\link{cell_addr}} objects
+#' @describeIn addr_col Method for [`cell_addr`] objects
 #' (ca <- cell_addr(1:4, 3))
 #' addr_col(ca)
 #' @export
@@ -98,15 +98,15 @@ addr_col.cell_addr <- function(x, ...) x$col
 #' Convert to a cell_addr object
 #'
 #' Convert various representations of a cell reference into an object of class
-#' \code{\link{cell_addr}}. Recall that \code{\link{cell_addr}} objects hold
-#' absolute row and column location, so \code{\link{ra_ref}} objects or cell
+#' [`cell_addr`]. Recall that [`cell_addr`] objects hold
+#' absolute row and column location, so [`ra_ref`] objects or cell
 #' reference strings with relative or mixed references will raise a warning and
-#' generate \code{NA}s.
+#' generate `NA`s.
 #'
 #' @param x a cell reference
 #' @template param-ddd
 #'
-#' @return a \code{\link{cell_addr}} object
+#' @return a [`cell_addr`] object
 #' @name as.cell_addr
 NULL
 

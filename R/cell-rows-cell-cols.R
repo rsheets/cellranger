@@ -1,16 +1,16 @@
 #' Specify cell limits only for rows
 #'
-#' How does this differ from \code{\link{cell_limits}}? Here the input can have
-#' length greater than 2, i.e. the rows can be specified as \code{1:n}. If the
-#' length is greater than 2, both the min and max are taken with \code{NA.rm =
-#' TRUE}. Note it is not possible to request non-contiguous rows, i.e. rows 1,
+#' How does this differ from [`cell_limits`]? Here the input can have
+#' length greater than 2, i.e. the rows can be specified as `1:n`. If the
+#' length is greater than 2, both the min and max are taken with `NA.rm =
+#' TRUE`. Note it is not possible to request non-contiguous rows, i.e. rows 1,
 #' 2, and 5. In this case, the requested rows will run from the minimum of 1 to
 #' the maximum of 5.
 #'
 #' @param x numeric vector of row limits; if length greater than two, min and
-#'   max will be taken with \code{NA.rm = TRUE}
+#'   max will be taken with `NA.rm = TRUE`
 #'
-#' @return a \code{\link{cell_limits}} object
+#' @return a [`cell_limits`] object
 #'
 #' @examples
 #' cell_rows(c(NA, 3))
@@ -38,18 +38,18 @@ cell_rows <- function(x) {
 
 #' Specify cell limits only for columns
 #'
-#' How does this differ from \code{\link{cell_limits}}? Two ways. First, the
+#' How does this differ from [`cell_limits`]? Two ways. First, the
 #' input can have length greater than 2, i.e. the columns can be specified as
-#' \code{1:n}. If the length is greater than 2, both the min and max are taken
-#' with \code{NA.rm = TRUE}. Note it is not possible to request non-contiguous
+#' `1:n`. If the length is greater than 2, both the min and max are taken
+#' with `NA.rm = TRUE`. Note it is not possible to request non-contiguous
 #' columns, i.e. columns 1, 2, and 5. In this case, the requested columns will
 #' run from the minimum of 1 to the maximum of 5. Second, the input can be given
 #' in the letter-based format spreadsheets use to label columns.
 #'
 #' @param x vector of column limits; if character, converted to numeric; if
-#'   length greater than two, min and max will be taken with \code{NA.rm = TRUE}
+#'   length greater than two, min and max will be taken with `NA.rm = TRUE`
 #'
-#' @return a \code{\link{cell_limits}} object
+#' @return a [`cell_limits`] object
 #'
 #' @examples
 #' cell_cols(c(NA, 3))
@@ -85,4 +85,3 @@ cell_cols <- function(x) {
 
   cell_limits(as.integer(c(NA, x[1])), as.integer(c(NA, x[2])))
 }
-

@@ -44,12 +44,12 @@ A \code{cell_limits} object is a list with three components:
 }
 \details{
 \itemize{
-  \item \code{ul} vector specifying upper left cell of target rectangle, of
-  the form \code{c(ROW_MIN, COL_MIN)}
-  \item \code{lr} vector specifying lower right cell of target rectangle, of
-  the form \code{c(ROW_MAX, COL_MAX)}
-  \item \code{sheet} string specifying worksheet name, which may be
-  \code{NA}, meaning it's unspecified
+\item \code{ul} vector specifying upper left cell of target rectangle, of
+the form \code{c(ROW_MIN, COL_MIN)}
+\item \code{lr} vector specifying lower right cell of target rectangle, of
+the form \code{c(ROW_MAX, COL_MAX)}
+\item \code{sheet} string specifying worksheet name, which may be
+\code{NA}, meaning it's unspecified
 }
 
 A value of \code{NA} in \code{ul} or \code{lr} means the corresponding limit

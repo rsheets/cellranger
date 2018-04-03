@@ -36,7 +36,7 @@ is_R1C1 <- function(x) grepl(.cr$R1C1_rx, x)
 #' @param x character vector of cell reference strings
 #' @param fo default to assume if format is ambiguous
 #'
-#' @return character vector consisting of \code{R1C1}, \code{A1}, or \code{NA}
+#' @return character vector consisting of `R1C1`, `A1`, or `NA`
 #' @export
 #'
 #' @examples

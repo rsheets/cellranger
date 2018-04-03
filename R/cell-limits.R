@@ -1,34 +1,34 @@
 #' Create a cell_limits object
 #'
-#' A \code{cell_limits} object is a list with three components:
+#' A `cell_limits` object is a list with three components:
 #'
 #' \itemize{
-#'   \item \code{ul} vector specifying upper left cell of target rectangle, of
-#'   the form \code{c(ROW_MIN, COL_MIN)}
-#'   \item \code{lr} vector specifying lower right cell of target rectangle, of
-#'   the form \code{c(ROW_MAX, COL_MAX)}
-#'   \item \code{sheet} string specifying worksheet name, which may be
-#'   \code{NA}, meaning it's unspecified
+#'   \item `ul` vector specifying upper left cell of target rectangle, of
+#'   the form `c(ROW_MIN, COL_MIN)`
+#'   \item `lr` vector specifying lower right cell of target rectangle, of
+#'   the form `c(ROW_MAX, COL_MAX)`
+#'   \item `sheet` string specifying worksheet name, which may be
+#'   `NA`, meaning it's unspecified
 #' }
 #'
-#' A value of \code{NA} in \code{ul} or \code{lr} means the corresponding limit
+#' A value of `NA` in `ul` or `lr` means the corresponding limit
 #' is left unspecified. Therefore a verbose way to specify no limits at all
-#' would be \code{cell_limits(c(NA, NA), c(NA, NA))}. If the maximum row or
+#' would be `cell_limits(c(NA, NA), c(NA, NA))`. If the maximum row or
 #' column is specified but the associated minimum is not, then the minimum is
 #' set to 1.
 #'
 #' When specified via character, cell references can be given in A1 or R1C1
 #' notation and must be interpretable as absolute references. For A1, this means
-#' either both row and column are annotated with a dollar sign \code{$} or
-#' neither is. So, no mixed references, like \code{B$4}. For R1C1, this means no
-#' square brackets, like \code{R[-3]C[3]}.
+#' either both row and column are annotated with a dollar sign `$` or
+#' neither is. So, no mixed references, like `B$4`. For R1C1, this means no
+#' square brackets, like `R[-3]C[3]`.
 #'
 #' @param ul vector identifying upper left cell of target rectangle
 #' @param lr vector identifying lower right cell of target rectangle
 #' @param sheet string containing worksheet name, optional
-#' @param x input to convert into a \code{cell_limits} object
+#' @param x input to convert into a `cell_limits` object
 #'
-#' @return a \code{cell_limits} object
+#' @return a `cell_limits` object
 #'
 #' @examples
 #' cell_limits(c(1, 3), c(1, 5))
