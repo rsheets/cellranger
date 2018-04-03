@@ -2,13 +2,18 @@ Package: cellranger
 Title: Translate Spreadsheet Cell Ranges to Rows and Columns
 Version: 1.1.0.9000
 Authors@R: c(
-    person("Jennifer", "Bryan", , "jenny@stat.ubc.ca", c("cre", "aut")),
-    person("Hadley", "Wickham", , "hadley@rstudio.com", "ctb")
+    person("Jennifer", "Bryan", , "jenny@rstudio.com", role = c("aut", "cre"),
+      comment = c(ORCID = "0000-0002-6983-2759")
+    ),
+    person("Hadley", "Wickham", , "hadley@rstudio.com", role = c("ctb"), 
+      comment = c(ORCID = "0000-0003-4757-117X")
+    ),
+    person("RStudio", role = c("cph", "fnd"))
   )
 Description: Helper functions to work with spreadsheets and the "A1:D10" style
     of cell range specification.
-Depends:
-    R (>= 3.0.0)
+Depends: 
+    R (>= 3.1)
 License: MIT + file LICENSE
 LazyData: true
 URL: https://github.com/rsheets/cellranger
@@ -18,7 +23,7 @@ Suggests:
     testthat (>= 1.0.0),
     knitr,
     rmarkdown
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 6.0.1.9000
 VignetteBuilder: knitr
 Imports: rematch,
     tibble
