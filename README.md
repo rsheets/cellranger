@@ -6,7 +6,7 @@ Status](https://travis-ci.org/rsheets/cellranger.svg?branch=master)](https://tra
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/rsheets/cellranger?branch=master&svg=true)](https://ci.appveyor.com/project/rsheets/cellranger)
 [![codecov.io](https://codecov.io/github/rsheets/cellranger/coverage.svg?branch=master)](https://codecov.io/github/rsheets/cellranger?branch=master)
-[![DOI](https://zenodo.org/badge/16122/jennybc/cellranger.svg)](http://dx.doi.org/10.5281/zenodo.21970)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21970.svg)](http://dx.doi.org/10.5281/zenodo.21970)
 [![CRAN
 version](http://www.r-pkg.org/badges/version/cellranger)](https://cran.r-project.org/package=cellranger)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/cellranger)
