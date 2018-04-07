@@ -41,8 +41,6 @@ a \code{cell_limits} object
 }
 \description{
 A \code{cell_limits} object is a list with three components:
-}
-\details{
 \itemize{
 \item \code{ul} vector specifying upper left cell of target rectangle, of
 the form \code{c(ROW_MIN, COL_MIN)}
@@ -56,7 +54,8 @@ A value of \code{NA} in \code{ul} or \code{lr} means the corresponding limit
 is left unspecified. Therefore a verbose way to specify no limits at all
 would be \code{cell_limits(c(NA, NA), c(NA, NA))}. If the maximum row or
 column is specified but the associated minimum is not, then the minimum is
-set to 1.
+set to 1. \strong{NOTE}: I am reconsidering this behavior and might choose to use
+\code{NA} for the minimum in this case.
 
 When specified via character, cell references can be given in A1 or R1C1
 notation and must be interpretable as absolute references. For A1, this means

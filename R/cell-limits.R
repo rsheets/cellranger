@@ -1,21 +1,19 @@
 #' Create a cell_limits object
 #'
-#' A `cell_limits` object is a list with three components:
-#'
-#' \itemize{
-#'   \item `ul` vector specifying upper left cell of target rectangle, of
+#' @description A `cell_limits` object is a list with three components:
+#'   * `ul` vector specifying upper left cell of target rectangle, of
 #'   the form `c(ROW_MIN, COL_MIN)`
-#'   \item `lr` vector specifying lower right cell of target rectangle, of
+#'   * `lr` vector specifying lower right cell of target rectangle, of
 #'   the form `c(ROW_MAX, COL_MAX)`
-#'   \item `sheet` string specifying worksheet name, which may be
+#'   * `sheet` string specifying worksheet name, which may be
 #'   `NA`, meaning it's unspecified
-#' }
 #'
 #' A value of `NA` in `ul` or `lr` means the corresponding limit
 #' is left unspecified. Therefore a verbose way to specify no limits at all
 #' would be `cell_limits(c(NA, NA), c(NA, NA))`. If the maximum row or
 #' column is specified but the associated minimum is not, then the minimum is
-#' set to 1.
+#' set to 1. **NOTE**: I am reconsidering this behavior and might choose to use
+#' `NA` for the minimum in this case.
 #'
 #' When specified via character, cell references can be given in A1 or R1C1
 #' notation and must be interpretable as absolute references. For A1, this means
