@@ -88,18 +88,17 @@ guess_fo <- function(x, fo = c("R1C1", "A1")) {
 
 ## for parsing cell (area) references that are possibly qualified by
 ## file and/or worksheet name
-.cr$filename_rx <- "(?:^\\[([^\\]]+)\\])?"
-.cr$worksheetname_rx <- "(?:'?([^']+)'?!)?"
-.cr$ref_rx <- "([a-zA-Z0-9:\\-$\\[\\]]+)"
+.cr$filename_rx <- "(?:^\\[(?<file>[^\\]]+)\\])?"
+.cr$worksheetname_rx <- "(?:'?(?<sheet>[^']+)'?!)?"
+.cr$ref_rx <- "(?<ref>[a-zA-Z0-9:$\\-\\[\\]]+)"
 .cr$string_rx <- sprintf(
-  "^(?:%s%s%s|(.*))$", .cr$filename_rx,
+  "^(?:%s%s%s|(?<catchall>.*))$", .cr$filename_rx,
   .cr$worksheetname_rx, .cr$ref_rx
 )
 
 parse_ref_string <- function(x, fo = NULL) {
-  parsed <- as.list(rematch::re_match(.cr$string_rx, x)[1, , drop = TRUE])
-  names(parsed) <- c("input", "file", "sheet", "ref", "invalid")
-  parsed$ref_v <- unlist(strsplit(parsed$ref, ":"))
+  parsed <- as.list(rematch2::re_match(x, .cr$string_rx))
+  parsed$ref_v <- strsplit(parsed$ref, ":")[[1]]
   stopifnot(length(parsed$ref_v) %in% 1:2)
   if (is.null(fo)) {
     fo_v <- guess_fo(parsed$ref_v)
